@@ -1,0 +1,42 @@
+; ---------------------
+; multiply
+; a = a * b
+; b = 0
+; ---------------------
+mul:
+	push r0
+	load r0,0
+_mul_l:
+	cmp b,0
+	je _mul_d 	; done
+	dec b
+	add r0,a
+	jmp _mul_l 	; loop
+_mul_d: 
+	load a,r0
+	pop r0
+	ret
+	
+; ---------------------
+; divide
+; a = a / b
+; b = remainder
+; ---------------------
+div:
+	push r0
+	load r0,0
+	cmp b,0
+	je _div_e	; do div by zero check
+_div_l:
+	cmp a,b		; if
+	jl _div_d 	; a < b
+	sub a,b
+	inc r0
+	jmp _div_l
+_div_d:
+	load b,a 	; remainder
+_div_e:
+	load a,r0 	; result
+	pop r0
+	ret
+	

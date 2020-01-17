@@ -1,15 +1,29 @@
-package com.nullpointerworks.jasm8.compiler;
+package com.nullpointerworks.jasm.jasm8.compiler;
 
-import com.nullpointerworks.jasm8.parts.InstructionsJASM8;
+import com.nullpointerworks.jasm.jasm8.parts.InstructionsJASM8;
 import com.nullpointerworks.util.StringUtil;
 
 public class DraftJASM8 implements InstructionsJASM8
 {
 	private boolean hasLabel = false;
 	private String label = "";
-	
 	private int code_index = 0;
 	private byte[] machine_code;
+
+	public DraftJASM8(int index, byte[] microcode)
+	{
+		code_index = index;
+		machine_code = microcode;
+	}
+	
+	public DraftJASM8(int index, byte[] microcode, String label)
+	{
+		this.label=label;
+		hasLabel = true;
+		code_index = index;
+		machine_code = microcode;
+	}
+	
 	
 	public DraftJASM8(int index, String instruction)
 	{
@@ -29,25 +43,10 @@ public class DraftJASM8 implements InstructionsJASM8
 		if (instruct.equals("dec")) {_dec(operands); return;}
 		if (instruct.equals("neg")) {_neg(operands); return;}
 		
-		/*
-		 * jump
-		 */
-		if (instruct.equals("jmp")) {_jmp(JMP, operands); return;}
-		if (instruct.equals("call")) {_jmp(CALL,operands); return;}
-		if (instruct.equals("je")) {_jmp(JE, operands); return;}
-		if (instruct.equals("jne")) {_jmp(JNE, operands); return;}
-		if (instruct.equals("jg")) {_jmp(JG, operands); return;}
-		if (instruct.equals("jge")) {_jmp(JGE, operands); return;}
-		if (instruct.equals("jl")) {_jmp(JL, operands); return;}
-		if (instruct.equals("jle")) {_jmp(JLE, operands); return;}
 		
 		/*
 		 * other
 		 */
-		if (instruct.equals("nop")) {_nop(); return;}
-		if (instruct.equals("end")) {_end(); return;}
-		if (instruct.equals("out")) {_out(operands); return;}
-		if (instruct.equals("load")) {_load(operands); return;}
 		if (instruct.equals("sto")) {_sto(operands); return;}
 		if (instruct.equals("push")) {_push(operands); return;}
 		if (instruct.equals("pop")) {_pop(operands); return;}
@@ -222,103 +221,6 @@ public class DraftJASM8 implements InstructionsJASM8
 	}
 	
 	/**
-	 * jmp [label|imm16]			JMP, (byte)0x00,(byte)0x00,
-	 */
-	private void _jmp(byte opcode, String operands)
-	{
-		hasLabel = true;
-		label = operands;
-		machine_code = new byte[] {opcode, 0, 0};
-	}
-	
-	/**
-	 * load [reg8],[reg8]			LOAD, Rxx
-	 * load [reg8],[imm8]			LOAD, RxI, (byte)0x00,
-	 * load [reg8],&[addr16]		LOAD, RxM, (byte)0x00,(byte)0x00,
-	 */
-	private void _load(String operands)
-	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
-		{
-			return; // error
-		}
-		
-		String target = tokens[0];
-		
-		if ( !isReg8(target) )
-		{
-			return; // error
-		}
-		
-		String source = tokens[1];
-		
-		if ( isReg8(source) )
-		{
-			byte dir = getReg8Reg8(target, source);
-			machine_code = new byte[] {LOAD, dir};
-		}
-		else
-		if ( isAddr16(source) )
-		{
-			byte dir = getReg8X(target, M);
-			short addr16 = getAddr16(source);
-			byte H = (byte)(addr16>>8);
-			byte L = (byte)(addr16);
-			machine_code = new byte[] {LOAD, dir, H, L};
-		}
-		else
-		if ( isImm8(source) )
-		{
-			byte dir = getReg8X(target, I);
-			byte imm8 = getImm8(source);
-			machine_code = new byte[] {LOAD, dir, imm8};
-		}
-		else
-		{
-			// error
-		}
-	}
-	
-	/** 
-	 * out [reg8]					OUT, Rx,
-	 * out [reg16]					OUT, xP,
-	 * out [imm8]					OUT, I, (byte)0x00,
-	 */
-	private void _out(String op)
-	{
-		if ( isReg8(op) )
-		{
-			byte reg = getReg8(op);
-			machine_code = new byte[] {OUT, reg};
-		}
-		else
-		if ( isReg16(op) )
-		{
-			byte reg = getReg16(op);
-			machine_code = new byte[] {OUT, reg};
-		}
-		else
-		if ( isImm8(op) )
-		{
-			byte imm8 = getImm8(op);
-			machine_code = new byte[] {OUT, I, imm8};
-		}
-		else
-		{
-			// error
-		}
-	}
-	
-	/**
-	 * nop							NOP,
-	 */
-	private void _nop()
-	{
-		machine_code = new byte[] {NOP};
-	}
-	
-	/**
 	 * inc [reg8]					INC, Rx,
 	 */
 	private void _inc(String operands)
@@ -352,14 +254,6 @@ public class DraftJASM8 implements InstructionsJASM8
 		}
 	}
 	
-	/**
-	 * end							END,
-	 */
-	private void _end()
-	{
-		machine_code = new byte[] {END};
-	}
-
 	/*
 	 * ===========================================================
 	 */
@@ -400,13 +294,13 @@ public class DraftJASM8 implements InstructionsJASM8
 		case "b": r1 = RB; break;
 		case "c": r1 = RC; break;
 		case "d": r1 = RD; break;
-		case "r0": r1 = R0; break;
-		case "r1": r1 = R1; break;
-		case "r2": r1 = R2; break;
-		case "r3": r1 = R3; break;
+		case "xh": r1 = XH; break;
+		case "xl": r1 = XL; break;
+		case "yh": r1 = YH; break;
+		case "yl": r1 = YL; break;
 		}
 		
-		return InstructionsJASM8._cd(r1,source);
+		return 0; //_cd(r1,source);
 	}
 	
 	private byte getReg8Reg8(String reg1, String reg2)
@@ -420,10 +314,10 @@ public class DraftJASM8 implements InstructionsJASM8
 		case "b": r1 = RB; break;
 		case "c": r1 = RC; break;
 		case "d": r1 = RD; break;
-		case "r0": r1 = R0; break;
-		case "r1": r1 = R1; break;
-		case "r2": r1 = R2; break;
-		case "r3": r1 = R3; break;
+		case "xh": r1 = XH; break;
+		case "xl": r1 = XL; break;
+		case "yh": r1 = YH; break;
+		case "yl": r1 = YL; break;
 		}
 		
 		switch(reg2)
@@ -432,13 +326,13 @@ public class DraftJASM8 implements InstructionsJASM8
 		case "b": r2 = RB; break;
 		case "c": r2 = RC; break;
 		case "d": r2 = RD; break;
-		case "r0": r2 = R0; break;
-		case "r1": r2 = R1; break;
-		case "r2": r2 = R2; break;
-		case "r3": r2 = R3; break;
+		case "xh": r2 = XH; break;
+		case "xl": r2 = XL; break;
+		case "yh": r2 = YH; break;
+		case "yl": r2 = YL; break;
 		}
 		
-		return InstructionsJASM8._cd(r1,r2);
+		return 0; //InstructionsJASM8._cd(r1,r2);
 	}
 	
 	private byte getReg8(String reg1)
@@ -450,10 +344,10 @@ public class DraftJASM8 implements InstructionsJASM8
 		case "b": r1 = RB; break;
 		case "c": r1 = RC; break;
 		case "d": r1 = RD; break;
-		case "r0": r1 = R0; break;
-		case "r1": r1 = R1; break;
-		case "r2": r1 = R2; break;
-		case "r3": r1 = R3; break;
+		case "xh": r1 = XH; break;
+		case "xl": r1 = XL; break;
+		case "yh": r1 = YH; break;
+		case "yl": r1 = YL; break;
 		}
 		return r1;
 	}
@@ -545,10 +439,10 @@ public class DraftJASM8 implements InstructionsJASM8
 		case "b":
 		case "c":
 		case "d":
-		case "r0":
-		case "r1":
-		case "r2":
-		case "r3": return true;
+		case "xh":
+		case "xl":
+		case "yh":
+		case "yl": return true;
 		}
 		return false;
 	}

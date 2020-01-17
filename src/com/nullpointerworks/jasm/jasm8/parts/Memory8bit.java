@@ -1,6 +1,6 @@
-package com.nullpointerworks.jasm8.parts;
+package com.nullpointerworks.jasm.jasm8.parts;
 
-import com.nullpointerworks.jasm8.Memory;
+import com.nullpointerworks.jasm.jasm8.Memory;
 
 /*
  * byte memory module

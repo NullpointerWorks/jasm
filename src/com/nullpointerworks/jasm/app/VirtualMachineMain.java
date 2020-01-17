@@ -1,19 +1,20 @@
-package com.nullpointerworks.app;
+package com.nullpointerworks.jasm.app;
+
+import static com.nullpointerworks.jasm.jasm8.Memory.*;
 
 import java.io.IOException;
 
 import com.nullpointerworks.game.LoopAdapter;
+import com.nullpointerworks.jasm.jasm8.Memory;
+import com.nullpointerworks.jasm.jasm8.Monitor;
+import com.nullpointerworks.jasm.jasm8.Processor;
+import com.nullpointerworks.jasm.jasm8.parts.InstructionsJASM8;
+import com.nullpointerworks.jasm.jasm8.parts.Memory8bit;
+import com.nullpointerworks.jasm.jasm8.parts.ProcessorJASM8;
+import com.nullpointerworks.jasm.loop.Process;
 import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.file.bytefile.ByteFile;
 import com.nullpointerworks.util.file.bytefile.ByteFileParser;
-
-import com.nullpointerworks.jasm8.Memory;
-import com.nullpointerworks.jasm8.Monitor;
-import com.nullpointerworks.jasm8.Processor;
-import com.nullpointerworks.jasm8.parts.ProcessorJASM8;
-import com.nullpointerworks.jasm8.parts.InstructionsJASM8;
-import com.nullpointerworks.jasm8.parts.Memory8bit;
-import static com.nullpointerworks.jasm8.Memory.*;
 
 public class VirtualMachineMain
 extends LoopAdapter

@@ -1,4 +1,4 @@
-package com.nullpointerworks;
+package com.nullpointerworks.jasm;
 
 import java.io.InputStream;
 import java.net.URL;

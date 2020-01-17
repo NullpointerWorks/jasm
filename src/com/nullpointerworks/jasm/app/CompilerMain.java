@@ -1,10 +1,10 @@
-package com.nullpointerworks.app;
+package com.nullpointerworks.jasm.app;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import com.nullpointerworks.jasm8.Compiler;
-import com.nullpointerworks.jasm8.compiler.CompilerJASM8;
+import com.nullpointerworks.jasm.jasm8.Compiler;
+import com.nullpointerworks.jasm.jasm8.compiler.CompilerJASM8;
 import com.nullpointerworks.util.FileUtil;
 import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.concurrency.Threading;

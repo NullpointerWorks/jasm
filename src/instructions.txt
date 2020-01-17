@@ -1,0 +1,290 @@
+      _    _    _________  __    ___  
+     | |  / \  / _____   \/  |  ( _ ) 
+  _  | | / _ \ \___ \ | |\/| |  / _ \ 
+ | |_| // ___ \____) || |  | | | (_) |
+  \___//_/   \______/ |_|  |_|  \___/ 
+
+JASM 8-bit virtual machine instructions and memory byte size
+
+========================================
+no-operation 
+
+syntax:
+	nop	
+
+byte:
+	NOP
+
+========================================
+halt program 
+
+syntax:
+	end
+
+byte:
+	END
+
+========================================
+output to monitor 
+
+syntax:
+	out [reg8]
+	out [reg16]
+	out [imm8]
+	out [imm16]
+
+byte:
+	OUT, R
+	OUT, I, (byte)
+	OUT, IL, (byte), (byte)
+
+========================================
+load register
+
+syntax:
+	load [reg8] ,[reg8]
+	load [reg16],[reg8]
+	load [reg16],[reg16]
+	
+	load [reg8] ,[imm8]
+	load [reg16],[imm8]
+	load [reg16],[imm16]
+	
+	load [reg8] ,&[addr16]
+	load [reg16],&[addr16]
+
+byte:
+	LOAD, RR
+	LOAD, RI, (byte)
+	LOAD, RM, (byte), (byte)
+
+========================================
+jump 
+
+syntax:
+	jmp [label]
+
+byte:
+	JMP, (byte), (byte)
+
+========================================
+jump if equal 
+
+syntax:
+	je [label]
+
+byte:
+	JE, (byte), (byte)
+
+========================================
+jump if not equal 
+
+syntax:
+	jne [label]	
+
+byte:
+	JNE, (byte), (byte)
+
+========================================
+jump if greater 
+
+syntax:
+	jg [label]
+
+byte:
+	JG, (byte), (byte)
+
+========================================
+jump if greater or equal 
+
+syntax:
+	jge [label]
+
+byte:
+	JGE, (byte), (byte)
+
+========================================
+jump if less 
+
+syntax:
+	jl [label]
+
+byte:
+	JL, (byte), (byte)
+
+========================================
+jump if less or equal 
+
+syntax:
+	jle [label]
+
+byte:
+	JLE, (byte), (byte)
+
+========================================
+call label 
+
+syntax:
+	call [label]
+
+byte:
+	CALL, (byte), (byte)
+
+========================================
+return to previous call 
+
+syntax:
+	ret	
+
+byte:
+	RET
+
+========================================
+addition
+
+syntax:
+	add [reg8],[reg8]
+	add [reg16],[reg8]
+	add [reg16],[reg16]
+	
+	add [reg8],[imm8]
+	add [reg16],[imm8]
+	add [reg16],[imm16]
+
+byte:
+	ADD, RR
+	ADD, RI, (byte)
+	ADD, RIL, (byte), (byte)
+
+
+========================================
+subtraction 
+
+syntax:
+	sub [reg8],[reg8]
+	sub [reg16],[reg8]
+	sub [reg16],[reg16]
+	
+	sub [reg8],[imm8]
+	sub [reg16],[imm8]
+	sub [reg16],[imm16]
+
+byte:
+	SUB, RR
+	SUB, RI, (byte)
+	SUB, RIL, (byte), (byte)
+
+
+
+
+
+
+========================================
+compare 
+
+syntax:
+	cmp [reg8],[reg8]
+	cmp [reg16],[reg8]
+	cmp [reg16],[reg16]
+	
+	cmp [reg8],[imm8]
+	cmp [reg16],[imm8]
+	cmp [reg16],[imm16]
+
+byte:
+	CMP, RR
+	CMP, RI, (byte)
+	CMP, RIL, (byte), (byte)
+
+
+
+
+
+
+
+
+
+========================================
+negation 
+
+syntax:
+	neg [reg8]
+	neg [reg16]
+
+byte:
+	NEG, R
+
+========================================
+increment register 
+
+syntax:
+	inc [reg8]
+	inc [reg16]
+
+byte:
+	INC, R
+
+========================================
+decrement register 
+
+syntax:
+	dec [reg8]
+	dec [reg16]
+
+byte:
+	DEC, R
+
+
+
+
+
+
+
+
+
+
+
+
+
+========================================
+storage 
+
+syntax:
+	sto &[addr16],[reg8]
+	sto &[addr16],[imm8]
+	
+byte:
+	STO, Rx, (byte), (byte)
+	STO, I, (byte), (byte), (byte)
+
+
+
+
+
+
+
+
+========================================
+push to stack 
+
+syntax:
+	push [reg8]
+	push [reg16]
+	push [imm8]
+	push &[addr16]
+
+byte:
+	PUSH, Rx
+	PUSH, I, (byte)
+	PUSH, M, (byte), (byte)
+
+========================================
+pop from stack 
+
+syntax:
+	pop [reg8]
+	pop [reg16]
+
+byte:
+	POP, Rx
+

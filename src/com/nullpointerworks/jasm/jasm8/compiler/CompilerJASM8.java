@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm8.compiler;
+package com.nullpointerworks.jasm.jasm8.compiler;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.nullpointerworks.jasm8.Compiler;
-
+import com.nullpointerworks.jasm.jasm8.Compiler;
 import com.nullpointerworks.util.Log;
+import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.concurrency.Threading;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
@@ -28,7 +28,7 @@ public class CompilerJASM8 implements Compiler
 	private List<String> code = null;
 	private List<String> includes = null;
 	private List<DraftJASM8> draft = null;
-	private List<DraftJASM8> labelled = null;
+	private List<DraftJASM8> labeled = null;
 	private byte[] machine_code = null;
 	
 	/*
@@ -110,8 +110,8 @@ public class CompilerJASM8 implements Compiler
 		if (draft!=null) draft.clear();
 		draft = new ArrayList<DraftJASM8>();
 		
-		if (labelled!=null) labelled.clear();
-		labelled = new ArrayList<DraftJASM8>();
+		if (labeled!=null) labeled.clear();
+		labeled = new ArrayList<DraftJASM8>();
 		
 		return this;
 	}
@@ -152,7 +152,7 @@ public class CompilerJASM8 implements Compiler
 		if (verbose_parser)
 		{
 			Log.out("\n parsing done\n");
-			Log.out("-------------------------------");
+			Log.out("--------------------------------------");
 		}
 		
 		/*
@@ -160,39 +160,41 @@ public class CompilerJASM8 implements Compiler
 		 */
 		if (verbose_preproc)
 		{
-			Log.out("-------------------------------");
-			Log.out(" Pre-processor");
-			Log.out("-------------------------------");
+			Log.out("--------------------------------------");
+			Log.out("\n Pre-processor\n");
 		}
 		preprocessor(code);
+		if (verbose_preproc)
+		{
+			Log.out("\n--------------------------------------");
+		}
 		
 		/*
 		 * 
 		 */
 		if (verbose_compiler)
 		{
-			Log.out("-------------------------------");
+			Log.out("--------------------------------------");
 			Log.out(" Compiling");
-			Log.out("-------------------------------");
+			Log.out("--------------------------------------");
 		}
 		compileDraft(draft);
 		
 		/*
 		 * print compiling info
 		 */
-		Log.out("-------------------------------");
+		Log.out("--------------------------------------");
 		Log.out(
-		"      _     _    _________  __ \r\n" + 
-		"     | |   / \\  / ______  \\/  |\r\n" + 
-		"  _  | |  / _ \\ \\___ \\ | |\\/| |\r\n" + 
-		" | |_| | / ___ \\____) || |  | |\r\n" + 
-		"  \\___/ /_/   \\______/ |_|  |_|\r\n" + 
-		"                             ");
+		"      _    _    _________  __    ___  \r\n" + 
+		"     | |  / \\  / _____   \\/  |  ( _ ) \r\n" + 
+		"  _  | | / _ \\ \\___ \\ | |\\/| |  / _ \\ \r\n" + 
+		" | |_| // ___ \\____) || |  | | | (_) |\r\n" + 
+		"  \\___//_/   \\______/ |_|  |_|  \\___/ \n");
 		Log.out(" compiling successful\n");
 		Log.out(" external files  : "+includes.size());
 		Log.out(" instructions    : "+draft.size());
 		Log.out(" program size    : "+rom_index+" bytes");
-		Log.out("\n-------------------------------");
+		Log.out("\n--------------------------------------");
 		return machine_code;
 	}
 	
@@ -369,21 +371,30 @@ public class CompilerJASM8 implements Compiler
 				continue;
 			}
 			
-			var draft_inst = new DraftJASM8(rom_index, line);
-			rom_index += draft_inst.machineCode().length;
-			
-			if (draft_inst.hasLabel())
+			var draft_inst = DraftBuilderJASM8.getDraft(rom_index, line);
+			if (draft_inst != null)
 			{
-				labelled.add(draft_inst);
+				if (verbose_preproc)// TODO
+				{
+					Log.out( StringUtil.fill(line," ",20)+
+							" "+
+							draft_inst.machineCodeToString());
+				}
+				
+				rom_index += draft_inst.machineCode().length;
+				if (draft_inst.hasLabel()) labeled.add(draft_inst);
+				draft.add(draft_inst);
 			}
-			
-			draft.add(draft_inst);
+			else
+			{
+				Log.err("error >> "+line); // TODO
+			}
 		}
 		
 		/*
 		 * insert label addresses
 		 */
-		for (DraftJASM8 d : labelled)
+		for (DraftJASM8 d : labeled)
 		{
 			String label = d.getLabel();
 			int addr = labels.get(label);

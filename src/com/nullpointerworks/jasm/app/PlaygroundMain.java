@@ -1,21 +1,22 @@
-package com.nullpointerworks.app;
+package com.nullpointerworks.jasm.app;
+
+import static com.nullpointerworks.jasm.jasm8.Memory.*;
 
 import java.io.FileNotFoundException;
 
 import com.nullpointerworks.game.LoopAdapter;
+import com.nullpointerworks.jasm.jasm8.Compiler;
+import com.nullpointerworks.jasm.jasm8.Memory;
+import com.nullpointerworks.jasm.jasm8.Monitor;
+import com.nullpointerworks.jasm.jasm8.Processor;
+import com.nullpointerworks.jasm.jasm8.compiler.CompilerJASM8;
+import com.nullpointerworks.jasm.jasm8.parts.InstructionsJASM8;
+import com.nullpointerworks.jasm.jasm8.parts.Memory8bit;
+import com.nullpointerworks.jasm.jasm8.parts.ProcessorJASM8;
+import com.nullpointerworks.jasm.loop.Process;
 import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
-
-import com.nullpointerworks.jasm8.Compiler;
-import com.nullpointerworks.jasm8.Memory;
-import com.nullpointerworks.jasm8.Monitor;
-import com.nullpointerworks.jasm8.Processor;
-import com.nullpointerworks.jasm8.compiler.CompilerJASM8;
-import com.nullpointerworks.jasm8.parts.ProcessorJASM8;
-import com.nullpointerworks.jasm8.parts.InstructionsJASM8;
-import com.nullpointerworks.jasm8.parts.Memory8bit;
-import static com.nullpointerworks.jasm8.Memory.*;
 
 public class PlaygroundMain
 extends LoopAdapter
@@ -77,7 +78,7 @@ implements InstructionsJASM8, Monitor
 		 */
 		Compiler jasm8 = new CompilerJASM8();
 		jasm8.setParserVerbose(false);
-		jasm8.setPreprocessorVerbose(false);
+		jasm8.setPreprocessorVerbose(true);
 		jasm8.setCompilerVerbose(false);
 		jasm8.setIncludesPath("D:\\Development\\Assembly\\workspace\\jasm\\");
 		program = jasm8.parse(tf.getLines());
@@ -86,7 +87,7 @@ implements InstructionsJASM8, Monitor
 		 * run program
 		 */
 		asap = new Process(this, fps);
-		//asap.start();
+		asap.start();
 	}
 	
 	// ==============================================================

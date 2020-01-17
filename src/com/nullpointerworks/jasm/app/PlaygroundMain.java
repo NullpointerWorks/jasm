@@ -22,7 +22,7 @@ public class PlaygroundMain
 extends LoopAdapter
 implements InstructionsJASM8, Monitor
 {
-	Process asap;
+	Process loop;
 	Memory rom; // read-only memory
 	Memory ram; // random access memory
 	Processor cpu; // assembly executor
@@ -40,7 +40,6 @@ implements InstructionsJASM8, Monitor
 	 * 
 	 * address range
 	 * 16 bit = 2^16 = 65536 = 0xFFFF = 0b1111 1111 1111 1111
-	 * 
 	 * 64 kiB max
 	 * 
 	 * 
@@ -50,10 +49,6 @@ implements InstructionsJASM8, Monitor
 	 * error about unknown label jumps
 	 * error when detecting duplicate labels
 	 * error when two labels are defined in sequence
-	 * 
-	 * 
-	 * 
-	 * 
 	 * 
 	 */
 	public PlaygroundMain(String[] args)
@@ -78,7 +73,7 @@ implements InstructionsJASM8, Monitor
 		 */
 		Compiler jasm8 = new CompilerJASM8();
 		jasm8.setParserVerbose(false);
-		jasm8.setPreprocessorVerbose(true);
+		jasm8.setPreprocessorVerbose(false);
 		jasm8.setCompilerVerbose(false);
 		jasm8.setIncludesPath("D:\\Development\\Assembly\\workspace\\jasm\\");
 		program = jasm8.parse(tf.getLines());
@@ -86,8 +81,8 @@ implements InstructionsJASM8, Monitor
 		/*
 		 * run program
 		 */
-		asap = new Process(this, fps);
-		asap.start();
+		loop = new Process(this, fps);
+		loop.start();
 	}
 	
 	// ==============================================================
@@ -124,6 +119,6 @@ implements InstructionsJASM8, Monitor
 	
 	public void onEND(int x)
 	{
-		asap.stop();
+		loop.stop();
 	}
 }

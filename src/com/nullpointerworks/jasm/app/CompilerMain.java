@@ -59,7 +59,7 @@ public class CompilerMain
 		}
 		
 		Log.out("------------------------------");
-		Log.out(" JASM8 compiler v1.0 alpha");
+		Log.out(" JASM8 compiler v1.1 alpha");
 		Log.out("------------------------------");
 		
 		Threading.sleep(100);

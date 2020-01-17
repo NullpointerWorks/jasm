@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import com.nullpointerworks.jasm.jasm8.Compiler;
 import com.nullpointerworks.util.Log;
@@ -122,14 +124,21 @@ public class CompilerJASM8 implements Compiler
 	@Override
 	public byte[] parse(String[] text)
 	{
+		Log.out(
+		"      _    _    _________  __    ___  \r\n" + 
+		"     | |  / \\  / _____   \\/  |  ( _ ) \r\n" + 
+		"  _  | | / _ \\ \\___ \\ | |\\/| |  / _ \\ \r\n" + 
+		" | |_| // ___ \\____) || |  | | | (_) |\r\n" + 
+		"  \\___//_/   \\______/ |_|  |_|  \\___/ \n");
+		Log.out(" compiler v1.1 alpha\n");
 		
 		/*
-		 * 
+		 * code parsing
 		 */
 		if (verbose_parser)
 		{
-			Log.out("-------------------------------");
-			Log.out("\n parsing\n");
+			Log.out("--------------------------------------");
+			Log.out("\n ### parsing ###\n");
 		}
 		
 		parseCode(text);
@@ -156,45 +165,39 @@ public class CompilerJASM8 implements Compiler
 		}
 		
 		/*
-		 * 
+		 * pre-processing
 		 */
 		if (verbose_preproc)
 		{
 			Log.out("--------------------------------------");
-			Log.out("\n Pre-processor\n");
+			Log.out("\n ### Pre-processor ###\n");
 		}
+		
 		preprocessor(code);
+		
 		if (verbose_preproc)
 		{
-			Log.out("\n--------------------------------------");
+			Log.out("\n pre-processing done\n");
+			Log.out("--------------------------------------");
 		}
 		
 		/*
-		 * 
+		 * compiler
 		 */
 		if (verbose_compiler)
 		{
 			Log.out("--------------------------------------");
-			Log.out(" Compiling");
-			Log.out("--------------------------------------");
+			Log.out("\n ### Compiling ### \n");
 		}
+		
 		compileDraft(draft);
 		
-		/*
-		 * print compiling info
-		 */
-		Log.out("--------------------------------------");
-		Log.out(
-		"      _    _    _________  __    ___  \r\n" + 
-		"     | |  / \\  / _____   \\/  |  ( _ ) \r\n" + 
-		"  _  | | / _ \\ \\___ \\ | |\\/| |  / _ \\ \r\n" + 
-		" | |_| // ___ \\____) || |  | | | (_) |\r\n" + 
-		"  \\___//_/   \\______/ |_|  |_|  \\___/ \n");
-		Log.out(" compiling successful\n");
+		if (!verbose_compiler) Log.out("--------------------------------------");
+		Log.out("\n compiling successful\n");
 		Log.out(" external files  : "+includes.size());
 		Log.out(" instructions    : "+draft.size());
 		Log.out(" program size    : "+rom_index+" bytes");
-		Log.out("\n--------------------------------------");
+		Log.out("\n--------------------------------------\n");
 		return machine_code;
 	}
 	
@@ -350,6 +353,8 @@ public class CompilerJASM8 implements Compiler
 	
 	private void preprocessor(List<String> code)
 	{
+		if (verbose_preproc) strLeng = 2;
+		
 		/*
 		 * track directives and labels
 		 * process instructions
@@ -360,6 +365,8 @@ public class CompilerJASM8 implements Compiler
 			if (line.startsWith("."))
 			{
 				
+				// TODO resolve .equ directives etc
+				
 				continue;
 			}
 			
@@ -367,6 +374,13 @@ public class CompilerJASM8 implements Compiler
 			if (line.contains(":")) 
 			{
 				String label = line.substring(0,line.length()-1);
+				
+				if (verbose_preproc)
+				{
+					strLeng = label.length() + 2;
+					if (strLeng > 16) strLeng = 16;
+				}
+				
 				labels.put(label, rom_index);
 				continue;
 			}
@@ -374,31 +388,48 @@ public class CompilerJASM8 implements Compiler
 			var draft_inst = DraftBuilderJASM8.getDraft(rom_index, line);
 			if (draft_inst != null)
 			{
-				if (verbose_preproc)// TODO
-				{
-					Log.out( StringUtil.fill(line," ",20)+
-							" "+
-							draft_inst.machineCodeToString());
-				}
-				
 				rom_index += draft_inst.machineCode().length;
 				if (draft_inst.hasLabel()) labeled.add(draft_inst);
 				draft.add(draft_inst);
 			}
 			else
 			{
-				Log.err("error >> "+line); // TODO
+				Log.err(" error >> "+line); // TODO
 			}
 		}
 		
 		/*
 		 * insert label addresses
 		 */
+		if (verbose_preproc)
+		{
+			Log.out(" Addressing used labels\n");
+		}
 		for (DraftJASM8 d : labeled)
 		{
 			String label = d.getLabel();
 			int addr = labels.get(label);
+			
+			if (verbose_preproc)
+			{
+				String fill = StringUtil.fill(label, " ", strLeng);
+				Log.out(" "+fill+" 0x"+String.format("%04X", addr) );
+			}
+			
 			d.setLabelAddress(addr);
+			labels.remove(label);
+		}
+		
+		// unused labels
+		if (verbose_preproc)
+		{
+			Log.out("\n Unused labels\n");
+			Set<Entry<String, Integer>> leftover = labels.entrySet();
+			for (Entry<String, Integer> entry : leftover)
+			{
+				String fill = StringUtil.fill(entry.getKey(), " ", 15);
+				Log.out(" "+fill );
+			}
 		}
 	}
 	

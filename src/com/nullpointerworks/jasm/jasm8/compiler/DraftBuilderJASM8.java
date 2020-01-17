@@ -118,7 +118,7 @@ implements InstructionsJASM8
 			
 			if ( isReg8(source) )
 			{
-				byte reg8 = getReg8(source);
+				byte reg8 = getRegister(source);
 				machine_code = new byte[] {STO, reg8, H, L};
 				return new DraftJASM8(index, machine_code);
 			}
@@ -127,6 +127,28 @@ implements InstructionsJASM8
 			{
 				byte imm8 = getImm8(source);
 				machine_code = new byte[] {STO, I, H, L, imm8};
+				return new DraftJASM8(index, machine_code);
+			}
+		}
+		
+		if ( isReg16(target) )
+		{
+			byte regH = getRegister(target);
+			
+			byte[] machine_code = null;
+			if ( isReg8(source) )
+			{
+				byte regL = getRegister(source);
+				byte dir = compileDirective(regH,regL);
+				machine_code = new byte[] {STO, dir};
+				return new DraftJASM8(index, machine_code);
+			}
+			
+			if ( isImm8(source) )
+			{
+				byte imm8 = getImm8(source);
+				byte dir = compileDirective(regH,I);
+				machine_code = new byte[] {STO, dir, imm8};
 				return new DraftJASM8(index, machine_code);
 			}
 		}
@@ -413,23 +435,6 @@ implements InstructionsJASM8
 		case "y": return RY;
 		}
 		return -1;
-	}
-	
-	private byte getReg8(String reg1)
-	{
-		byte r1 = 0;
-		switch(reg1)
-		{
-		case "a": r1 = RA; break;
-		case "b": r1 = RB; break;
-		case "c": r1 = RC; break;
-		case "d": r1 = RD; break;
-		case "xh": r1 = XH; break;
-		case "xl": r1 = XL; break;
-		case "yh": r1 = YH; break;
-		case "yl": r1 = YL; break;
-		}
-		return r1;
 	}
 
 	private byte getImm8(String value)

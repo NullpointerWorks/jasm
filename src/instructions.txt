@@ -230,7 +230,12 @@ syntax:
 	sto &[addr16],[reg8]
 	sto &[addr16],[imm8]
 	
+	sto [reg16],[reg8]
+	sto [reg16],[imm8]
+	
 byte:
+	STO, RR
+	STO, RI, (byte)
 	STO, R, (byte), (byte)
 	STO, I, (byte), (byte), (byte)
 

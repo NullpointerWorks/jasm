@@ -290,7 +290,25 @@ implements Processor, InstructionsJASM8
     private final void _sto()
 	{
     	byte directive 	= _fetch();
-    	short addrs16 	= _fetch16();
+    	byte H = (byte)((directive>>4)&0x0f);
+    	byte L = (byte)(directive&0x0f);
+    	short addrs16;
+    	
+    	if ( _is_register16(H) )
+    	{
+    		addrs16 = _register_value(H);
+    	}
+    	else
+    	{
+    		addrs16 = _fetch16();
+    	}
+    	
+    	if ( L == I )
+    	{
+        	byte immediate = _fetch();
+        	ram.write(addrs16, immediate);
+        	return;
+    	}
     	
     	switch(directive)
     	{
@@ -304,9 +322,6 @@ implements Processor, InstructionsJASM8
     	case YL: ram.write(addrs16, regYL); return;
     	default: break;
     	}
-    	
-    	byte immediate = _fetch();
-    	ram.write(addrs16, immediate);
 	}
     
     /*

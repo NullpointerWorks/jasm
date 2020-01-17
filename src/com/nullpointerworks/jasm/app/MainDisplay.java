@@ -15,7 +15,9 @@ import com.nullpointerworks.jasm.jasm8.processor.InstructionsJASM8;
 import com.nullpointerworks.jasm.jasm8.processor.Memory8bit;
 import com.nullpointerworks.jasm.jasm8.processor.ProcessorJASM8;
 import com.nullpointerworks.jasm.loop.Process;
+
 import com.nullpointerworks.core.Window;
+import com.nullpointerworks.core.buffer.IntBuffer;
 import com.nullpointerworks.game.LoopAdapter;
 import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.file.textfile.TextFile;
@@ -31,6 +33,7 @@ implements InstructionsJASM8, Monitor
 	LogListener log;
 	
 	Window window;
+	IntBuffer screen;
 	
 	int fps		= 10;
 	int cycles 	= fps * 100;  // 1000 Hz
@@ -101,9 +104,22 @@ implements InstructionsJASM8, Monitor
 	
 	// ==============================================================
 	
-	public void onOUT(int x)
+	public void onOUT(int output)
 	{
-		Log.out("out: "+x);
+		int offset = 512;
+		int x = 0;
+		int y = 0;
+		for (int i=0;i<192;i++)
+		{
+			int address = i+offset;
+			byte pixel = ram.read(address);
+			
+			
+			
+			x++;
+		}
+		
+		Log.out("out: "+output);
 	}
 	
 	public void onEND(int x)
@@ -116,14 +132,16 @@ implements InstructionsJASM8, Monitor
 	@Override
 	public void onInit()
 	{
-		//window = new Window(640,480,"Display Playground JASM");
-		//window.setVisible(true);
+		window = new Window(640,480,"Display Playground JASM");
+		window.setVisible(true);
 	}
 	
 	@Override
 	public void onUpdate(double time)
 	{
 		for (int i=0; i<cycles; i++) cpu.cycle();
+		
+		
 	}
 	
 	@Override

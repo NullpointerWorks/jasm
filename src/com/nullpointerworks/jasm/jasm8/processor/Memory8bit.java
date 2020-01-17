@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.jasm8.parts;
+package com.nullpointerworks.jasm.jasm8.processor;
 
 import com.nullpointerworks.jasm.jasm8.Memory;
 

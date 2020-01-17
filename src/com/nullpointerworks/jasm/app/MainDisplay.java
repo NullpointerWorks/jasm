@@ -15,28 +15,28 @@ import com.nullpointerworks.jasm.jasm8.processor.InstructionsJASM8;
 import com.nullpointerworks.jasm.jasm8.processor.Memory8bit;
 import com.nullpointerworks.jasm.jasm8.processor.ProcessorJASM8;
 import com.nullpointerworks.jasm.loop.Process;
-
+import com.nullpointerworks.core.Window;
 import com.nullpointerworks.game.LoopAdapter;
 import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 
-public class MainPlayground
+public class MainDisplay
 extends LoopAdapter
 implements InstructionsJASM8, Monitor
 {
-	Process loop;
-	Memory rom; // read-only memory
-	Memory ram; // random access memory
-	Processor cpu; // assembly executor
-	
+	Memory rom;
+	Memory ram;
+	Processor cpu;
 	LogListener log;
-	byte[] program = null;
+	
+	Window window;
 	
 	int fps		= 10;
-	int cycles 	= fps * 100;  // ~ 1 kHz
+	int cycles 	= fps * 100;  // 1000 Hz
+	Process loop;
 	
-	public static void main(String[] args) {new MainPlayground(args);}
+	public static void main(String[] args) {new MainDisplay(args);}
 
 	/* 
 	 * 32 kiB = 1024 * 32 = 32768
@@ -46,16 +46,8 @@ implements InstructionsJASM8, Monitor
 	 * 16 bit = 2^16 = 65536 = 0xFFFF = 0b1111 1111 1111 1111
 	 * 64 kiB max
 	 * 
-	 * 
-	 * TODO error and information
-	 * 
-	 * notify about unused labels
-	 * error about unknown label jumps
-	 * error when detecting duplicate labels
-	 * error when two labels are defined in sequence
-	 * 
 	 */
-	public MainPlayground(String[] args)
+	public MainDisplay(String[] args)
 	{
 		/*
 		 * load text file
@@ -63,7 +55,7 @@ implements InstructionsJASM8, Monitor
 		TextFile tf = null;
 		try
 		{
-			tf = TextFileParser.file("V:\\Development\\Assembly\\workspace\\jasm\\playground.jasm");
+			tf = TextFileParser.file("V:\\Development\\Assembly\\workspace\\jasm\\video\\video.jasm");
 		} 
 		catch (FileNotFoundException e)
 		{
@@ -81,17 +73,24 @@ implements InstructionsJASM8, Monitor
 		 * compile into jasm8
 		 */
 		Compiler jasm8 = new CompilerJASM8();
-		jasm8.setParserVerbose(false);
-		jasm8.setPreprocessorVerbose(false);
-		jasm8.setCompilerVerbose(false);
-		jasm8.setIncludesPath("V:\\Development\\Assembly\\workspace\\jasm\\");
+		jasm8.setParserVerbose(true);
+		jasm8.setPreprocessorVerbose(true);
+		jasm8.setCompilerVerbose(true);
+		jasm8.setIncludesPath("V:\\Development\\Assembly\\workspace\\jasm\\video");
 		jasm8.setLogListener(log);
-		program = jasm8.parse(tf.getLines());
+		byte[] program = jasm8.parse(tf.getLines());
+
+		/*
+		 * setup virtual machine
+		 */
+		rom = new Memory8bit(   kiloByte ).load(program);
+		ram = new Memory8bit( 4*kiloByte );
+		cpu = new ProcessorJASM8(this, rom, ram);
 		
 		/*
 		 * save log
 		 */
-		//log.save("V:\\Development\\Assembly\\workspace\\jasm\\playground.log");
+		log.save("V:\\Development\\Assembly\\workspace\\jasm\\video\\video.log");
 		
 		/*
 		 * run program
@@ -102,15 +101,23 @@ implements InstructionsJASM8, Monitor
 	
 	// ==============================================================
 	
+	public void onOUT(int x)
+	{
+		Log.out("out: "+x);
+	}
+	
+	public void onEND(int x)
+	{
+		loop.stop();
+	}
+	
+	// ==============================================================
+	
 	@Override
 	public void onInit()
 	{
-		/*
-		 * setup virtual machine
-		 */
-		rom = new Memory8bit(   kiloByte ).load(program);
-		ram = new Memory8bit( 4*kiloByte );
-		cpu = new ProcessorJASM8(this,rom,ram);
+		//window = new Window(640,480,"Display Playground JASM");
+		//window.setVisible(true);
 	}
 	
 	@Override
@@ -124,16 +131,4 @@ implements InstructionsJASM8, Monitor
 	
 	@Override
 	public void onDispose() { }
-	
-	// ==============================================================
-	
-	public void onOUT(int x)
-	{
-		Log.out("out: "+x);
-	}
-	
-	public void onEND(int x)
-	{
-		loop.stop();
-	}
 }

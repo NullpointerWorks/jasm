@@ -1,6 +1,6 @@
 package com.nullpointerworks.jasm.jasm8.compiler;
 
-import com.nullpointerworks.jasm.jasm8.parts.InstructionsJASM8;
+import com.nullpointerworks.jasm.jasm8.processor.InstructionsJASM8;
 
 public class DraftJASM8 implements InstructionsJASM8
 {

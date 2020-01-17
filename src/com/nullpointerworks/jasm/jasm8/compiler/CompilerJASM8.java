@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import com.nullpointerworks.jasm.jasm8.Compiler;
 import com.nullpointerworks.jasm.jasm8.LogListener;
@@ -18,6 +16,8 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
 
 public class CompilerJASM8 implements Compiler
 {
+	public static final String version = "v1.3 alpha";
+	
 	private CompileError flag_error = CompileError.NO_ERROR;
 	private boolean verbose_parser = false;
 	private boolean verbose_preproc = false;
@@ -29,6 +29,7 @@ public class CompilerJASM8 implements Compiler
 	 * text to machine language utility
 	 */
 	private Map<String, Integer> labels = null;
+	private List<String> unused = null;
 	private List<String> code = null;
 	private List<String> includes = null;
 	private List<DraftJASM8> draft = null;
@@ -129,6 +130,9 @@ public class CompilerJASM8 implements Compiler
 		if (labels!=null) labels.clear();
 		labels = new HashMap<String, Integer>();
 		
+		if (unused!=null) unused.clear();
+		unused = new ArrayList<String>();
+		
 		if (draft!=null) draft.clear();
 		draft = new ArrayList<DraftJASM8>();
 		
@@ -150,7 +154,7 @@ public class CompilerJASM8 implements Compiler
 		"  _  | | / _ \\ \\___ \\ | |\\/| |  / _ \\ \r\n" + 
 		" | |_| // ___ \\____) || |  | | | (_) |\r\n" + 
 		"  \\___//_/   \\______/ |_|  |_|  \\___/ \n");
-		log.println(" compiler v1.1 alpha\n");
+		log.println(" compiler "+version+"\n");
 		
 		/*
 		 * code parsing
@@ -169,7 +173,7 @@ public class CompilerJASM8 implements Compiler
 			{
 				if (verbose_parser)
 				{
-					log.println("\n include: "+inc+"\n");
+					log.println("\n include: "+inc+":\n");
 				}
 				String[] lines = loadCode(includePath+inc);
 				if (lines!=null) parseCode(lines);
@@ -397,10 +401,12 @@ public class CompilerJASM8 implements Compiler
 				
 				if (verbose_preproc)
 				{
-					strLeng = label.length() + 2;
-					if (strLeng > 16) strLeng = 16;
+					int leng = label.length() + 2;
+					strLeng = (leng > strLeng)?leng:strLeng;
+					if (strLeng > 24) strLeng = 24;
 				}
 				
+				unused.add(label);
 				labels.put(label, rom_index);
 				continue;
 			}
@@ -423,7 +429,7 @@ public class CompilerJASM8 implements Compiler
 		 */
 		if (verbose_preproc)
 		{
-			log.println(" Addressing used labels\n");
+			log.println(" Addressing used labels:\n");
 		}
 		for (DraftJASM8 d : labeled)
 		{
@@ -437,18 +443,16 @@ public class CompilerJASM8 implements Compiler
 			}
 			
 			d.setLabelAddress(addr);
-			labels.remove(label);
+			unused.remove(label);
 		}
 		
 		// unused labels
 		if (verbose_preproc)
 		{
-			log.println("\n Unused labels\n");
-			Set<Entry<String, Integer>> leftover = labels.entrySet();
-			for (Entry<String, Integer> entry : leftover)
+			log.println("\n Unused labels:\n");
+			for (String label : unused)
 			{
-				String fill = StringUtil.fill(entry.getKey(), " ", 15);
-				log.println(" "+fill );
+				log.println(" "+label);
 			}
 		}
 	}

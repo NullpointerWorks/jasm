@@ -1,6 +1,7 @@
 package com.nullpointerworks.jasm.jasm8.compiler;
 
-import com.nullpointerworks.jasm.jasm8.parts.InstructionsJASM8;
+import com.nullpointerworks.jasm.jasm8.processor.InstructionsJASM8;
+
 import com.nullpointerworks.util.StringUtil;
 
 public class DraftBuilderJASM8 
@@ -109,6 +110,7 @@ implements InstructionsJASM8
 		
 		if ( isAddr16(target) )
 		{
+			target = target.substring(1);
 			byte[] machine_code = null;
 			short addr16 = getImm16(target);
 			byte H = (byte)(addr16>>8);
@@ -257,6 +259,7 @@ implements InstructionsJASM8
 			
 			if ( isAddr16(source) )
 			{
+				source = source.substring(1);
 				byte dir = compileDirective(reg,M);
 				short addr16 = getImm16(source);
 				byte H = (byte)(addr16>>8);
@@ -431,48 +434,34 @@ implements InstructionsJASM8
 
 	private byte getImm8(String value)
 	{
-		int val = 0;
-		
-		if (StringUtil.isHexadec(value))
-		{
-			value = value.replace("0x", "");
-			val = Integer.parseInt(value, 16);
-		}
-		else
-		if (StringUtil.isInteger(value))
-		{
-			val = Integer.parseInt(value);
-		}
-		else
-		{
-			return -1; // error
-		}
-		
+		int val = _get_value(value);
 		byte imm8 = (byte)( val&0xff );
 		return imm8;
 	}
 	
 	private short getImm16(String value)
 	{
-		int val = 0;
-		
+		int val = _get_value(value);
+		short imm16 = (short)( val&0xffff );
+		return imm16;
+	}
+	
+	private int _get_value(String value)
+	{
 		if (StringUtil.isHexadec(value))
 		{
-			value = value.replace("0x", "");
-			val = Integer.parseInt(value, 16);
+			value = value.substring(2);
+			return Integer.parseInt(value, 16);
 		}
 		else
 		if (StringUtil.isInteger(value))
 		{
-			val = Integer.parseInt(value);
+			return Integer.parseInt(value);
 		}
 		else
 		{
 			return -1; // error
 		}
-		
-		short imm16 = (short)( val&0xffff );
-		return imm16;
 	}
 	
 	/*

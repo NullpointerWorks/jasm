@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.jasm8.parts;
+package com.nullpointerworks.jasm.jasm8.processor;
 
 import com.nullpointerworks.jasm.jasm8.Memory;
 import com.nullpointerworks.jasm.jasm8.Monitor;
@@ -126,14 +126,14 @@ implements Processor, InstructionsJASM8
     	case SP: sp = _alu16(sp, (short)1, false); return;
     	case RX: 
     		{
-    			short rx = this._to16(regXH, regXL);
+    			short rx = _to16(regXH, regXL);
     			rx = _alu16(rx, (short)1, false);
     			_set_reg16(RX,rx);
     			return;
     		}
     	case RY: 
     		{
-    			short ry = this._to16(regYH, regYL);
+    			short ry = _to16(regYH, regYL);
     			ry = _alu16(ry, (short)1, false);
     			_set_reg16(RY,ry);
     			return;
@@ -378,7 +378,7 @@ implements Processor, InstructionsJASM8
     		
     		if ( L == I )
     		{
-    			short adds = _fetch();
+    			short adds = (short) (_fetch()&0xff);
     			_alu16(regV16, adds, true);
     			return;
     		}
@@ -657,7 +657,8 @@ implements Processor, InstructionsJASM8
     		return;
     	}
     	
-    	short operant16 = (short)((operant << 8) + _fetch());
+    	byte operantL = _fetch();
+    	short operant16 = _to16(operant, operantL);
     	
     	// loading immediate 16-bit
     	if ( L == IL )
@@ -673,20 +674,23 @@ implements Processor, InstructionsJASM8
     	}
     	
     	// else, load from ram
+    	if ( L == M )
+    	{
+        	// 16 bit address from RAM to register
+        	switch(directive)
+    		{
+    		case RAM: regA = ram.read(operant16); return;
+    		case RBM: regB = ram.read(operant16); return;
+    		case RCM: regC = ram.read(operant16); return;
+    		case RDM: regD = ram.read(operant16); return;
+    		case XHM: regXH = ram.read(operant16); return;
+    		case XLM: regXL = ram.read(operant16); return;
+    		case YHM: regYH = ram.read(operant16); return;
+    		case YLM: regYL = ram.read(operant16); return;
+    		default: break;
+    		}
+    	}
     	
-    	// 16 bit address from RAM to register
-    	switch(directive)
-		{
-		case RAM: regA = ram.read(operant16); return;
-		case RBM: regB = ram.read(operant16); return;
-		case RCM: regC = ram.read(operant16); return;
-		case RDM: regD = ram.read(operant16); return;
-		case XHM: regXH = ram.read(operant16); return;
-		case XLM: regXL = ram.read(operant16); return;
-		case YHM: regYH = ram.read(operant16); return;
-		case YLM: regYL = ram.read(operant16); return;
-		default: break;
-		}
 	}
     
     /*
@@ -883,13 +887,15 @@ implements Processor, InstructionsJASM8
     
     private final short _fetch16()
     {
-    	byte addrs8 = _fetch();
-    	short addrs16 = (short)((addrs8 << 8) + _fetch());
-    	return addrs16;
+    	byte h = _fetch();
+    	byte l = _fetch();
+    	return _to16(h,l);
     }
     
     private final short _to16(byte h, byte l)
     {
-    	return (short)( (h<<8)+l );
+    	short sh = (short) (h&0xff);
+    	short sl = (short) (l&0xff);
+    	return (short)( (short)(sh<<8) + sl );
     }
 }

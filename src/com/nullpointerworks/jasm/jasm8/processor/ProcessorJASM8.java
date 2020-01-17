@@ -310,7 +310,7 @@ implements Processor, InstructionsJASM8
         	return;
     	}
     	
-    	switch(directive)
+    	switch(L)
     	{
     	case RA: ram.write(addrs16, regA); return;
     	case RB: ram.write(addrs16, regB); return;

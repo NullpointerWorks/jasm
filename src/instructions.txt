@@ -229,7 +229,6 @@ storage
 syntax:
 	sto &[addr16],[reg8]
 	sto &[addr16],[imm8]
-	
 	sto [reg16],[reg8]
 	sto [reg16],[imm8]
 	

@@ -16,6 +16,8 @@ import com.nullpointerworks.jasm.jasm8.processor.Memory8bit;
 import com.nullpointerworks.jasm.jasm8.processor.ProcessorJASM8;
 import com.nullpointerworks.jasm.loop.Process;
 
+import com.nullpointerworks.color.ColorFormat;
+import com.nullpointerworks.color.Colorizer;
 import com.nullpointerworks.core.Window;
 import com.nullpointerworks.core.buffer.IntBuffer;
 import com.nullpointerworks.game.LoopAdapter;
@@ -34,6 +36,10 @@ implements InstructionsJASM8, Monitor
 	
 	Window window;
 	IntBuffer screen;
+	Colorizer rgb = Colorizer.getColorizer(ColorFormat.RGB);
+	final int WHITE = rgb.toInt(255,255,255);
+	final int DGREY = rgb.toInt(50,50,50);
+	final int BLACK = rgb.toInt(0,0,0);
 	
 	int fps		= 10;
 	int cycles 	= fps * 100;  // 1000 Hz
@@ -106,20 +112,42 @@ implements InstructionsJASM8, Monitor
 	
 	public void onOUT(int output)
 	{
-		int offset = 512;
 		int x = 0;
 		int y = 0;
-		for (int i=0;i<192;i++)
+		for (int i=0;i<768;i++)
 		{
-			int address = i+offset;
-			byte pixel = ram.read(address);
+			int address = i+512;
+			int pixel = ram.read(address)&0xff;
 			
-			
+			if (pixel > 0)
+			{
+				rect10(x*10,y*10,WHITE);
+			}
+			else
+			{
+				rect10(x*10,y*10,BLACK);
+			}
 			
 			x++;
+			if (x>31) 
+			{ y++; x=0; }
 		}
 		
-		Log.out("out: "+output);
+		Log.out("refresh");
+		window.swap(screen.content());
+	}
+	
+	private void rect10(int x, int y, int col)
+	{
+		int sx = 0;
+		int sy = 0;
+		for (int i=0;i<100;i++)
+		{
+			screen.plot(sx+x, sy+y, col);
+			sx++;
+			if (sx>9) 
+			{ sy++; sx=0; }
+		}
 	}
 	
 	public void onEND(int x)
@@ -132,6 +160,7 @@ implements InstructionsJASM8, Monitor
 	@Override
 	public void onInit()
 	{
+		screen = new IntBuffer(640,480);
 		window = new Window(640,480,"Display Playground JASM");
 		window.setVisible(true);
 	}
@@ -140,8 +169,6 @@ implements InstructionsJASM8, Monitor
 	public void onUpdate(double time)
 	{
 		for (int i=0; i<cycles; i++) cpu.cycle();
-		
-		
 	}
 	
 	@Override

@@ -135,12 +135,11 @@ implements InstructionsJASM8
 		{
 			byte regH = getRegister(target);
 			
-			byte[] machine_code = null;
 			if ( isReg8(source) )
 			{
 				byte regL = getRegister(source);
 				byte dir = compileDirective(regH,regL);
-				machine_code = new byte[] {STO, dir};
+				byte[] machine_code = new byte[] {STO, dir};
 				return new DraftJASM8(index, machine_code);
 			}
 			
@@ -148,7 +147,7 @@ implements InstructionsJASM8
 			{
 				byte imm8 = getImm8(source);
 				byte dir = compileDirective(regH,I);
-				machine_code = new byte[] {STO, dir, imm8};
+				byte[] machine_code = new byte[] {STO, dir, imm8};
 				return new DraftJASM8(index, machine_code);
 			}
 		}

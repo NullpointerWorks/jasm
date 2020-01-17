@@ -73,23 +73,15 @@ implements Processor, InstructionsJASM8
     	{
     	case NOP: return;
     	
-    	case ADD: _add(false); return;
-    	case SUB: _add(true); return;
-    	case CMP: _cmp(); return;
     	case NEG: _neg(); return;
     	case INC: _inc(); return;
     	case DEC: _dec(); return;
-    	
     	case PUSH: _push(); return;
     	case POP: _pop(); return;
-    	
     	case STO: _sto(); return;
-    	
-    	
-    	
-    	
-    	
-    	
+    	case ADD: _add(false); return;
+    	case SUB: _add(true); return;
+    	case CMP: _cmp(); return;
     	case END: _end(); return;
     	case LOAD: _load(); return;
     	case OUT: _out(); return;
@@ -110,6 +102,9 @@ implements Processor, InstructionsJASM8
     // 
     // ====================================================================
     
+    /*
+     * updated
+     */
     private final void _inc()
 	{
     	byte directive = _fetch();
@@ -124,8 +119,31 @@ implements Processor, InstructionsJASM8
     	case YH: regYH = _alu(regYH,(byte)1,false); return;
     	case YL: regYL = _alu(regYL,(byte)1,false); return;
     	}
+    	
+    	switch(directive)
+    	{
+    	case IP: ip = _alu16(ip, (short)1, false); return;
+    	case SP: sp = _alu16(sp, (short)1, false); return;
+    	case RX: 
+    		{
+    			short rx = this._to16(regXH, regXL);
+    			rx = _alu16(rx, (short)1, false);
+    			_set_reg16(RX,rx);
+    			return;
+    		}
+    	case RY: 
+    		{
+    			short ry = this._to16(regYH, regYL);
+    			ry = _alu16(ry, (short)1, false);
+    			_set_reg16(RY,ry);
+    			return;
+    		}
+    	}
 	}
     
+    /*
+     * updated
+     */
     private final void _dec()
 	{
     	byte directive = _fetch();
@@ -140,8 +158,32 @@ implements Processor, InstructionsJASM8
     	case YH: regYH = _alu(regYH,(byte)1,true); return;
     	case YL: regYL = _alu(regYL,(byte)1,true); return;
     	}
+    	
+    	switch(directive)
+    	{
+    	case IP: ip = _alu16(ip, (short)1, true); return;
+    	case SP: sp = _alu16(sp, (short)1, true); return;
+    	case RX: 
+    		{
+    			short rx = this._to16(regXH, regXL);
+    			rx = _alu16(rx, (short)1, true);
+    			_set_reg16(RX,rx);
+    			return;
+    		}
+    	case RY: 
+    		{
+    			short ry = this._to16(regYH, regYL);
+    			ry = _alu16(ry, (short)1, true);
+    			_set_reg16(RY,ry);
+    			return;
+    		}
+    	}
+    	
 	}
     
+    /*
+     * updated
+     */
     private final void _push()
 	{
     	byte directive = _fetch();
@@ -168,8 +210,8 @@ implements Processor, InstructionsJASM8
     			ram.write(sp, ipH);
     			sp--;
     			ram.write(sp, ipL);
+        		return;
     		}
-    		return;
     	case SP:
 			{
 				byte ipH = (byte)((sp>>8)&0xff);
@@ -177,8 +219,23 @@ implements Processor, InstructionsJASM8
 				ram.write(sp, ipH);
 				sp--;
 				ram.write(sp, ipL);
+	    		return;
 			}
-			return;
+    	case RX:
+	    	{
+	    		ram.write(sp, regXH);
+    			sp--;
+    			ram.write(sp, regXL);
+	    		return;
+	    	}
+	    	
+    	case RY:
+	    	{
+	    		ram.write(sp, regYH);
+    			sp--;
+    			ram.write(sp, regYL);
+	    		return;
+	    	}
     	}
     	
     	// write 8 bits
@@ -194,6 +251,9 @@ implements Processor, InstructionsJASM8
     	}
 	}
     
+    /*
+     * updated
+     */
     private final void _pop()
 	{
     	byte directive = _fetch();
@@ -219,9 +279,14 @@ implements Processor, InstructionsJASM8
     	{
     	case IP: ip = pointer; return;
     	case SP: sp = pointer; return;
+    	case RX: _set_reg16(RX, pointer); return;
+    	case RY: _set_reg16(RY, pointer); return;
     	}
 	}
     
+    /*
+     * updated
+     */
     private final void _sto()
 	{
     	byte directive 	= _fetch();
@@ -244,6 +309,9 @@ implements Processor, InstructionsJASM8
     	ram.write(addrs16, immediate);
 	}
     
+    /*
+     * updated
+     */
     private final void _neg()
 	{
     	byte directive = _fetch();
@@ -253,49 +321,82 @@ implements Processor, InstructionsJASM8
 		case RB: regB = _neg(regB); break;
 		case RC: regC = _neg(regC); break;
 		case RD: regD = _neg(regD); break;
+		
+		case RX: regXL = _neg(regXL);
 		case XH: regXH = _neg(regXH); break;
 		case XL: regXL = _neg(regXL); break;
+		
+		case RY: regYL = _neg(regYL);
 		case YH: regYH = _neg(regYH); break;
 		case YL: regYL = _neg(regYL); break;
+		
+		case IP: ip = _neg16(ip); break;
+		case SP: sp = _neg16(sp); break;
     	}
 	}
     
+    /*
+     * updated
+     */
     private final void _cmp()
 	{
     	byte directive = _fetch();
+    	byte H = (byte)((directive>>4)&0x0f);
+    	byte L = (byte)(directive&0x0f);
     	
-    	// 8 bit register to register
-    	switch(directive)
-		{
-    	case RBA: _alu(regB, regA, true); return;
-    	case RCA: _alu(regC, regA, true); return;
-    	case RDA: _alu(regD, regA, true); return;
+    	if ( _is_register8(H) )
+    	{
+    		byte regH8 = _register_value8(H);
+    		
+    		if ( _is_register8(L) )
+        	{
+    			byte regL8 = _register_value8(L);
+    			_alu(regH8, regL8, true);
+    			return;
+        	}
+    		
+    		if ( L == I )
+    		{
+    			byte adds = _fetch();
+    			_alu(regH8, adds, true);
+    			return;
+    		}
+    		
+    		return;
+    	}
     	
-    	case RAB: _alu(regA, regB, true); return;
-    	case RCB: _alu(regC, regB, true); return;
-    	case RDB: _alu(regD, regB, true); return;
-    	
-    	case RAC: _alu(regA, regC, true); return;
-    	case RBC: _alu(regB, regC, true); return;
-    	case RDC: _alu(regD, regC, true); return;
-    	
-    	case RAD: _alu(regA, regD, true); return;
-    	case RBD: _alu(regB, regD, true); return;
-    	case RCD: _alu(regC, regD, true); return;
-		}
-    	
-    	byte operant = _fetch();
-    	
-    	// 8 bit immediate to register
-    	switch(directive)
-		{
-    	case RAI: _alu(regA, operant, true); return;
-    	case RBI: _alu(regB, operant, true); return;
-    	case RCI: _alu(regC, operant, true); return;
-    	case RDI: _alu(regD, operant, true); return;
-		}
+    	if ( _is_register16(H) )
+    	{
+    		short regV16 = _register_value16(H);
+    		
+    		if ( _is_register(L) )
+        	{
+    			short regVxx = _register_value(L);
+    			_alu16(regV16, regVxx, true);
+    			return;
+        	}
+    		
+    		if ( L == I )
+    		{
+    			short adds = _fetch();
+    			_alu16(regV16, adds, true);
+    			return;
+    		}
+    		
+    		if ( L == IL )
+    		{
+    			short adds = _fetch16();
+    			_alu16(regV16, adds, true);
+    			return;
+    		}
+    		
+    		return;
+    	}
 	}
     
+    /*
+     * updated
+     */
     private final void _add(boolean sub)
 	{
     	byte directive = _fetch();
@@ -340,28 +441,23 @@ implements Processor, InstructionsJASM8
     		
     		if ( L == I )
     		{
-    			
-    			
-    			
-    			
+    			short adds = _fetch();
+    			short res = _alu16(regV16, adds, sub);
+    			_set_reg16(H, res);
     			return;
     		}
     		
     		if ( L == IL )
     		{
-    			
-    			
-    			
-    			
+    			short adds = _fetch16();
+    			short res = _alu16(regV16, adds, sub);
+    			_set_reg16(H, res);
     			return;
     		}
     		
     		return;
     	}
 	}
-    
-    
-    
     
     /*
      * updated
@@ -742,6 +838,7 @@ implements Processor, InstructionsJASM8
  		}
  	}
  	
+ 	
  	private final byte _alu(byte a, byte b, boolean sub)
 	{
         b = sub ? _neg(b) : b;
@@ -753,6 +850,7 @@ implements Processor, InstructionsJASM8
         OF = CF ^ SF;
         return sum;
     }
+ 	
  	
  	private final short _alu16(short a, short b, boolean sub)
 	{

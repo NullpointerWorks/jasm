@@ -68,19 +68,21 @@ byte:
 	JMP, (byte), (byte)
 
 ========================================
-jump if equal 
+jump if equal, or jump if zero
 
 syntax:
 	je [label]
+	jz [label]
 
 byte:
 	JE, (byte), (byte)
 
 ========================================
-jump if not equal 
+jump if not equal, or jump if not zero
 
 syntax:
 	jne [label]	
+	jnz [label]	
 
 byte:
 	JNE, (byte), (byte)
@@ -174,11 +176,6 @@ byte:
 	SUB, RI, (byte)
 	SUB, RIL, (byte), (byte)
 
-
-
-
-
-
 ========================================
 compare 
 
@@ -195,14 +192,6 @@ byte:
 	CMP, RR
 	CMP, RI, (byte)
 	CMP, RIL, (byte), (byte)
-
-
-
-
-
-
-
-
 
 ========================================
 negation 
@@ -234,18 +223,6 @@ syntax:
 byte:
 	DEC, R
 
-
-
-
-
-
-
-
-
-
-
-
-
 ========================================
 storage 
 
@@ -254,29 +231,8 @@ syntax:
 	sto &[addr16],[imm8]
 	
 byte:
-	STO, Rx, (byte), (byte)
+	STO, R, (byte), (byte)
 	STO, I, (byte), (byte), (byte)
-
-
-
-
-
-
-
-
-========================================
-push to stack 
-
-syntax:
-	push [reg8]
-	push [reg16]
-	push [imm8]
-	push &[addr16]
-
-byte:
-	PUSH, Rx
-	PUSH, I, (byte)
-	PUSH, M, (byte), (byte)
 
 ========================================
 pop from stack 
@@ -286,5 +242,19 @@ syntax:
 	pop [reg16]
 
 byte:
-	POP, Rx
+	POP, R
+
+========================================
+push to stack 
+
+syntax:
+	push [reg8]
+	push [reg16]
+	push [imm8]
+	push [imm16]
+
+byte:
+	PUSH, R
+	PUSH, I, (byte)
+	PUSH, IL, (byte), (byte)
 

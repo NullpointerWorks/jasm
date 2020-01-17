@@ -1,8 +1,6 @@
 package com.nullpointerworks.jasm.jasm8.compiler;
 
 import com.nullpointerworks.jasm.jasm8.parts.InstructionsJASM8;
-
-import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.StringUtil;
 
 public class DraftBuilderJASM8 
@@ -31,11 +29,15 @@ implements InstructionsJASM8
 		if (instruct.equals("nop")) return inst.nop(index, operands);
 		if (instruct.equals("end")) return inst.end(index, operands);
 		if (instruct.equals("out")) return inst.out(index, operands);
+		if (instruct.equals("ret")) return inst.ret(index, operands);
 		
 		/*
 		 * memory operations
 		 */
 		if (instruct.equals("load")) return inst.load(index, operands);
+		if (instruct.equals("sto")) return inst.sto(index, operands);
+		if (instruct.equals("push")) return inst.push(index, operands);
+		if (instruct.equals("pop")) return inst.latch(index, operands, POP);
 		
 		/*
 		 * ALU operations
@@ -43,13 +45,18 @@ implements InstructionsJASM8
 		if (instruct.equals("add")) return inst.alu(index, operands, ADD);
 		if (instruct.equals("sub")) return inst.alu(index, operands, SUB);
 		if (instruct.equals("cmp")) return inst.alu(index, operands, CMP);
+		if (instruct.equals("neg")) return inst.latch(index, operands, NEG);
+		if (instruct.equals("inc")) return inst.latch(index, operands, INC);
+		if (instruct.equals("dec")) return inst.latch(index, operands, DEC);
 		
 		/*
 		 * label jumps
 		 */
 		if (instruct.equals("call")) return inst.jmp(index, operands, CALL);
 		if (instruct.equals("jmp")) return inst.jmp(index, operands, JMP);
+		if (instruct.equals("jz")) return inst.jmp(index, operands, JE); // duplicate for convenience
 		if (instruct.equals("je")) return inst.jmp(index, operands, JE);
+		if (instruct.equals("jnz")) return inst.jmp(index, operands, JNE); // duplicate for convenience
 		if (instruct.equals("jne")) return inst.jmp(index, operands, JNE);
 		if (instruct.equals("jl")) return inst.jmp(index, operands, JL);
 		if (instruct.equals("jle")) return inst.jmp(index, operands, JLE);
@@ -58,15 +65,88 @@ implements InstructionsJASM8
 		
 		return null;
 	}
-
-	private DraftJASM8 temp(int index, String operands)
+	
+	// ==================================================================
+	// PUSH
+	// ==================================================================
+	
+	private DraftJASM8 push(int index, String operands)
 	{
+		if ( isRegister(operands) )
+		{
+			return latch(index, operands, PUSH);
+		}
+		
+		if ( isImm8(operands) )
+		{
+			byte dir = getImm8(operands);
+			byte[] mc = new byte[] {PUSH, I, dir};
+			return new DraftJASM8(index, mc);
+		}
+		
+		if ( isImm16(operands) )
+		{
+			short imm16 = getImm16(operands);
+			byte H = (byte)(imm16>>8);
+			byte L = (byte)(imm16);
+			byte[] mc = new byte[] {PUSH, IL, H, L};
+			return new DraftJASM8(index, mc);
+		}
+		
 		return null; // generic error
 	}
 	
+	// ==================================================================
+	// STO
+	// ==================================================================
 	
+	private DraftJASM8 sto(int index, String operands)
+	{
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) return null; // error
+		String target = tokens[0];
+		String source = tokens[1];
+		
+		if ( isAddr16(target) )
+		{
+			byte[] machine_code = null;
+			short addr16 = getImm16(target);
+			byte H = (byte)(addr16>>8);
+			byte L = (byte)(addr16);
+			
+			if ( isReg8(source) )
+			{
+				byte reg8 = getReg8(source);
+				machine_code = new byte[] {STO, reg8, H, L};
+				return new DraftJASM8(index, machine_code);
+			}
+			
+			if ( isImm8(source) )
+			{
+				byte imm8 = getImm8(source);
+				machine_code = new byte[] {STO, I, H, L, imm8};
+				return new DraftJASM8(index, machine_code);
+			}
+		}
+		
+		return null; // generic error
+	}
 	
-
+	// ==================================================================
+	// NEG INC DEC POP
+	// ==================================================================
+	
+	private DraftJASM8 latch(int index, String operands, byte opcode)
+	{
+		if ( isRegister(operands) )
+		{
+			byte reg = getRegister(operands);
+			byte[] mc = new byte[] {opcode, reg};
+			return new DraftJASM8(index, mc);
+		}
+		return null;
+	}
+	
 	// ==================================================================
 	// ADD SUB CMP
 	// ==================================================================
@@ -178,7 +258,7 @@ implements InstructionsJASM8
 			if ( isAddr16(source) )
 			{
 				byte dir = compileDirective(reg,M);
-				short addr16 = getAddr16(source);
+				short addr16 = getImm16(source);
 				byte H = (byte)(addr16>>8);
 				byte L = (byte)(addr16);
 				machine_code = new byte[] {LOAD, dir, H, L};
@@ -324,32 +404,12 @@ implements InstructionsJASM8
 		case "xl": return XL;
 		case "yh": return YH;
 		case "yl": return YL;
-		case "ip": return SP;
+		case "ip": return IP;
 		case "sp": return SP;
 		case "x": return RX;
 		case "y": return RY;
 		}
 		return -1;
-	}
-	
-	private boolean isRegister(String reg)
-	{
-		switch(reg)
-		{
-		case "a":
-		case "b":
-		case "c":
-		case "d":
-		case "xh":
-		case "xl":
-		case "yh":
-		case "yl":
-		case "ip":
-		case "sp":
-		case "x":
-		case "y": return true;
-		}
-		return false;
 	}
 	
 	private byte getReg8(String reg1)
@@ -365,19 +425,6 @@ implements InstructionsJASM8
 		case "xl": r1 = XL; break;
 		case "yh": r1 = YH; break;
 		case "yl": r1 = YL; break;
-		}
-		return r1;
-	}
-	
-	private byte getReg16(String reg1)
-	{
-		byte r1 = 0;
-		switch(reg1)
-		{
-		case "ip": r1 = IP; break;
-		case "sp": r1 = SP; break;
-		case "x": r1 = RX; break;
-		case "y": r1 = RY; break;
 		}
 		return r1;
 	}
@@ -428,57 +475,27 @@ implements InstructionsJASM8
 		return imm16;
 	}
 	
-	private short getAddr16(String value)
-	{
-		value = value.replace("&", "");
-		
-		int val = 0;
-		
-		if (StringUtil.isHexadec(value))
-		{
-			value = value.replace("0x", "");
-			val = Integer.parseInt(value, 16);
-		}
-		else
-		if (StringUtil.isInteger(value))
-		{
-			val = Integer.parseInt(value);
-		}
-		else
-		{
-			return -1; // error
-		}
-		
-		short imm16 = (short)( val&0xffff );
-		return imm16;
-	}
-	
 	/*
 	 * ===========================================================
 	 */
-
-	private boolean isImm8(String imm)
-	{
-		if (StringUtil.isInteger(imm) || StringUtil.isHexadec(imm)) 
-		{
-			short v = getImm16(imm);
-			if (v < 256) return true;
-		}
-		return false;
-	}
 	
-	private boolean isImm16(String imm)
+	private boolean isRegister(String reg)
 	{
-		if (StringUtil.isInteger(imm) || StringUtil.isHexadec(imm))
+		switch(reg)
 		{
-			return true;
+		case "a":
+		case "b":
+		case "c":
+		case "d":
+		case "xh":
+		case "xl":
+		case "yh":
+		case "yl":
+		case "ip":
+		case "sp":
+		case "x":
+		case "y": return true;
 		}
-		return false;
-	}
-	
-	private boolean isAddr16(String addr)
-	{
-		if (addr.startsWith("&")) return true;
 		return false;
 	}
 	
@@ -509,6 +526,31 @@ implements InstructionsJASM8
 		case "x":
 		case "y": return true;
 		}
+		return false;
+	}
+	
+	private boolean isImm8(String imm)
+	{
+		if (StringUtil.isInteger(imm) || StringUtil.isHexadec(imm)) 
+		{
+			short v = getImm16(imm);
+			if (v < 256) return true;
+		}
+		return false;
+	}
+	
+	private boolean isImm16(String imm)
+	{
+		if (StringUtil.isInteger(imm) || StringUtil.isHexadec(imm))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean isAddr16(String addr)
+	{
+		if (addr.startsWith("&")) return true;
 		return false;
 	}
 }

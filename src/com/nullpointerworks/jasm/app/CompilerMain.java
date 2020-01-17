@@ -5,8 +5,8 @@ import java.io.IOException;
 
 import com.nullpointerworks.jasm.jasm8.Compiler;
 import com.nullpointerworks.jasm.jasm8.compiler.CompilerJASM8;
+
 import com.nullpointerworks.util.FileUtil;
-import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.concurrency.Threading;
 import com.nullpointerworks.util.file.bytefile.ByteFileParser;
 import com.nullpointerworks.util.file.textfile.TextFile;
@@ -38,6 +38,9 @@ public class CompilerMain
 	 */
 	public CompilerMain(String[] args)
 	{
+		/*
+		 * make compiler batch
+		 */
 		if (args.length == 0)
 		{
 			TextFile tf = new TextFile();
@@ -58,15 +61,15 @@ public class CompilerMain
 			return;
 		}
 		
-		Log.out("------------------------------");
-		Log.out(" JASM8 compiler v1.1 alpha");
-		Log.out("------------------------------");
-		
 		Threading.sleep(100);
+		
+		/*
+		 * start compiling
+		 */
 		
 		for (String file : args)
 		{
-			// verbose
+			// enable verbose
 			if (file.startsWith("-v"))
 			{
 				if (file.contains("r")) parserVerbose = true;
@@ -75,7 +78,7 @@ public class CompilerMain
 				continue;
 			}
 			
-			// logging
+			// enable logging
 			if (file.startsWith("-l"))
 			{
 				

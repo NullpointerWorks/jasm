@@ -9,7 +9,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import com.nullpointerworks.jasm.jasm8.Compiler;
-import com.nullpointerworks.util.Log;
+import com.nullpointerworks.jasm.jasm8.LogListener;
+
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.concurrency.Threading;
 import com.nullpointerworks.util.file.textfile.TextFile;
@@ -22,6 +23,7 @@ public class CompilerJASM8 implements Compiler
 	private boolean verbose_preproc = false;
 	private boolean verbose_compiler = false;
 	private String includePath = "";
+	private LogListener log;
 	
 	/*
 	 * text to machine language utility
@@ -73,7 +75,17 @@ public class CompilerJASM8 implements Compiler
 		verbose_compiler = verbose;
 		return this;
 	}
-
+	
+	/**
+	 * 
+	 */
+	@Override
+	public Compiler setLogListener(LogListener logging)
+	{
+		log = logging;
+		return this;
+	}
+	
 	@Override
 	public Compiler setIncludesPath(String path)
 	{
@@ -95,6 +107,14 @@ public class CompilerJASM8 implements Compiler
 	@Override
 	public Compiler reset()
 	{
+		log = new LogListener()
+		{
+			@Override public void print(String msg) { }
+			@Override public void println(String msg) { }
+			@Override public void error(String msg) { }
+			@Override public void save(String path) { }
+		};
+		
 		flag_error = CompileError.NO_ERROR;
 		strLeng = 2;
 		rom_index = 0;
@@ -124,21 +144,21 @@ public class CompilerJASM8 implements Compiler
 	@Override
 	public byte[] parse(String[] text)
 	{
-		Log.out(
+		log.println(
 		"      _    _    _________  __    ___  \r\n" + 
 		"     | |  / \\  / _____   \\/  |  ( _ ) \r\n" + 
 		"  _  | | / _ \\ \\___ \\ | |\\/| |  / _ \\ \r\n" + 
 		" | |_| // ___ \\____) || |  | | | (_) |\r\n" + 
 		"  \\___//_/   \\______/ |_|  |_|  \\___/ \n");
-		Log.out(" compiler v1.1 alpha\n");
+		log.println(" compiler v1.1 alpha\n");
 		
 		/*
 		 * code parsing
 		 */
 		if (verbose_parser)
 		{
-			Log.out("--------------------------------------");
-			Log.out("\n ### parsing ###\n");
+			log.println("--------------------------------------");
+			log.println("\n ### parsing ###\n");
 		}
 		
 		parseCode(text);
@@ -149,7 +169,7 @@ public class CompilerJASM8 implements Compiler
 			{
 				if (verbose_parser)
 				{
-					Log.out("\n include: "+inc+"\n");
+					log.println("\n include: "+inc+"\n");
 				}
 				String[] lines = loadCode(includePath+inc);
 				if (lines!=null) parseCode(lines);
@@ -160,8 +180,8 @@ public class CompilerJASM8 implements Compiler
 		
 		if (verbose_parser)
 		{
-			Log.out("\n parsing done\n");
-			Log.out("--------------------------------------");
+			log.println("\n parsing done\n");
+			log.println("--------------------------------------");
 		}
 		
 		/*
@@ -169,16 +189,16 @@ public class CompilerJASM8 implements Compiler
 		 */
 		if (verbose_preproc)
 		{
-			Log.out("--------------------------------------");
-			Log.out("\n ### Pre-processor ###\n");
+			log.println("--------------------------------------");
+			log.println("\n ### Pre-processor ###\n");
 		}
 		
 		preprocessor(code);
 		
 		if (verbose_preproc)
 		{
-			Log.out("\n pre-processing done\n");
-			Log.out("--------------------------------------");
+			log.println("\n pre-processing done\n");
+			log.println("--------------------------------------");
 		}
 		
 		/*
@@ -186,18 +206,18 @@ public class CompilerJASM8 implements Compiler
 		 */
 		if (verbose_compiler)
 		{
-			Log.out("--------------------------------------");
-			Log.out("\n ### Compiling ### \n");
+			log.println("--------------------------------------");
+			log.println("\n ### Compiling ### \n");
 		}
 		
 		compileDraft(draft);
 		
-		if (!verbose_compiler) Log.out("--------------------------------------");
-		Log.out("\n compiling successful\n");
-		Log.out(" external files  : "+includes.size());
-		Log.out(" instructions    : "+draft.size());
-		Log.out(" program size    : "+rom_index+" bytes");
-		Log.out("\n--------------------------------------\n");
+		if (!verbose_compiler) log.println("--------------------------------------");
+		log.println("\n compiling successful\n");
+		log.println(" external files  : "+includes.size());
+		log.println(" instructions    : "+draft.size());
+		log.println(" program size    : "+rom_index+" bytes");
+		log.println("\n--------------------------------------\n");
 		return machine_code;
 	}
 	
@@ -210,7 +230,7 @@ public class CompilerJASM8 implements Compiler
 		} 
 		catch (FileNotFoundException e)
 		{
-			Log.err(inc+" (The system cannot find the file specified)");
+			log.error(inc+" (The system cannot find the file specified)");
 			return null;
 		}
 		if (tf == null) return null;
@@ -306,19 +326,19 @@ public class CompilerJASM8 implements Compiler
 			if (verbose_parser)
 			{
 				String linemarker = fillFromBack(""+line," ",strLeng)+"| "+l;
-				Log.out(linemarker);
+				log.println(linemarker);
 			}
-			else Log.out(l);
+			else log.println(l);
 			
 			Threading.sleep(1);
-			Log.err("error on line: "+line+". "+flag_error.getDescription());
+			log.error("line: "+line+". "+flag_error.getDescription());
 			return;
 		}
 		
 		if (verbose_parser) 
 		{
 			String linemarker = fillFromBack(""+line," ",strLeng)+"| "+l;
-			Log.out(linemarker);
+			log.println(linemarker);
 		}
 		
 		code.add(l);
@@ -394,7 +414,7 @@ public class CompilerJASM8 implements Compiler
 			}
 			else
 			{
-				Log.err(" error >> "+line); // TODO
+				log.error(line); // TODO
 			}
 		}
 		
@@ -403,7 +423,7 @@ public class CompilerJASM8 implements Compiler
 		 */
 		if (verbose_preproc)
 		{
-			Log.out(" Addressing used labels\n");
+			log.println(" Addressing used labels\n");
 		}
 		for (DraftJASM8 d : labeled)
 		{
@@ -413,7 +433,7 @@ public class CompilerJASM8 implements Compiler
 			if (verbose_preproc)
 			{
 				String fill = StringUtil.fill(label, " ", strLeng);
-				Log.out(" "+fill+" 0x"+String.format("%04X", addr) );
+				log.println(" "+fill+" 0x"+String.format("%04X", addr) );
 			}
 			
 			d.setLabelAddress(addr);
@@ -423,12 +443,12 @@ public class CompilerJASM8 implements Compiler
 		// unused labels
 		if (verbose_preproc)
 		{
-			Log.out("\n Unused labels\n");
+			log.println("\n Unused labels\n");
 			Set<Entry<String, Integer>> leftover = labels.entrySet();
 			for (Entry<String, Integer> entry : leftover)
 			{
 				String fill = StringUtil.fill(entry.getKey(), " ", 15);
-				Log.out(" "+fill );
+				log.println(" "+fill );
 			}
 		}
 	}
@@ -463,15 +483,15 @@ public class CompilerJASM8 implements Compiler
 			int count = 0;
 			for (byte b : machine_code)
 			{
-				System.out.print(String.format("%02X ", b)+" ");
+				log.print(String.format("%02X ", b)+" ");
 				count++;
 				if (count > 7)
 				{
-					System.out.print("\n");
+					log.print("\n");
 					count=0;
 				}
 			}
-			System.out.print("\n");
+			log.print("\n");
 		}
 	}
 }

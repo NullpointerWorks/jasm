@@ -4,21 +4,24 @@ import static com.nullpointerworks.jasm.jasm8.Memory.*;
 
 import java.io.FileNotFoundException;
 
-import com.nullpointerworks.game.LoopAdapter;
 import com.nullpointerworks.jasm.jasm8.Compiler;
+import com.nullpointerworks.jasm.jasm8.LogListener;
 import com.nullpointerworks.jasm.jasm8.Memory;
 import com.nullpointerworks.jasm.jasm8.Monitor;
 import com.nullpointerworks.jasm.jasm8.Processor;
 import com.nullpointerworks.jasm.jasm8.compiler.CompilerJASM8;
+import com.nullpointerworks.jasm.jasm8.compiler.GenericLog;
 import com.nullpointerworks.jasm.jasm8.parts.InstructionsJASM8;
 import com.nullpointerworks.jasm.jasm8.parts.Memory8bit;
 import com.nullpointerworks.jasm.jasm8.parts.ProcessorJASM8;
 import com.nullpointerworks.jasm.loop.Process;
+
+import com.nullpointerworks.game.LoopAdapter;
 import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 
-public class PlaygroundMain
+public class MainPlayground
 extends LoopAdapter
 implements InstructionsJASM8, Monitor
 {
@@ -27,12 +30,13 @@ implements InstructionsJASM8, Monitor
 	Memory ram; // random access memory
 	Processor cpu; // assembly executor
 	
+	LogListener log;
 	byte[] program = null;
 	
 	int fps		= 10;
 	int cycles 	= fps * 100;  // ~ 1 kHz
 	
-	public static void main(String[] args) {new PlaygroundMain(args);}
+	public static void main(String[] args) {new MainPlayground(args);}
 
 	/* 
 	 * 32 kiB = 1024 * 32 = 32768
@@ -51,7 +55,7 @@ implements InstructionsJASM8, Monitor
 	 * error when two labels are defined in sequence
 	 * 
 	 */
-	public PlaygroundMain(String[] args)
+	public MainPlayground(String[] args)
 	{
 		/*
 		 * load text file
@@ -59,7 +63,7 @@ implements InstructionsJASM8, Monitor
 		TextFile tf = null;
 		try
 		{
-			tf = TextFileParser.file("D:\\Development\\Assembly\\workspace\\jasm\\playground.jasm");
+			tf = TextFileParser.file("V:\\Development\\Assembly\\workspace\\jasm\\playground.jasm");
 		} 
 		catch (FileNotFoundException e)
 		{
@@ -69,14 +73,25 @@ implements InstructionsJASM8, Monitor
 		if (tf == null) return;
 		
 		/*
+		 * make log
+		 */
+		log = new GenericLog();
+		
+		/*
 		 * compile into jasm8
 		 */
 		Compiler jasm8 = new CompilerJASM8();
 		jasm8.setParserVerbose(false);
-		jasm8.setPreprocessorVerbose(false);
-		jasm8.setCompilerVerbose(false);
-		jasm8.setIncludesPath("D:\\Development\\Assembly\\workspace\\jasm\\");
+		jasm8.setPreprocessorVerbose(true);
+		jasm8.setCompilerVerbose(true);
+		jasm8.setIncludesPath("V:\\Development\\Assembly\\workspace\\jasm\\");
+		jasm8.setLogListener(log);
 		program = jasm8.parse(tf.getLines());
+		
+		/*
+		 * save log
+		 */
+		log.save("V:\\Development\\Assembly\\workspace\\jasm\\playground.log");
 		
 		/*
 		 * run program

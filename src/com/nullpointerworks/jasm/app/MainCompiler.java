@@ -4,7 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import com.nullpointerworks.jasm.jasm8.Compiler;
+import com.nullpointerworks.jasm.jasm8.LogListener;
 import com.nullpointerworks.jasm.jasm8.compiler.CompilerJASM8;
+import com.nullpointerworks.jasm.jasm8.compiler.GenericLog;
 
 import com.nullpointerworks.util.FileUtil;
 import com.nullpointerworks.util.concurrency.Threading;
@@ -12,31 +14,33 @@ import com.nullpointerworks.util.file.bytefile.ByteFileParser;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 
-public class CompilerMain
+/*
+ * java -jar "jasmc.jar" %1
+ * 
+ * optional markers
+ * 
+ * -v = verbose
+ * r = parser
+ * p = preprocessor
+ * c = compiler
+ * 
+ * -l = enable log
+ * 
+ * 
+ * java -jar "jasmc.jar" -vrpc %1
+ * 
+ */
+public class MainCompiler
 {
-	public static void main(String[] args) {new CompilerMain(args);}
+	public static void main(String[] args) {new MainCompiler(args);}
 	
 	private boolean parserVerbose = false;
 	private boolean preprocessorVerbose = false;
 	private boolean compilerVerbose = false;
+	private boolean enableLogging = false;
+	private LogListener log;
 	
-	/*
-	 * java -jar "jasmc.jar" %1
-	 * 
-	 * optional markers
-	 * 
-	 * -v = verbose
-	 * r = parser
-	 * p = preprocessor
-	 * c = compiler
-	 * 
-	 * 
-	 * 
-	 * 
-	 * java -jar "jasmc.jar" -vrpc %1
-	 * 
-	 */
-	public CompilerMain(String[] args)
+	public MainCompiler(String[] args)
 	{
 		/*
 		 * make compiler batch
@@ -66,7 +70,6 @@ public class CompilerMain
 		/*
 		 * start compiling
 		 */
-		
 		for (String file : args)
 		{
 			// enable verbose
@@ -81,7 +84,8 @@ public class CompilerMain
 			// enable logging
 			if (file.startsWith("-l"))
 			{
-				
+				enableLogging = true;
+				continue;
 			}
 			
 			compile(file);
@@ -105,7 +109,10 @@ public class CompilerMain
 		}
 		if (tf == null) return;
 		
-		byte[] program = null;
+		/*
+		 * make log file
+		 */
+		log = new GenericLog();
 		
 		/*
 		 * compile into jasm8
@@ -114,10 +121,22 @@ public class CompilerMain
 		jasm8.setParserVerbose(parserVerbose);
 		jasm8.setPreprocessorVerbose(preprocessorVerbose);
 		jasm8.setCompilerVerbose(compilerVerbose);
-		program = jasm8.parse(tf.getLines());
+		jasm8.setLogListener(log);
+		byte[] program = jasm8.parse(tf.getLines());
+		
+		/*
+		 * save log
+		 */
+		if (enableLogging)
+		{
+			log.save( FileUtil.swapExtension(file, "log") );
+		}
 		
 		if (program == null) return;
 		
+		/*
+		 * save output
+		 */
 		try
 		{
 			ByteFileParser.write( FileUtil.swapExtension(file, "bin") , program);

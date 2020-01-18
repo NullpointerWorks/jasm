@@ -16,7 +16,7 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
 
 public class CompilerJASM8 implements Compiler
 {
-	public static final String version = "v1.3 alpha";
+	public static final String version = "v1.4 alpha";
 	
 	private CompileError flag_error = CompileError.NO_ERROR;
 	private boolean verbose_parser = false;
@@ -368,7 +368,7 @@ public class CompilerJASM8 implements Compiler
 	 * pre-processor
 	 * 
 	 * responsibility:
-	 * handles directives
+	 * handles declarations
 	 * turns labels into addresses
 	 * drafts machine instructions
 	 * 
@@ -380,7 +380,7 @@ public class CompilerJASM8 implements Compiler
 		if (verbose_preproc) strLeng = 2;
 		
 		/*
-		 * track directives and labels
+		 * track declaration and labels
 		 * process instructions
 		 */
 		for (int i=0,l=code.size(); i<l; i++)
@@ -389,7 +389,7 @@ public class CompilerJASM8 implements Compiler
 			if (line.startsWith("."))
 			{
 				
-				// TODO resolve .equ directives etc
+				// TODO resolve .equ declaration etc
 				
 				continue;
 			}
@@ -429,7 +429,7 @@ public class CompilerJASM8 implements Compiler
 		 */
 		if (verbose_preproc)
 		{
-			log.println(" Addressing used labels:\n");
+			log.println(" Addressed labels:\n");
 		}
 		for (DraftJASM8 d : labeled)
 		{

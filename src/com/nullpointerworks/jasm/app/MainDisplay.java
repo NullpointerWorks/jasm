@@ -29,21 +29,21 @@ public class MainDisplay
 extends LoopAdapter
 implements InstructionsJASM8, Monitor
 {
-	Memory rom;
-	Memory ram;
-	Processor cpu;
-	LogListener log;
+	private Memory rom;
+	private Memory ram;
+	private Processor cpu;
+	private LogListener log;
 	
-	Window window;
-	IntBuffer screen;
-	Colorizer rgb = Colorizer.getColorizer(ColorFormat.RGB);
+	private Window window;
+	private IntBuffer screen;
+	private Colorizer rgb = Colorizer.getColorizer(ColorFormat.RGB);
 	final int WHITE = rgb.toInt(255,255,255);
 	final int DGREY = rgb.toInt(50,50,50);
 	final int BLACK = rgb.toInt(0,0,0);
 	
-	int fps		= 10;
-	int cycles 	= fps * 100;  // 1000 Hz
-	Process loop;
+	private int fps		= 10;
+	private int cycles 	= fps * 100;  // 1000 Hz
+	private Process loop;
 	
 	public static void main(String[] args) {new MainDisplay(args);}
 
@@ -82,7 +82,7 @@ implements InstructionsJASM8, Monitor
 		 * compile into jasm8
 		 */
 		Compiler jasm8 = new CompilerJASM8();
-		jasm8.setParserVerbose(true);
+		jasm8.setParserVerbose(false);
 		jasm8.setPreprocessorVerbose(true);
 		jasm8.setCompilerVerbose(true);
 		jasm8.setIncludesPath("V:\\Development\\Assembly\\workspace\\jasm\\video");
@@ -99,7 +99,7 @@ implements InstructionsJASM8, Monitor
 		/*
 		 * save log
 		 */
-		log.save("V:\\Development\\Assembly\\workspace\\jasm\\video\\video.log");
+		//log.save("V:\\Development\\Assembly\\workspace\\jasm\\video\\video.log");
 		
 		/*
 		 * run program
@@ -121,11 +121,11 @@ implements InstructionsJASM8, Monitor
 			
 			if (pixel > 0)
 			{
-				rect10(x*10,y*10,WHITE);
+				rect20(x,y,WHITE);
 			}
 			else
 			{
-				rect10(x*10,y*10,BLACK);
+				rect20(x,y,BLACK);
 			}
 			
 			x++;
@@ -139,6 +139,8 @@ implements InstructionsJASM8, Monitor
 	
 	private void rect10(int x, int y, int col)
 	{
+		x*=10;
+		y*=10;
 		int sx = 0;
 		int sy = 0;
 		for (int i=0;i<100;i++)
@@ -146,6 +148,21 @@ implements InstructionsJASM8, Monitor
 			screen.plot(sx+x, sy+y, col);
 			sx++;
 			if (sx>9) 
+			{ sy++; sx=0; }
+		}
+	}
+	
+	private void rect20(int x, int y, int col)
+	{
+		x*=20;
+		y*=20;
+		int sx = 0;
+		int sy = 0;
+		for (int i=0;i<400;i++)
+		{
+			screen.plot(sx+x, sy+y, col);
+			sx++;
+			if (sx>19) 
 			{ sy++; sx=0; }
 		}
 	}

@@ -72,7 +72,6 @@ implements Processor, InstructionsJASM8
     	switch(inst)
     	{
     	case NOP: return;
-    	
     	case NEG: _neg(); return;
     	case INC: _inc(); return;
     	case DEC: _dec(); return;
@@ -89,7 +88,7 @@ implements Processor, InstructionsJASM8
     	case CALL: _call(); return;
     	case JMP: _jmp(); return;
     	case JE: _je(); return; // JZ
-    	case JNE: _jne(); return;
+    	case JNE: _jne(); return; // JNZ
     	case JL: _jl(); return;
     	case JLE: _jle(); return;
     	case JG: _jg(); return;

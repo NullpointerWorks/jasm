@@ -80,7 +80,7 @@ public class MainCompiler
 			tf.addLine("@java -jar \"jasm.jar\" %file%.bin\r\n");
 			tf.addLine("@pause\r\n");
 			try {TextFileParser.write("compile_and_run.bat", tf);} 
-			catch (IOException e){e.printStackTrace();}
+			catch (IOException e) {e.printStackTrace();}
 			
 			return;
 		}

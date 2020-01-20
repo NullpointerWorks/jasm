@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.nullpointerworks.jasm.jasm8.Compiler;
 import com.nullpointerworks.jasm.jasm8.LogListener;
-
+import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.concurrency.Threading;
 import com.nullpointerworks.util.file.textfile.TextFile;
@@ -41,6 +43,7 @@ public class CompilerJASM8 implements Compiler
 	 */
 	private int strLeng = 2;
 	private int rom_index = 0;
+	private final Pattern quotefind = Pattern.compile("\"[\\S\\s]+\"");
 	
 	public CompilerJASM8()
 	{
@@ -318,7 +321,13 @@ public class CompilerJASM8 implements Compiler
 		 */
 		if (l.startsWith(".inc "))
 		{
-			includes.add(l.substring(5));
+			String include = l.substring(5);
+			if (include.startsWith("\""))
+			if (include.endsWith("\"")) 
+			{
+				include = include.replace("\"", "");
+				includes.add(include);
+			}
 			return;
 		}
 		

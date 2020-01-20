@@ -142,6 +142,26 @@ byte:
 	RET
 
 ========================================
+bit-shift left
+
+syntax:
+	shl [reg8]
+	shl [reg16]
+
+byte:
+	SHL R
+
+========================================
+bit-shift right
+
+syntax:
+	shr [reg8]
+	shr [reg16]
+
+byte:
+	SHR R
+
+========================================
 addition
 
 syntax:
@@ -262,3 +282,13 @@ byte:
 	PUSH, I, (byte)
 	PUSH, IL, (byte), (byte)
 
+========================================
+get register bit value
+
+syntax:
+	bit [reg8],[imm8]
+	bit [reg16],[imm8]
+
+byte:
+	BIT, R, (byte)
+	

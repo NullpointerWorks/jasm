@@ -1,6 +1,6 @@
 module libnpw.jasm
 {
-	requires libnpw.game;
+	requires transitive libnpw.game;
 	requires libnpw.util;
 	requires libnpw.core;
 	requires libnpw.color;

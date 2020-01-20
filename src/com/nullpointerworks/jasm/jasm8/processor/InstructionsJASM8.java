@@ -27,7 +27,9 @@ public interface InstructionsJASM8
 	public static final byte JGE		= (byte)0b0001_0011;
 	public static final byte INC		= (byte)0b0001_0100;
 	public static final byte DEC		= (byte)0b0001_0101;
-	//public static final byte ADC		= (byte)0b0001_0110;
+	public static final byte SHL		= (byte)0b0001_0111;
+	public static final byte SHR		= (byte)0b0001_1000;
+	public static final byte BIT		= (byte)0b0001_1001;
 	
 	/*
 	 * directives

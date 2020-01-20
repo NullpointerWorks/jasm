@@ -49,6 +49,9 @@ implements InstructionsJASM8
 		if (instruct.equals("neg")) return inst.latch(index, operands, NEG);
 		if (instruct.equals("inc")) return inst.latch(index, operands, INC);
 		if (instruct.equals("dec")) return inst.latch(index, operands, DEC);
+		if (instruct.equals("shl")) return inst.latch(index, operands, SHL);
+		if (instruct.equals("shr")) return inst.latch(index, operands, SHR);
+		if (instruct.equals("bit")) return inst.bit(index, operands);
 		
 		/*
 		 * label jumps
@@ -65,6 +68,31 @@ implements InstructionsJASM8
 		if (instruct.equals("jge")) return inst.jmp(index, operands, JGE);
 		
 		return null;
+	}
+	
+	// ==================================================================
+	// BIT
+	// ==================================================================
+	
+	private DraftJASM8 bit(int index, String operands)
+	{
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) return null; // error
+		String target = tokens[0];
+		String source = tokens[1];
+		
+		if ( isRegister(target) )
+		{
+			byte reg = getRegister(target);
+			if ( isImm8(source) )
+			{
+				byte dir = getImm8(source);
+				byte[] mc = new byte[] {BIT, reg, dir};
+				return new DraftJASM8(index, mc);
+			}
+		}
+		
+		return null; // generic error
 	}
 	
 	// ==================================================================
@@ -108,7 +136,7 @@ implements InstructionsJASM8
 		String target = tokens[0];
 		String source = tokens[1];
 		
-		if ( isAddr16(target) )
+		if ( isAddress(target) )
 		{
 			target = target.substring(1);
 			byte[] machine_code = null;
@@ -156,7 +184,7 @@ implements InstructionsJASM8
 	}
 	
 	// ==================================================================
-	// NEG INC DEC POP
+	// NEG INC DEC POP SHL SHR
 	// ==================================================================
 	
 	private DraftJASM8 latch(int index, String operands, byte opcode)
@@ -278,7 +306,7 @@ implements InstructionsJASM8
 				return new DraftJASM8(index, machine_code);
 			}
 			
-			if ( isAddr16(source) )
+			if ( isAddress(source) )
 			{
 				source = source.substring(1);
 				byte dir = compileDirective(reg,M);
@@ -541,9 +569,15 @@ implements InstructionsJASM8
 		return false;
 	}
 	
-	private boolean isAddr16(String addr)
+	private boolean isAddress(String addr)
 	{
-		if (addr.startsWith("&")) return true;
-		return false;
+		return addr.startsWith("&");
+	}
+	
+	// TODO
+	@SuppressWarnings("unused")
+	private boolean isBinary(String bin)
+	{
+		return bin.startsWith("0b");
 	}
 }

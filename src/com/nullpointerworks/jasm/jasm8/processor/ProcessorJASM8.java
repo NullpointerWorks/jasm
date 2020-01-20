@@ -81,6 +81,9 @@ implements Processor, InstructionsJASM8
     	case ADD: _add(false); return;
     	case SUB: _add(true); return;
     	case CMP: _cmp(); return;
+    	case SHL: _shl(); return;
+    	case SHR: _shr(); return;
+    	case BIT: _bit(); return;
     	case END: _end(); return;
     	case LOAD: _load(); return;
     	case OUT: _out(); return;
@@ -100,6 +103,118 @@ implements Processor, InstructionsJASM8
     // ====================================================================
     // 
     // ====================================================================
+    
+    private final void _bit()
+	{
+    	byte directive = _fetch();
+    	byte bitnumber = _fetch();
+    	byte bmask = _byte_mask(bitnumber);
+    	short smask = _short_mask(bitnumber);
+    	
+    	switch(directive)
+    	{
+    	case RA: regA = (byte)(regA&bmask); return;
+    	case RB: regB = (byte)(regB&bmask); return;
+    	case RC: regC = (byte)(regC&bmask); return;
+    	case RD: regD = (byte)(regD&bmask); return;
+    	case XH: regXH = (byte)(regXH&bmask); return;
+    	case XL: regXL = (byte)(regXL&bmask); return;
+    	case YH: regYH = (byte)(regYH&bmask); return;
+    	case YL: regYL = (byte)(regYL&bmask); return;
+    	}
+    	
+    	switch(directive)
+    	{
+    	case IP: ip = (byte)(ip&smask); return;
+    	case SP: sp = (byte)(sp&smask); return;
+    	case RX: 
+    		{
+    			short rx = _to16(regXH, regXL);
+    			rx = (byte)(rx&smask);
+    			_set_reg16(RX,rx);
+    			return;
+    		}
+    	case RY: 
+    		{
+    			short ry = _to16(regYH, regYL);
+    			ry = (byte)(ry&smask);
+    			_set_reg16(RY,ry);
+    			return;
+    		}
+    	}
+	}
+
+    private final void _shl()
+	{
+    	byte directive = _fetch();
+    	switch(directive)
+    	{
+    	case RA: regA = (byte)(regA<<1); return;
+    	case RB: regB = (byte)(regB<<1); return;
+    	case RC: regC = (byte)(regC<<1); return;
+    	case RD: regD = (byte)(regD<<1); return;
+    	case XH: regXH = (byte)(regXH<<1); return;
+    	case XL: regXL = (byte)(regXL<<1); return;
+    	case YH: regYH = (byte)(regYH<<1); return;
+    	case YL: regYL = (byte)(regYL<<1); return;
+    	}
+    	
+    	switch(directive)
+    	{
+    	case IP: ip = (byte)(ip<<1); return;
+    	case SP: sp = (byte)(sp<<1); return;
+    	case RX: 
+    		{
+    			short rx = _to16(regXH, regXL);
+    			rx = (byte)(rx<<1);
+    			_set_reg16(RX,rx);
+    			return;
+    		}
+    	case RY: 
+    		{
+    			short ry = _to16(regYH, regYL);
+    			ry = (byte)(ry<<1);
+    			_set_reg16(RY,ry);
+    			return;
+    		}
+    	}
+	}
+    
+    private final void _shr()
+	{
+    	byte directive = _fetch();
+    	switch(directive)
+    	{
+    	case RA: regA = (byte)(regA>>1); return;
+    	case RB: regB = (byte)(regB>>1); return;
+    	case RC: regC = (byte)(regC>>1); return;
+    	case RD: regD = (byte)(regD>>1); return;
+    	case XH: regXH = (byte)(regXH>>1); return;
+    	case XL: regXL = (byte)(regXL>>1); return;
+    	case YH: regYH = (byte)(regYH>>1); return;
+    	case YL: regYL = (byte)(regYL>>1); return;
+    	}
+    	
+    	switch(directive)
+    	{
+    	case IP: ip = (byte)(ip>>1); return;
+    	case SP: sp = (byte)(sp>>1); return;
+    	case RX: 
+    		{
+    			short rx = _to16(regXH, regXL);
+    			rx = (byte)(rx>>1);
+    			_set_reg16(RX,rx);
+    			return;
+    		}
+    	case RY: 
+    		{
+    			short ry = _to16(regYH, regYL);
+    			ry = (byte)(ry>>1);
+    			_set_reg16(RY,ry);
+    			return;
+    		}
+    	}
+	}
     
     /*
      * updated
@@ -869,7 +984,6 @@ implements Processor, InstructionsJASM8
         return sum;
     }
  	
- 	
  	private final short _alu16(short a, short b, boolean sub)
 	{
         b = sub ? _neg16(b) : b;
@@ -911,5 +1025,15 @@ implements Processor, InstructionsJASM8
     	short sh = (short) (h&0xff);
     	short sl = (short) (l&0xff);
     	return (short)( (short)(sh<<8) + sl );
+    }
+    
+    private final byte _byte_mask(byte num)
+    {
+    	return (byte)(1<<(num-1));
+    }
+    
+    private final short _short_mask(short num)
+    {
+    	return (short)(1<<(num-1));
     }
 }

@@ -64,20 +64,23 @@ public class MainCompiler
 		 */
 		if (args.length == 0)
 		{
+			// bare compiler
 			TextFile tf = new TextFile();
 			tf.setEncoding("UTF-8");
-			
 			tf.addLine("@java -jar \"jasmc.jar\" %1\r\n");
 			tf.addLine("@pause\r\n");
+			try {TextFileParser.write("compile.bat", tf);} 
+			catch (IOException e){e.printStackTrace();}
 			
-			try
-			{
-				TextFileParser.write("compile.bat", tf);
-			} 
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
+			// compile and run
+			tf.clear();
+			tf.addLine("@java -jar \"jasmc.jar\" %1\r\n");
+			tf.addLine("@set \"file=%1\"\r\n");
+			tf.addLine("@set \"file=%file:.=\"^&REM #%\r\n");
+			tf.addLine("@java -jar \"jasm.jar\" %file%.bin\r\n");
+			tf.addLine("@pause\r\n");
+			try {TextFileParser.write("compile_and_run.bat", tf);} 
+			catch (IOException e){e.printStackTrace();}
 			
 			return;
 		}

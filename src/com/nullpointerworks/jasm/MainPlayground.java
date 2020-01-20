@@ -99,6 +99,7 @@ implements InstructionsJASM8, Monitor
 						//to ensure 16 Hz program updates, divide desired cycles by 16 ( >> 4 )
 						desCycles = desCycles >> 4;
 						cycles = fps * desCycles;
+						if (cycles<1)cycles=1;
 					}
 					else
 					{

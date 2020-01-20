@@ -740,7 +740,7 @@ implements Processor, InstructionsJASM8
 				output = operant&0xffff;
 				break;
 			}
-		default: return;
+		default: break;
 		}
 		
 		monitor.onOUT( output );

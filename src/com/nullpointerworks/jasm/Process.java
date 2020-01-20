@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.loop;
+package com.nullpointerworks.jasm;
 
 import com.nullpointerworks.game.LoopListener;
 

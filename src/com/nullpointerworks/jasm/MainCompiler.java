@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.app;
+package com.nullpointerworks.jasm;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,7 +39,24 @@ public class MainCompiler
 	private boolean compilerVerbose = false;
 	private boolean enableLogging = false;
 	private LogListener log;
-	
+
+	/* 
+	 * 32 kiB = 1024 * 32 = 32768
+	 * 64 kiB = 1024 * 64 = 65536
+	 * 
+	 * address range
+	 * 16 bit = 2^16 = 65536 = 0xFFFF = 0b1111 1111 1111 1111
+	 * 64 kiB max
+	 * 
+	 * 
+	 * TODO error and information
+	 * 
+	 * notify about unused labels
+	 * error about unknown label jumps
+	 * error when detecting duplicate labels
+	 * error when two labels are defined in sequence
+	 * 
+	 */
 	public MainCompiler(String[] args)
 	{
 		/*

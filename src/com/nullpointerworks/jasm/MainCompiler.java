@@ -17,17 +17,17 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
 /*
  * java -jar "jasmc.jar" %1
  * 
- * optional markers
+ * options
  * 
  * -v = verbose
  * r = parser
  * p = preprocessor
  * c = compiler
  * 
+ * example: java -jar "jasmc.jar" -vrpc %1
+ * 
  * -l = enable log
- * 
- * 
- * java -jar "jasmc.jar" -vrpc %1
+ * example: java -jar "jasmc.jar" -l -vrpc %1
  * 
  */
 public class MainCompiler
@@ -39,7 +39,7 @@ public class MainCompiler
 	private boolean compilerVerbose = false;
 	private boolean enableLogging = false;
 	private LogListener log;
-
+	
 	/* 
 	 * 32 kiB = 1024 * 32 = 32768
 	 * 64 kiB = 1024 * 64 = 65536
@@ -50,14 +50,19 @@ public class MainCompiler
 	 * 
 	 * 
 	 * TODO error and information
-	 * 
-	 * notify about unused labels
 	 * error about unknown label jumps
 	 * error when detecting duplicate labels
 	 * error when two labels are defined in sequence
 	 * 
 	 */
 	public MainCompiler(String[] args)
+	{
+		args = new String[] {"-vrpc",
+							 "D:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"};
+		startCompiler(args);
+	}
+	
+	private void startCompiler(String[] args)
 	{
 		/*
 		 * make compiler batch
@@ -121,13 +126,14 @@ public class MainCompiler
 		try
 		{
 			tf = TextFileParser.file(file);
-		} 
+		}
 		catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
 			return;
 		}
 		if (tf == null) return;
+		tf.setName(file);
 		
 		/*
 		 * make log file

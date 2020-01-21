@@ -1,7 +1,6 @@
 package com.nullpointerworks.jasm.jasm8.compiler;
 
 import com.nullpointerworks.jasm.jasm8.processor.InstructionsJASM8;
-
 import com.nullpointerworks.util.StringUtil;
 
 public class DraftBuilderJASM8 

@@ -5,14 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.nullpointerworks.jasm.jasm8.Compiler;
 import com.nullpointerworks.jasm.jasm8.LogListener;
-import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.StringUtil;
-import com.nullpointerworks.util.concurrency.Threading;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 
@@ -20,7 +16,6 @@ public class CompilerJASM8 implements Compiler
 {
 	public static final String version = "v1.5 alpha";
 	
-	private CompileError flag_error = CompileError.NO_ERROR;
 	private boolean verbose_parser = false;
 	private boolean verbose_preproc = false;
 	private boolean verbose_compiler = false;
@@ -32,7 +27,8 @@ public class CompilerJASM8 implements Compiler
 	 */
 	private Map<String, Integer> labels = null;
 	private List<String> unused = null;
-	private List<String> code = null;
+	private Map<String, String> equals = null;
+	private List<CodeLine> code = null;
 	private List<String> includes = null;
 	private List<DraftJASM8> draft = null;
 	private List<DraftJASM8> labeled = null;
@@ -43,11 +39,52 @@ public class CompilerJASM8 implements Compiler
 	 */
 	private int strLeng = 2;
 	private int rom_index = 0;
-	private final Pattern quotefind = Pattern.compile("\"[\\S\\s]+\"");
 	
 	public CompilerJASM8()
 	{
 		reset();
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public Compiler reset()
+	{
+		log = new LogListener()
+		{
+			@Override public void print(String msg) { }
+			@Override public void println(String msg) { }
+			@Override public void error(String msg) { }
+			@Override public void save(String path) { }
+		};
+		
+		strLeng = 2;
+		rom_index = 0;
+		machine_code = null;
+		
+		if (code!=null) code.clear();
+		code = new ArrayList<CodeLine>();
+		
+		if (includes!=null) includes.clear();
+		includes = new ArrayList<String>();
+		
+		if (labels!=null) labels.clear();
+		labels = new HashMap<String, Integer>();
+		
+		if (equals!=null) equals.clear();
+		equals = new HashMap<String, String>();
+		
+		if (unused!=null) unused.clear();
+		unused = new ArrayList<String>();
+		
+		if (draft!=null) draft.clear();
+		draft = new ArrayList<DraftJASM8>();
+		
+		if (labeled!=null) labeled.clear();
+		labeled = new ArrayList<DraftJASM8>();
+		
+		return this;
 	}
 	
 	/**
@@ -109,46 +146,6 @@ public class CompilerJASM8 implements Compiler
 	 * 
 	 */
 	@Override
-	public Compiler reset()
-	{
-		log = new LogListener()
-		{
-			@Override public void print(String msg) { }
-			@Override public void println(String msg) { }
-			@Override public void error(String msg) { }
-			@Override public void save(String path) { }
-		};
-		
-		flag_error = CompileError.NO_ERROR;
-		strLeng = 2;
-		rom_index = 0;
-		machine_code = null;
-		
-		if (code!=null) code.clear();
-		code = new ArrayList<String>();
-		
-		if (includes!=null) includes.clear();
-		includes = new ArrayList<String>();
-		
-		if (labels!=null) labels.clear();
-		labels = new HashMap<String, Integer>();
-		
-		if (unused!=null) unused.clear();
-		unused = new ArrayList<String>();
-		
-		if (draft!=null) draft.clear();
-		draft = new ArrayList<DraftJASM8>();
-		
-		if (labeled!=null) labeled.clear();
-		labeled = new ArrayList<DraftJASM8>();
-		
-		return this;
-	}
-	
-	/**
-	 * 
-	 */
-	@Override
 	public byte[] parse(String[] text)
 	{
 		log.println(
@@ -158,6 +155,7 @@ public class CompilerJASM8 implements Compiler
 		" | |_| // ___ \\____) || |  | | | (_) |\r\n" + 
 		"  \\___//_/   \\______/ |_|  |_|  \\___/ \n");
 		log.println(" compiler "+version+"\n");
+		var compile_results = CompileError.NO_ERROR;
 		
 		/*
 		 * code parsing
@@ -168,7 +166,12 @@ public class CompilerJASM8 implements Compiler
 			log.println("\n ### parsing ###\n");
 		}
 		
-		parseCode(text);
+		compile_results = parseCode(text);
+		if (compile_results != CompileError.NO_ERROR)
+		{
+			log.error(compile_results.getDescription());
+			return null;
+		}
 		
 		for (String inc : includes)
 		{
@@ -179,11 +182,17 @@ public class CompilerJASM8 implements Compiler
 					log.println("\n include: "+inc+":\n");
 				}
 				String[] lines = loadCode(includePath+inc);
-				if (lines!=null) parseCode(lines);
+				if (lines!=null) 
+				{
+					compile_results = parseCode(lines);
+					if (compile_results != CompileError.NO_ERROR) 
+					{
+						log.error(compile_results.getDescription());
+						return null;
+					}
+				}
 			}
 		}
-		
-		if (flag_error != CompileError.NO_ERROR) return null;
 		
 		if (verbose_parser)
 		{
@@ -200,7 +209,12 @@ public class CompilerJASM8 implements Compiler
 			log.println("\n ### Pre-processor ###\n");
 		}
 		
-		preprocessor(code);
+		compile_results = preprocessor(code);
+		if (compile_results != CompileError.NO_ERROR)
+		{
+			log.error(compile_results.getDescription());
+			return null;
+		}
 		
 		if (verbose_preproc)
 		{
@@ -217,7 +231,12 @@ public class CompilerJASM8 implements Compiler
 			log.println("\n ### Compiling ### \n");
 		}
 		
-		compileDraft(draft);
+		compile_results = compileDraft(draft);
+		if (compile_results != CompileError.NO_ERROR)
+		{
+			log.error(compile_results.getDescription());
+			return null;
+		}
 		
 		if (!verbose_compiler) log.println("--------------------------------------");
 		log.println("\n compiling successful\n");
@@ -254,67 +273,76 @@ public class CompilerJASM8 implements Compiler
 	 * 
 	 * ==================================================================
 	 */
-
-	private void parseCode(String[] text)
+	private CompileError parseCode(String[] text)
 	{
+		CompileError error;
 		int line = 0;
 		int totalLines = text.length;
 		strLeng = (""+totalLines).length() + 1;
 		
 		for (String l : text)
 		{
-			line++;
-			
+			error = CompileError.NO_ERROR;
 			l = l.replace("\t", " ");
 			l = l.replaceAll(" +", " ");
 			l = l.replace(", ", ",");
 			l = l.replace(" ,", ",");
 			l = l.trim();
+			line++;
 			
 			if (l.startsWith(";"))
 			{
-				continue;
+				continue; // skip comment
 			}
 			
-			if (l.contains(";"))
+			if (l.contains(";")) // skip everything after semicolon
 			{
 				l = l.split(";")[0];
 				l = l.trim();
 			}
 			
-			if (l.contains(":"))
+			if (l.contains(":")) // if label, split to (possibly) parse code after label
 			{
 				String t[] = l.split(":");
 				
 				if (!isValidLabel(t[0]))
-					flag_error = CompileError.BAD_LABEL_NAME;
+				{
+					// error, bad label
+				}
 				
 				if (t.length > 2)
 				{
 					if (t[1].contains(" "))
-						flag_error = CompileError.BAD_LABEL_LOCATION;
+					{
+						// error label has spaces
+					}
 				}
 				
-				processLine(line, t[0]+":");
+				error = parseLine(line, t[0]+":"); // parse label
 				
 				if (t.length == 2)
 				{
-					String i = t[1].trim();
-					processLine(line, i);
+					String i = t[1].trim(); // parse possibly code on the same line
+					error = parseLine(line, i);
 				}
 			}
 			else
 			{
-				processLine(line, l);
+				error = parseLine(line, l); // parse code
 			}
 			
-			if (flag_error != CompileError.NO_ERROR) return;
+			if (error != CompileError.NO_ERROR)
+			{
+				return error; // return the found error
+			}
 		}
+		
+		return CompileError.NO_ERROR;
 	}
 	
-	private void processLine(int line, String l)
+	private CompileError parseLine(int line, String l)
 	{
-		if (l.equalsIgnoreCase("")) return;
+		if (l.equalsIgnoreCase("")) return CompileError.NO_ERROR; // skip empty lines
 		
 		/*
 		 * include external code
@@ -322,39 +350,64 @@ public class CompilerJASM8 implements Compiler
 		if (l.startsWith(".inc "))
 		{
 			String include = l.substring(5);
-			if (include.startsWith("\""))
-			if (include.endsWith("\"")) 
+			if (include.startsWith("\"") && include.endsWith("\"")) 
 			{
 				include = include.replace("\"", "");
 				includes.add(include);
+				return CompileError.NO_ERROR;
 			}
-			return;
+			else
+			{
+				return CompileError.includeError(line, l); // error
+			}
+		}
+		
+		/*
+		 * store constant naming
+		 */
+		if (l.startsWith(".equ "))
+		{
+			String equates = l.substring(5);
+			String[] tokens = equates.split(" ");
+			if (tokens.length != 2)
+			{
+				return CompileError.equateError(line, l);
+			}
+			
+			String name = tokens[0];
+			if (!isValidLabel(name))
+			{
+				return CompileError.labelError(line, l);
+			}
+			
+			String value = tokens[1];
+			if (!isValidNumber(value))
+			{
+				return CompileError.numberError(line, l);
+			}
+			
+			equals.put(name, value);
 		}
 		
 		/*
 		 * parse line of code
 		 */
-		if (flag_error != CompileError.NO_ERROR)
-		{
-			if (verbose_parser)
-			{
-				String linemarker = fillFromBack(""+line," ",strLeng)+"| "+l;
-				log.println(linemarker);
-			}
-			else log.println(l);
-			
-			Threading.sleep(1);
-			log.error("line: "+line+". "+flag_error.getDescription());
-			return;
-		}
-		
 		if (verbose_parser) 
 		{
 			String linemarker = fillFromBack(""+line," ",strLeng)+"| "+l;
 			log.println(linemarker);
 		}
 		
-		code.add(l);
+		code.add( new CodeLine(line, l) );
+		return CompileError.NO_ERROR;
+	}
+	
+	private boolean isValidNumber(String number)
+	{
+		if (number.startsWith("&")) number = number.substring(1);
+		if (! StringUtil.isInteger(number)) return false;
+		if (! StringUtil.isHexadec(number)) return false;
+		return true;
 	}
 	
 	private boolean isValidLabel(String label)
@@ -384,7 +437,7 @@ public class CompilerJASM8 implements Compiler
 	 * ==================================================================
 	 */
 	
-	private void preprocessor(List<String> code)
+	private CompileError preprocessor(List<CodeLine> code)
 	{
 		if (verbose_preproc) strLeng = 2;
 		
@@ -394,43 +447,9 @@ public class CompilerJASM8 implements Compiler
 		 */
 		for (int i=0,l=code.size(); i<l; i++)
 		{
-			String line = code.get(i);
-			if (line.startsWith("."))
-			{
-				
-				// TODO resolve .equ declaration etc
-				
-				continue;
-			}
-			
-			// is a label
-			if (line.contains(":")) 
-			{
-				String label = line.substring(0,line.length()-1);
-				
-				if (verbose_preproc)
-				{
-					int leng = label.length() + 2;
-					strLeng = (leng > strLeng)?leng:strLeng;
-					if (strLeng > 24) strLeng = 24;
-				}
-				
-				unused.add(label);
-				labels.put(label, rom_index);
-				continue;
-			}
-			
-			var draft_inst = DraftBuilderJASM8.getDraft(rom_index, line);
-			if (draft_inst != null)
-			{
-				rom_index += draft_inst.machineCode().length;
-				if (draft_inst.hasLabel()) labeled.add(draft_inst);
-				draft.add(draft_inst);
-			}
-			else
-			{
-				log.error(line); // TODO
-			}
+			CodeLine line = code.get(i);
+			CompileError error = processLine(line.getLineNumber(), line.getLineCode());
+			if (error != CompileError.NO_ERROR) return error;
 		}
 		
 		/*
@@ -464,6 +483,43 @@ public class CompilerJASM8 implements Compiler
 				log.println(" "+label);
 			}
 		}
+		
+		return CompileError.NO_ERROR;
+	}
+	
+	private CompileError processLine(int num, String line) 
+	{
+		// is a label
+		if (line.contains(":")) 
+		{
+			String label = line.substring(0,line.length()-1);
+			
+			if (verbose_preproc)
+			{
+				int leng = label.length() + 2;
+				strLeng = (leng > strLeng)?leng:strLeng;
+				if (strLeng > 24) strLeng = 24;
+			}
+			
+			unused.add(label);
+			labels.put(label, rom_index);
+			return CompileError.NO_ERROR;
+		}
+		
+		// is instruction
+		var draft_inst = DraftBuilderJASM8.getDraft(rom_index, line);
+		if (draft_inst != null)
+		{
+			rom_index += draft_inst.machineCode().length;
+			if (draft_inst.hasLabel()) labeled.add(draft_inst);
+			draft.add(draft_inst);
+		}
+		else
+		{
+			return CompileError.lineError(num, line);
+		}
+		
+		return CompileError.NO_ERROR;
 	}
 	
 	/* ==================================================================
@@ -476,8 +532,8 @@ public class CompilerJASM8 implements Compiler
 	 * 
 	 * ==================================================================
 	 */
-	
-	private void compileDraft(List<DraftJASM8> draft)
+
+	private CompileError compileDraft(List<DraftJASM8> draft)
 	{
 		machine_code = new byte[rom_index];
 		int index = 0;
@@ -494,17 +550,23 @@ public class CompilerJASM8 implements Compiler
 		if (verbose_compiler)
 		{
 			int count = 0;
+			int leng = machine_code.length >> 4;
+			if (leng<2)leng=2;
+			
+			log.print(String.format("%0"+leng+"X | ", count));
 			for (byte b : machine_code)
 			{
-				log.print(String.format("%02X ", b)+" ");
+				log.print(String.format("%02X ", b));
 				count++;
-				if (count > 7)
+				if (count > 15)
 				{
-					log.print("\n");
+					log.print(String.format("%0"+leng+"X | ", count)+"\n");
 					count=0;
 				}
 			}
 			log.print("\n");
 		}
+		
+		return CompileError.NO_ERROR;
 	}
 }

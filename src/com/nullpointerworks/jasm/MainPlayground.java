@@ -48,7 +48,6 @@ implements InstructionsJASM8, Monitor
 		{
 			TextFile tf = new TextFile();
 			tf.setEncoding("UTF-8");
-			
 			tf.addLine("@java -jar \"jasm.jar\" %1\r\n");
 			tf.addLine("@pause\r\n");
 			
@@ -78,12 +77,9 @@ implements InstructionsJASM8, Monitor
 			 * example: 
 			 * -c10000
 			 * 
-			 * 
 			 * setting rom and ran size in bytes
 			 * -ram[int]
 			 * -rom[int]
-			 * 
-			 * 
 			 * example: 
 			 * -rom1024 -ram4096
 			 * 

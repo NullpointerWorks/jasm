@@ -35,8 +35,8 @@ public class GenericLog implements LogListener
 	@Override
 	public void error(String msg) 
 	{
-		if (tfLog!=null) tfLog.addLine(" error >> "+msg+"\n");
-		Log.err(" error >> "+msg);
+		if (tfLog!=null) tfLog.addLine(msg+"\n");
+		Log.err(msg);
 	}
 	
 	@Override

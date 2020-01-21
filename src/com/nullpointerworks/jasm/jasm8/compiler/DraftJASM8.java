@@ -6,26 +6,27 @@ public class DraftJASM8 implements InstructionsJASM8
 {
 	private boolean hasLabel = false;
 	private String label = "";
-	private int code_index = 0;
+	private ProgramCode codeline;
 	private byte[] machine_code;
-
-	public DraftJASM8(int index, byte[] microcode)
+	
+	public DraftJASM8(byte[] microcode)
 	{
-		code_index = index;
 		machine_code = microcode;
 	}
 	
-	public DraftJASM8(int index, byte[] microcode, String label)
+	public DraftJASM8(byte[] microcode, String label)
 	{
 		this.label=label;
 		hasLabel = true;
-		code_index = index;
 		machine_code = microcode;
 	}
 	
 	/*
 	 * ===========================================================
 	 */
+	
+	public final void setCodeLine(ProgramCode cl) {codeline = cl;}
+	public final ProgramCode getCodeLine() {return codeline;}
 
 	public final boolean hasLabel() {return hasLabel;}
 	public final String getLabel() {return label;}
@@ -38,7 +39,6 @@ public class DraftJASM8 implements InstructionsJASM8
 		machine_code[2]=L;
 	}
 	
-	public final int codeIndex() {return code_index;}
 	public final byte[] machineCode() {return machine_code;}
 	public final String machineCodeToString()
 	{

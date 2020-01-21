@@ -14,7 +14,7 @@ implements InstructionsJASM8
 	}
 	private DraftBuilderJASM8() { }
 
-	public static DraftJASM8 getDraft(int index, String instruction)
+	public static DraftJASM8 getDraft(String instruction)
 	{
 		instruction = instruction.toLowerCase();
 		String[] parts = instruction.split(" ");
@@ -26,45 +26,45 @@ implements InstructionsJASM8
 		/*
 		 * generic
 		 */
-		if (instruct.equals("nop")) return inst.nop(index, operands);
-		if (instruct.equals("end")) return inst.end(index, operands);
-		if (instruct.equals("out")) return inst.out(index, operands);
-		if (instruct.equals("ret")) return inst.ret(index, operands);
+		if (instruct.equals("nop")) return inst.comm(operands, NOP);
+		if (instruct.equals("end")) return inst.comm(operands, END);
+		if (instruct.equals("ret")) return inst.comm(operands, RET);
+		if (instruct.equals("out")) return inst.out(operands);
 		
 		/*
 		 * memory operations
 		 */
-		if (instruct.equals("load")) return inst.load(index, operands);
-		if (instruct.equals("sto")) return inst.sto(index, operands);
-		if (instruct.equals("push")) return inst.push(index, operands);
-		if (instruct.equals("pop")) return inst.latch(index, operands, POP);
+		if (instruct.equals("load")) return inst.load(operands);
+		if (instruct.equals("sto")) return inst.sto(operands);
+		if (instruct.equals("push")) return inst.push(operands);
+		if (instruct.equals("pop")) return inst.latch(operands, POP);
 		
 		/*
 		 * ALU operations
 		 */
-		if (instruct.equals("add")) return inst.alu(index, operands, ADD);
-		if (instruct.equals("sub")) return inst.alu(index, operands, SUB);
-		if (instruct.equals("cmp")) return inst.alu(index, operands, CMP);
-		if (instruct.equals("neg")) return inst.latch(index, operands, NEG);
-		if (instruct.equals("inc")) return inst.latch(index, operands, INC);
-		if (instruct.equals("dec")) return inst.latch(index, operands, DEC);
-		if (instruct.equals("shl")) return inst.latch(index, operands, SHL);
-		if (instruct.equals("shr")) return inst.latch(index, operands, SHR);
-		if (instruct.equals("bit")) return inst.bit(index, operands);
+		if (instruct.equals("add")) return inst.alu(operands, ADD);
+		if (instruct.equals("sub")) return inst.alu(operands, SUB);
+		if (instruct.equals("cmp")) return inst.alu(operands, CMP);
+		if (instruct.equals("neg")) return inst.latch(operands, NEG);
+		if (instruct.equals("inc")) return inst.latch(operands, INC);
+		if (instruct.equals("dec")) return inst.latch(operands, DEC);
+		if (instruct.equals("shl")) return inst.latch(operands, SHL);
+		if (instruct.equals("shr")) return inst.latch(operands, SHR);
+		if (instruct.equals("bit")) return inst.bit(operands);
 		
 		/*
 		 * label jumps
 		 */
-		if (instruct.equals("call")) return inst.jmp(index, operands, CALL);
-		if (instruct.equals("jmp")) return inst.jmp(index, operands, JMP);
-		if (instruct.equals("jz")) return inst.jmp(index, operands, JE); // duplicate for convenience
-		if (instruct.equals("je")) return inst.jmp(index, operands, JE);
-		if (instruct.equals("jnz")) return inst.jmp(index, operands, JNE); // duplicate for convenience
-		if (instruct.equals("jne")) return inst.jmp(index, operands, JNE);
-		if (instruct.equals("jl")) return inst.jmp(index, operands, JL);
-		if (instruct.equals("jle")) return inst.jmp(index, operands, JLE);
-		if (instruct.equals("jg")) return inst.jmp(index, operands, JG);
-		if (instruct.equals("jge")) return inst.jmp(index, operands, JGE);
+		if (instruct.equals("call")) return inst.jmp(operands, CALL);
+		if (instruct.equals("jmp")) return inst.jmp(operands, JMP);
+		if (instruct.equals("jz")) return inst.jmp(operands, JE); // duplicate for convenience
+		if (instruct.equals("je")) return inst.jmp(operands, JE);
+		if (instruct.equals("jnz")) return inst.jmp(operands, JNE); // duplicate for convenience
+		if (instruct.equals("jne")) return inst.jmp(operands, JNE);
+		if (instruct.equals("jl")) return inst.jmp(operands, JL);
+		if (instruct.equals("jle")) return inst.jmp(operands, JLE);
+		if (instruct.equals("jg")) return inst.jmp(operands, JG);
+		if (instruct.equals("jge")) return inst.jmp(operands, JGE);
 		
 		return null;
 	}
@@ -73,7 +73,7 @@ implements InstructionsJASM8
 	// BIT
 	// ==================================================================
 	
-	private DraftJASM8 bit(int index, String operands)
+	private DraftJASM8 bit(String operands)
 	{
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) return null; // error
@@ -87,7 +87,7 @@ implements InstructionsJASM8
 			{
 				byte dir = getImm8(source);
 				byte[] mc = new byte[] {BIT, reg, dir};
-				return new DraftJASM8(index, mc);
+				return new DraftJASM8(mc);
 			}
 		}
 		
@@ -98,18 +98,18 @@ implements InstructionsJASM8
 	// PUSH
 	// ==================================================================
 	
-	private DraftJASM8 push(int index, String operands)
+	private DraftJASM8 push(String operands)
 	{
 		if ( isRegister(operands) )
 		{
-			return latch(index, operands, PUSH);
+			return latch(operands, PUSH);
 		}
 		
 		if ( isImm8(operands) )
 		{
 			byte dir = getImm8(operands);
 			byte[] mc = new byte[] {PUSH, I, dir};
-			return new DraftJASM8(index, mc);
+			return new DraftJASM8(mc);
 		}
 		
 		if ( isImm16(operands) )
@@ -118,7 +118,7 @@ implements InstructionsJASM8
 			byte H = (byte)(imm16>>8);
 			byte L = (byte)(imm16);
 			byte[] mc = new byte[] {PUSH, IL, H, L};
-			return new DraftJASM8(index, mc);
+			return new DraftJASM8(mc);
 		}
 		
 		return null; // generic error
@@ -128,7 +128,7 @@ implements InstructionsJASM8
 	// STO
 	// ==================================================================
 	
-	private DraftJASM8 sto(int index, String operands)
+	private DraftJASM8 sto(String operands)
 	{
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) return null; // error
@@ -147,14 +147,14 @@ implements InstructionsJASM8
 			{
 				byte reg8 = getRegister(source);
 				machine_code = new byte[] {STO, reg8, H, L};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 			
 			if ( isImm8(source) )
 			{
 				byte imm8 = getImm8(source);
 				machine_code = new byte[] {STO, I, H, L, imm8};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 		}
 		
@@ -167,7 +167,7 @@ implements InstructionsJASM8
 				byte regL = getRegister(source);
 				byte dir = compileDirective(regH,regL);
 				byte[] machine_code = new byte[] {STO, dir};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 			
 			if ( isImm8(source) )
@@ -175,7 +175,7 @@ implements InstructionsJASM8
 				byte imm8 = getImm8(source);
 				byte dir = compileDirective(regH,I);
 				byte[] machine_code = new byte[] {STO, dir, imm8};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 		}
 		
@@ -186,13 +186,13 @@ implements InstructionsJASM8
 	// NEG INC DEC POP SHL SHR
 	// ==================================================================
 	
-	private DraftJASM8 latch(int index, String operands, byte opcode)
+	private DraftJASM8 latch(String operands, byte opcode)
 	{
 		if ( isRegister(operands) )
 		{
 			byte reg = getRegister(operands);
 			byte[] mc = new byte[] {opcode, reg};
-			return new DraftJASM8(index, mc);
+			return new DraftJASM8(mc);
 		}
 		return null;
 	}
@@ -201,7 +201,7 @@ implements InstructionsJASM8
 	// ADD SUB CMP
 	// ==================================================================
 	
-	private DraftJASM8 alu(int index, String operands, byte opcode)
+	private DraftJASM8 alu(String operands, byte opcode)
 	{
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) return null; // error
@@ -219,7 +219,7 @@ implements InstructionsJASM8
 				byte rS = getRegister(source);
 				byte dir = compileDirective(reg,rS);
 				machine_code = new byte[] {opcode, dir};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 			
 			if ( isImm8(source) )
@@ -227,7 +227,7 @@ implements InstructionsJASM8
 				byte val = getImm8(source);
 				byte dir = compileDirective(reg,I);
 				machine_code = new byte[] {opcode, dir, val};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 		}
 		
@@ -255,7 +255,7 @@ implements InstructionsJASM8
 				byte rS = getRegister(source);
 				byte dir = compileDirective(reg,rS);
 				machine_code = new byte[] {opcode, dir};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 			
 			if ( isImm16(source) )
@@ -265,7 +265,7 @@ implements InstructionsJASM8
 				byte H = (byte)(i16>>8);
 				byte L = (byte)(i16);
 				machine_code = new byte[] {opcode, dir, H, L};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 		}
 		
@@ -276,7 +276,7 @@ implements InstructionsJASM8
 	// LOAD
 	// ==================================================================
 	
-	private DraftJASM8 load(int index, String operands)
+	private DraftJASM8 load(String operands)
 	{
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) return null; // error
@@ -294,7 +294,7 @@ implements InstructionsJASM8
 				byte rS = getRegister(source);
 				byte dir = compileDirective(reg,rS);
 				machine_code = new byte[] {LOAD, dir};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 			
 			if ( isImm8(source) )
@@ -302,7 +302,7 @@ implements InstructionsJASM8
 				byte dir = compileDirective(reg,I);
 				byte val = getImm8(source);
 				machine_code = new byte[] {LOAD, dir, val};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 			
 			if ( isAddress(source) )
@@ -313,7 +313,7 @@ implements InstructionsJASM8
 				byte H = (byte)(addr16>>8);
 				byte L = (byte)(addr16);
 				machine_code = new byte[] {LOAD, dir, H, L};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 		}
 		
@@ -341,7 +341,7 @@ implements InstructionsJASM8
 				byte rS = getRegister(source);
 				byte dir = compileDirective(reg,rS);
 				machine_code = new byte[] {LOAD, dir};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 			
 			if ( isImm16(source) )
@@ -351,7 +351,7 @@ implements InstructionsJASM8
 				byte H = (byte)(i16>>8);
 				byte L = (byte)(i16);
 				machine_code = new byte[] {LOAD, dir, H, L};
-				return new DraftJASM8(index, machine_code);
+				return new DraftJASM8(machine_code);
 			}
 		}
 		
@@ -362,7 +362,7 @@ implements InstructionsJASM8
 	// OUT
 	// ==================================================================
 	
-	private DraftJASM8 out(int index, String op)
+	private DraftJASM8 out(String op)
 	{
 		byte[] machine_code = null;
 		
@@ -370,14 +370,14 @@ implements InstructionsJASM8
 		{
 			byte reg = getRegister(op);
 			machine_code = new byte[] {OUT, reg};
-			return new DraftJASM8(index, machine_code);
+			return new DraftJASM8(machine_code);
 		}
 		
 		if ( isImm8(op) )
 		{
 			byte imm8 = getImm8(op);
 			machine_code = new byte[] {OUT, I, imm8};
-			return new DraftJASM8(index, machine_code);
+			return new DraftJASM8(machine_code);
 		}
 		
 		if ( isImm16(op) )
@@ -386,7 +386,7 @@ implements InstructionsJASM8
 			byte H = (byte)(imm16>>8);
 			byte L = (byte)(imm16);
 			machine_code = new byte[] {OUT, IL, H, L};
-			return new DraftJASM8(index, machine_code);
+			return new DraftJASM8(machine_code);
 		}
 		
 		return null;// error
@@ -396,40 +396,20 @@ implements InstructionsJASM8
 	// JUMP - JMP, JE, JNE, JL, JLE, JG, JGE
 	// ==================================================================
 	
-	private DraftJASM8 jmp(int index, String operands, byte opcode)
+	private DraftJASM8 jmp(String operands, byte opcode)
 	{
 		byte[] mc = new byte[] {opcode, 0, 0};
-		return new DraftJASM8(index,mc,operands);
+		return new DraftJASM8(mc,operands);
 	}
 	
 	// ==================================================================
-	// END
+	// NOP END RET
 	// ==================================================================
 	
-	private DraftJASM8 end(int index, String op)
+	private DraftJASM8 comm(String op, byte opcode)
 	{
-		byte[] machine_code = new byte[] {END};
-		return new DraftJASM8(index, machine_code);
-	}
-	
-	// ==================================================================
-	// NOP
-	// ==================================================================
-	
-	private DraftJASM8 nop(int index, String op)
-	{
-		byte[] machine_code = new byte[] {NOP};
-		return new DraftJASM8(index, machine_code);
-	}
-	
-	// ==================================================================
-	// RET
-	// ==================================================================
-	
-	private DraftJASM8 ret(int index, String op)
-	{
-		byte[] machine_code = new byte[] {RET};
-		return new DraftJASM8(index, machine_code);
+		byte[] machine_code = new byte[] {opcode};
+		return new DraftJASM8(machine_code);
 	}
 	
 	/*
@@ -571,12 +551,5 @@ implements InstructionsJASM8
 	private boolean isAddress(String addr)
 	{
 		return addr.startsWith("&");
-	}
-	
-	// TODO
-	@SuppressWarnings("unused")
-	private boolean isBinary(String bin)
-	{
-		return bin.startsWith("0b");
 	}
 }

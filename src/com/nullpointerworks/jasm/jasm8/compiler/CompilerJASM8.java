@@ -14,7 +14,7 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
 
 public class CompilerJASM8 implements Compiler
 {
-	public static final String version = "v1.5 alpha";
+	public static final String version = "v1.7 alpha";
 	
 	private boolean verbose_parser = false;
 	private boolean verbose_preproc = false;
@@ -28,7 +28,7 @@ public class CompilerJASM8 implements Compiler
 	private Map<String, Integer> labels = null;
 	private List<String> unused = null;
 	private Map<String, String> equals = null;
-	private List<CodeLine> code = null;
+	private List<ProgramCode> code = null;
 	private List<String> includes = null;
 	private List<DraftJASM8> draft = null;
 	private List<DraftJASM8> labeled = null;
@@ -64,7 +64,7 @@ public class CompilerJASM8 implements Compiler
 		machine_code = null;
 		
 		if (code!=null) code.clear();
-		code = new ArrayList<CodeLine>();
+		code = new ArrayList<ProgramCode>();
 		
 		if (includes!=null) includes.clear();
 		includes = new ArrayList<String>();
@@ -127,6 +127,9 @@ public class CompilerJASM8 implements Compiler
 		return this;
 	}
 	
+	/**
+	 * 
+	 */
 	@Override
 	public Compiler setIncludesPath(String path)
 	{
@@ -155,10 +158,11 @@ public class CompilerJASM8 implements Compiler
 		" | |_| // ___ \\____) || |  | | | (_) |\r\n" + 
 		"  \\___//_/   \\______/ |_|  |_|  \\___/ \n");
 		log.println(" compiler "+version+"\n");
-		var compile_results = CompileError.NO_ERROR;
+		var compile_results = CompilerError.NO_ERROR;
 		
 		/*
 		 * code parsing
+		 * detect .inc directives and includes the code
 		 */
 		if (verbose_parser)
 		{
@@ -167,7 +171,7 @@ public class CompilerJASM8 implements Compiler
 		}
 		
 		compile_results = parseCode(text);
-		if (compile_results != CompileError.NO_ERROR)
+		if (compile_results != CompilerError.NO_ERROR)
 		{
 			log.error(compile_results.getDescription());
 			return null;
@@ -185,7 +189,7 @@ public class CompilerJASM8 implements Compiler
 				if (lines!=null) 
 				{
 					compile_results = parseCode(lines);
-					if (compile_results != CompileError.NO_ERROR) 
+					if (compile_results != CompilerError.NO_ERROR) 
 					{
 						log.error(compile_results.getDescription());
 						return null;
@@ -215,7 +219,7 @@ public class CompilerJASM8 implements Compiler
 		}
 		
 		compile_results = preprocessor(code);
-		if (compile_results != CompileError.NO_ERROR)
+		if (compile_results != CompilerError.NO_ERROR)
 		{
 			log.error(compile_results.getDescription());
 			return null;
@@ -237,7 +241,7 @@ public class CompilerJASM8 implements Compiler
 		}
 		
 		compile_results = compileDraft(draft);
-		if (compile_results != CompileError.NO_ERROR)
+		if (compile_results != CompilerError.NO_ERROR)
 		{
 			log.error(compile_results.getDescription());
 			return null;
@@ -277,22 +281,24 @@ public class CompilerJASM8 implements Compiler
 	 * 
 	 * ==================================================================
 	 */
-	private CompileError parseCode(String[] text)
+	private CompilerError parseCode(String[] text)
 	{
-		CompileError error;
+		CompilerError error;
 		int line = 0;
 		int totalLines = text.length;
 		strLeng = (""+totalLines).length() + 1;
 		
 		for (String l : text)
 		{
-			error = CompileError.NO_ERROR;
+			error = CompilerError.NO_ERROR;
 			l = l.replace("\t", " ");
 			l = l.replaceAll(" +", " ");
 			l = l.replace(", ", ",");
 			l = l.replace(" ,", ",");
 			l = l.trim();
 			line++;
+			
+			ProgramCode pc = new ProgramCode(line, l);
 			
 			if (l.startsWith(";"))
 			{
@@ -311,83 +317,85 @@ public class CompilerJASM8 implements Compiler
 				
 				if (!isValidLabel(t[0]))// error, bad label
 				{
-					return CompileError.labelError(line, l); 
+					return CompilerError.labelError(pc); 
 				}
 				
 				if (t.length > 2)
 				{
 					if (t[1].contains(" "))// error label has spaces
 					{
-						return CompileError.labelError(line, l); 
+						return CompilerError.labelError(pc); 
 					}
 				}
 				
-				error = parseLine(line, t[0]+":"); // parse label
-				
+				error = parseLine(new ProgramCode(line, t[0]+":")); // parse label
 				if (t.length == 2)// parse possibly code on the same line
 				{
 					String i = t[1].trim(); 
-					error = parseLine(line, i);
+					error = parseLine(new ProgramCode(line, i));
 				}
 			}
 			else
 			{
-				error = parseLine(line, l); // parse code
+				error = parseLine(pc); // parse code
 			}
 			
-			if (error != CompileError.NO_ERROR)
+			if (error != CompilerError.NO_ERROR)
 			{
 				return error; // return the found error
 			}
 		}
 		
-		return CompileError.NO_ERROR;
+		return CompilerError.NO_ERROR;
 	}
 	
-	private CompileError parseLine(int line, String l)
+	private CompilerError parseLine(ProgramCode pc)
 	{
-		if (l.equalsIgnoreCase("")) return CompileError.NO_ERROR; // skip empty lines
+		int num = pc.getLineNumber();
+		String line = pc.getLineText();
+		
+		if (line.equalsIgnoreCase("")) return CompilerError.NO_ERROR; // skip empty lines
 		
 		/*
 		 * include external code
 		 */
-		if (l.startsWith(".inc "))
+		if (line.startsWith(".inc "))
 		{
-			String include = l.substring(5);
+			String include = line.substring(5);
 			if (include.startsWith("\"") && include.endsWith("\"")) 
 			{
 				include = include.replace("\"", "");
 				includes.add(include);
-				return CompileError.NO_ERROR;
+				return CompilerError.NO_ERROR;
 			}
 			else
 			{
-				return CompileError.includeError(line, l); // error
+				return CompilerError.includeError(pc); // error
 			}
 		}
 		
 		/*
 		 * store constant naming
 		 */
-		if (l.startsWith(".equ "))
+		if (line.startsWith(".equ "))
 		{
-			String equates = l.substring(5);
+			String equates = line.substring(5);
 			String[] tokens = equates.split(" ");
 			if (tokens.length != 2)
 			{
-				return CompileError.equateError(line, l);
+				return CompilerError.equateError(pc);
 			}
 			
 			String name = tokens[0];
 			if (!isValidLabel(name))
 			{
-				return CompileError.labelError(line, l);
+				return CompilerError.labelError(pc);
 			}
 			
 			String value = tokens[1];
 			if (!isValidNumber(value))
 			{
-				return CompileError.numberError(line, l);
+				return CompilerError.numberError(pc);
 			}
 			
 			equals.put(name, value);
@@ -398,12 +406,12 @@ public class CompilerJASM8 implements Compiler
 		 */
 		if (verbose_parser) 
 		{
-			String linemarker = fillFromBack(""+line," ",strLeng)+"| "+l;
+			String linemarker = fillFromBack(""+num," ",strLeng)+"| "+line;
 			log.println(linemarker);
 		}
 		
-		code.add( new CodeLine(line, l) );
-		return CompileError.NO_ERROR;
+		code.add( new ProgramCode(num, line) );
+		return CompilerError.NO_ERROR;
 	}
 	
 	private boolean isValidNumber(String number)
@@ -441,7 +449,7 @@ public class CompilerJASM8 implements Compiler
 	 * ==================================================================
 	 */
 	
-	private CompileError preprocessor(List<CodeLine> code)
+	private CompilerError preprocessor(List<ProgramCode> code)
 	{
 		if (verbose_preproc) strLeng = 2;
 		
@@ -451,9 +459,9 @@ public class CompilerJASM8 implements Compiler
 		 */
 		for (int i=0,l=code.size(); i<l; i++)
 		{
-			CodeLine line = code.get(i);
-			CompileError error = processLine(line.getLineNumber(), line.getLineCode());
-			if (error != CompileError.NO_ERROR) return error;
+			ProgramCode line = code.get(i);
+			CompilerError error = processLine(line);
+			if (error != CompilerError.NO_ERROR) return error;
 		}
 		
 		if (verbose_preproc)
@@ -467,6 +475,11 @@ public class CompilerJASM8 implements Compiler
 		for (DraftJASM8 d : labeled)
 		{
 			String label = d.getLabel();
+			if (!labels.containsKey(label))
+			{
+				return CompilerError.undefinedLabelError(d.getCodeLine());
+			}
+			
 			int addr = labels.get(label);
 			
 			if (verbose_preproc)
@@ -484,18 +497,23 @@ public class CompilerJASM8 implements Compiler
 		 */
 		if (verbose_preproc)
 		{
-			log.println("\n Unused labels:\n");
-			for (String label : unused)
+			if (!unused.isEmpty())
 			{
-				log.println(" "+label);
+				log.println("\n Unused labels:\n");
+				for (String label : unused)
+				{
+					log.println(" "+label);
+				}
 			}
 		}
 		
-		return CompileError.NO_ERROR;
+		return CompilerError.NO_ERROR;
 	}
 	
-	private CompileError processLine(int num, String line) 
+	private CompilerError processLine(ProgramCode code) 
 	{
+		String line = code.getLineText();
+		
 		// is a label
 		if (line.contains(":")) 
 		{
@@ -510,23 +528,24 @@ public class CompilerJASM8 implements Compiler
 			
 			unused.add(label);
 			labels.put(label, rom_index);
-			return CompileError.NO_ERROR;
+			return CompilerError.NO_ERROR;
 		}
 		
 		// is instruction
-		var draft_inst = DraftBuilderJASM8.getDraft(rom_index, line);
+		var draft_inst = DraftBuilderJASM8.getDraft(line);
 		if (draft_inst != null)
 		{
+			draft_inst.setCodeLine(code);
 			rom_index += draft_inst.machineCode().length;
 			if (draft_inst.hasLabel()) labeled.add(draft_inst);
 			draft.add(draft_inst);
 		}
 		else
 		{
-			return CompileError.lineError(num, line);
+			return CompilerError.lineError(code);
 		}
 		
-		return CompileError.NO_ERROR;
+		return CompilerError.NO_ERROR;
 	}
 	
 	/* ==================================================================
@@ -540,7 +559,7 @@ public class CompilerJASM8 implements Compiler
 	 * ==================================================================
 	 */
 
-	private CompileError compileDraft(List<DraftJASM8> draft)
+	private CompilerError compileDraft(List<DraftJASM8> draft)
 	{
 		machine_code = new byte[rom_index];
 		int index = 0;
@@ -574,6 +593,6 @@ public class CompilerJASM8 implements Compiler
 			log.print("\n");
 		}
 		
-		return CompileError.NO_ERROR;
+		return CompilerError.NO_ERROR;
 	}
 }

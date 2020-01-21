@@ -57,8 +57,7 @@ public class MainCompiler
 	 */
 	public MainCompiler(String[] args)
 	{
-		args = new String[] {"-vrpc",
-							 "D:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"};
+		args = new String[] {"-vrpc", "V:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"};
 		startCompiler(args);
 	}
 	
@@ -72,18 +71,20 @@ public class MainCompiler
 			// bare compiler
 			TextFile tf = new TextFile();
 			tf.setEncoding("UTF-8");
-			tf.addLine("@java -jar \"jasmc.jar\" %1\r\n");
-			tf.addLine("@pause\r\n");
+			tf.addLine("@echo off\r\n");
+			tf.addLine("java -jar \"jasmc.jar\" %1\r\n");
+			tf.addLine("pause\r\n");
 			try {TextFileParser.write("compile.bat", tf);} 
 			catch (IOException e){e.printStackTrace();}
 			
 			// compile and run
 			tf.clear();
-			tf.addLine("@java -jar \"jasmc.jar\" %1\r\n");
-			tf.addLine("@set \"file=%1\"\r\n");
-			tf.addLine("@set \"file=%file:.=\"^&REM #%\r\n");
-			tf.addLine("@java -jar \"jasm.jar\" %file%.bin\r\n");
-			tf.addLine("@pause\r\n");
+			tf.addLine("@echo off\r\n");
+			tf.addLine("java -jar \"jasmc.jar\" %1\r\n");
+			tf.addLine("set \"file=%1\"\r\n");
+			tf.addLine("set \"file=%file:.=\"^&REM #%\r\n");
+			tf.addLine("java -jar \"jasm.jar\" %file%.bin\r\n");
+			tf.addLine("pause\r\n");
 			try {TextFileParser.write("compile_and_run.bat", tf);} 
 			catch (IOException e) {e.printStackTrace();}
 			

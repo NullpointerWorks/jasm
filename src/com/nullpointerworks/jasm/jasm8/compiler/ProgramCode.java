@@ -1,16 +1,16 @@
 package com.nullpointerworks.jasm.jasm8.compiler;
 
-public class CodeLine 
+public class ProgramCode 
 {
 	private int number = -1;
 	private String line = "";
 	
-	public CodeLine(int n, String l)
+	public ProgramCode(int n, String l)
 	{
 		number = n;
 		line = l;
 	}
 	
 	public final int getLineNumber() {return number;}
-	public final String getLineCode() {return line;}
+	public final String getLineText() {return line;}
 }

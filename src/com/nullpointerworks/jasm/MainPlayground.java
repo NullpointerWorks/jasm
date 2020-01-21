@@ -1,7 +1,5 @@
 package com.nullpointerworks.jasm;
 
-import static com.nullpointerworks.jasm.jasm8.Memory.*;
-
 import java.io.IOException;
 
 import com.nullpointerworks.jasm.jasm8.Memory;
@@ -29,10 +27,10 @@ implements InstructionsJASM8, Monitor
 	
 	private byte[] program = null;
 	
-	private int fps			= 16;
+	private int fps			= 32;
 	private int cycles 		= fps * 625;  	// 10 kHz default
-	private int rom_size 	= kiloByte; 	// 1 kilobyte default
-	private int ram_size 	= kiloByte*4; 	// 4 kilobytes default
+	private int rom_size 	= Memory.kiloByte; 	// 1 kilobyte default
+	private int ram_size 	= Memory.kiloByte*4; 	// 4 kilobytes default
 	
 	public static void main(String[] args) {new MainPlayground(args);}
 	
@@ -48,8 +46,9 @@ implements InstructionsJASM8, Monitor
 		{
 			TextFile tf = new TextFile();
 			tf.setEncoding("UTF-8");
-			tf.addLine("@java -jar \"jasm.jar\" %1\r\n");
-			tf.addLine("@pause\r\n");
+			tf.addLine("@echo off\r\n");
+			tf.addLine("java -jar \"jasm.jar\" %1\r\n");
+			tf.addLine("pause\r\n");
 			
 			try
 			{
@@ -92,8 +91,8 @@ implements InstructionsJASM8, Monitor
 					if (StringUtil.isInteger(arg))
 					{
 						int desCycles = Integer.parseInt(arg);
-						//to ensure 16 Hz program updates, divide desired cycles by 16 ( >> 4 )
-						desCycles = desCycles >> 4;
+						//to ensure 32 Hz program updates, divide desired cycles by 32 ( >> 5 )
+						desCycles = desCycles >> 5;
 						cycles = fps * desCycles;
 						if (cycles<1)cycles=1;
 					}

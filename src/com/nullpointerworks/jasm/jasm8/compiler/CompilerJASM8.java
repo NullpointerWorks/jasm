@@ -191,6 +191,11 @@ public class CompilerJASM8 implements Compiler
 						return null;
 					}
 				}
+				else
+				{
+					log.error(inc+" (The system cannot find the file specified)");
+					return null;
+				}
 			}
 		}
 		
@@ -256,7 +261,6 @@ public class CompilerJASM8 implements Compiler
 		} 
 		catch (FileNotFoundException e)
 		{
-			log.error(inc+" (The system cannot find the file specified)");
 			return null;
 		}
 		if (tf == null) return null;
@@ -305,24 +309,24 @@ public class CompilerJASM8 implements Compiler
 			{
 				String t[] = l.split(":");
 				
-				if (!isValidLabel(t[0]))
+				if (!isValidLabel(t[0]))// error, bad label
 				{
-					// error, bad label
+					return CompileError.labelError(line, l); 
 				}
 				
 				if (t.length > 2)
 				{
-					if (t[1].contains(" "))
+					if (t[1].contains(" "))// error label has spaces
 					{
-						// error label has spaces
+						return CompileError.labelError(line, l); 
 					}
 				}
 				
 				error = parseLine(line, t[0]+":"); // parse label
 				
-				if (t.length == 2)
+				if (t.length == 2)// parse possibly code on the same line
 				{
-					String i = t[1].trim(); // parse possibly code on the same line
+					String i = t[1].trim(); 
 					error = parseLine(line, i);
 				}
 			}
@@ -452,13 +456,14 @@ public class CompilerJASM8 implements Compiler
 			if (error != CompileError.NO_ERROR) return error;
 		}
 		
-		/*
-		 * insert label addresses
-		 */
 		if (verbose_preproc)
 		{
 			log.println(" Addressed labels:\n");
 		}
+		
+		/*
+		 * insert label addresses
+		 */
 		for (DraftJASM8 d : labeled)
 		{
 			String label = d.getLabel();
@@ -474,7 +479,9 @@ public class CompilerJASM8 implements Compiler
 			unused.remove(label);
 		}
 		
-		// unused labels
+		/*
+		 * notify about unused labels
+		 */
 		if (verbose_preproc)
 		{
 			log.println("\n Unused labels:\n");

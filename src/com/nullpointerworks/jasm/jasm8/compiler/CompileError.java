@@ -3,8 +3,6 @@ package com.nullpointerworks.jasm.jasm8.compiler;
 public final class CompileError
 {
 	public static final CompileError NO_ERROR = new CompileError("");
-	public static final CompileError BAD_LABEL_NAME = new CompileError("Label contains illigal characters.");
-	public static final CompileError BAD_LABEL_LOCATION = new CompileError("Labels may not be defined within an instruction.");
 	
 	private String desc;
 	CompileError(String desc) {this.desc=desc;}
@@ -15,7 +13,7 @@ public final class CompileError
 	 */
 	public static CompileError lineError(int number, String line)
 	{
-		return new CompileError("Error on line: "+number+".\nInvalid syntax: '"+line+"'");
+		return new CompileError("Error on line: "+number+".\nInvalid JASM syntax: '"+line+"'");
 	}
 	
 	/**

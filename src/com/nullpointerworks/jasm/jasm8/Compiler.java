@@ -8,5 +8,5 @@ public interface Compiler
 	Compiler setLogListener(LogListener logging);
 	Compiler setIncludesPath(String path);
 	Compiler reset();
-	byte[] parse(String[] lines);
+	byte[] parse(String filename, String[] lines);
 }

@@ -48,9 +48,7 @@ public class MainCompiler
 	 * 16 bit = 2^16 = 65536 = 0xFFFF = 0b1111 1111 1111 1111
 	 * 64 kiB max
 	 * 
-	 * 
 	 * TODO error and information
-	 * error about unknown label jumps
 	 * error when detecting duplicate labels
 	 * error when two labels are defined in sequence
 	 * 
@@ -149,7 +147,7 @@ public class MainCompiler
 		jasm8.setPreprocessorVerbose(preprocessorVerbose);
 		jasm8.setCompilerVerbose(compilerVerbose);
 		jasm8.setLogListener(log);
-		byte[] program = jasm8.parse(tf.getLines());
+		byte[] program = jasm8.parse(file, tf.getLines());
 		
 		/*
 		 * save log

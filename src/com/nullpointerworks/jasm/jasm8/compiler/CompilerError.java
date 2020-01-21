@@ -11,61 +11,79 @@ public final class CompilerError
 	/**
 	 * 
 	 */
-	public static CompilerError lineError(ProgramCode pc)
+	public static CompilerError lineError(SourceCode pc)
 	{
 		int number = pc.getLineNumber();
 		String line = pc.getLineText();
-		return new CompilerError("Error on line: "+number+".\nInvalid JASM syntax: '"+line+"'");
+		String file = pc.getSourceFile();
+		return new CompilerError("Error in file: "+file+"\n"
+								+ "Error on line: "+number+"\n"
+								+ "Invalid JASM syntax: '"+line+"'");
 	}
 	
 	/**
 	 * 
 	 */
-	public static CompilerError includeError(ProgramCode pc) 
+	public static CompilerError includeError(SourceCode pc) 
 	{
 		int number = pc.getLineNumber();
 		String line = pc.getLineText();
-		return new CompilerError("Error on line: "+number+".\nBad include syntax: '"+line+"'");
+		String file = pc.getSourceFile();
+		return new CompilerError("Error in file: "+file+"\n"
+								+ "Error on line: "+number+"\n"
+								+ "Bad include syntax: '"+line+"'");
 	}
 	
 	/**
 	 * ".equ" may only have a name and value
 	 */
-	public static CompilerError equateError(ProgramCode pc) 
+	public static CompilerError equateError(SourceCode pc) 
 	{
 		int number = pc.getLineNumber();
 		String line = pc.getLineText();
-		return new CompilerError("Error on line: "+number+".\nBad equate syntax: '"+line+"'");
+		String file = pc.getSourceFile();
+		return new CompilerError("Error in file: "+file+"\n"
+								+ "Error on line: "+number+"\n"
+								+ "Bad equate syntax: '"+line+"'");
 	}
 	
 	/**
 	 * 
 	 */
-	public static CompilerError labelError(ProgramCode pc) 
+	public static CompilerError labelError(SourceCode pc) 
 	{
 		int number = pc.getLineNumber();
 		String line = pc.getLineText();
-		return new CompilerError("Error on line: "+number+".\nInvalid label characters used: '"+line+"'");
+		String file = pc.getSourceFile();
+		return new CompilerError("Error in file: "+file+"\n"
+								+ "Error on line: "+number+"\n"
+								+ "Invalid label characters used: '"+line+"'");
 	}
 	
 	/**
 	 * 
 	 */
-	public static CompilerError undefinedLabelError(ProgramCode cl) 
+	public static CompilerError undefinedLabelError(SourceCode sc) 
 	{
-		int number = cl.getLineNumber();
-		String text = cl.getLineText();
-		return new CompilerError("Error on line: "+number+".\nUndefined label: '"+text+"'");
+		int number = sc.getLineNumber();
+		String text = sc.getLineText();
+		String file = sc.getSourceFile();
+		return new CompilerError("Error in file: "+file+"\n"
+								+ "Error on line: "+number+"\n"
+								+ "Undefined label: '"+text+"'");
 	}
 	
 	/**
 	 * 
 	 */
-	public static CompilerError numberError(ProgramCode cl) 
+	public static CompilerError numberError(SourceCode sc) 
 	{
-		int number = cl.getLineNumber();
-		String text = cl.getLineText();
-		return new CompilerError("Error on line: "+number+".\nInvalid number syntax: '"+text+"'");
+		int number = sc.getLineNumber();
+		String text = sc.getLineText();
+		String file = sc.getSourceFile();
+		return new CompilerError("Error in file: "+file+"\n"
+								+ "Error on line: "+number+"\n"
+								+ "Invalid number syntax: '"+text+"'");
 	}
 	
 }

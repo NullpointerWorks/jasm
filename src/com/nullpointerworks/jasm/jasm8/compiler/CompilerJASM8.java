@@ -14,7 +14,7 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
 
 public class CompilerJASM8 implements Compiler
 {
-	public static final String version = "v1.7 alpha";
+	public static final String version = "v1.8 alpha";
 	
 	private boolean verbose_parser = false;
 	private boolean verbose_preproc = false;
@@ -28,7 +28,7 @@ public class CompilerJASM8 implements Compiler
 	private Map<String, Integer> labels = null;
 	private List<String> unused = null;
 	private Map<String, String> equals = null;
-	private List<ProgramCode> code = null;
+	private List<SourceCode> code = null;
 	private List<String> includes = null;
 	private List<DraftJASM8> draft = null;
 	private List<DraftJASM8> labeled = null;
@@ -64,7 +64,7 @@ public class CompilerJASM8 implements Compiler
 		machine_code = null;
 		
 		if (code!=null) code.clear();
-		code = new ArrayList<ProgramCode>();
+		code = new ArrayList<SourceCode>();
 		
 		if (includes!=null) includes.clear();
 		includes = new ArrayList<String>();
@@ -149,7 +149,7 @@ public class CompilerJASM8 implements Compiler
 	 * 
 	 */
 	@Override
-	public byte[] parse(String[] text)
+	public byte[] parse(String filename, String[] text)
 	{
 		log.println(
 		"      _    _    _________  __    ___  \r\n" + 
@@ -157,7 +157,7 @@ public class CompilerJASM8 implements Compiler
 		"  _  | | / _ \\ \\___ \\ | |\\/| |  / _ \\ \r\n" + 
 		" | |_| // ___ \\____) || |  | | | (_) |\r\n" + 
 		"  \\___//_/   \\______/ |_|  |_|  \\___/ \n");
-		log.println(" compiler "+version+"\n");
+		log.println("       compiler "+version+"\n");
 		var compile_results = CompilerError.NO_ERROR;
 		
 		/*
@@ -170,7 +170,7 @@ public class CompilerJASM8 implements Compiler
 			log.println("\n ### parsing ###\n");
 		}
 		
-		compile_results = parseCode(text);
+		compile_results = parseCode(filename, text);
 		if (compile_results != CompilerError.NO_ERROR)
 		{
 			log.error(compile_results.getDescription());
@@ -188,7 +188,7 @@ public class CompilerJASM8 implements Compiler
 				String[] lines = loadCode(includePath+inc);
 				if (lines!=null) 
 				{
-					compile_results = parseCode(lines);
+					compile_results = parseCode(inc, lines);
 					if (compile_results != CompilerError.NO_ERROR) 
 					{
 						log.error(compile_results.getDescription());
@@ -281,7 +281,7 @@ public class CompilerJASM8 implements Compiler
 	 * 
 	 * ==================================================================
 	 */
-	private CompilerError parseCode(String[] text)
+	private CompilerError parseCode(String filename, String[] text)
 	{
 		CompilerError error;
 		int line = 0;
@@ -309,7 +309,7 @@ public class CompilerJASM8 implements Compiler
 				l = l.trim();
 			}
 			
-			ProgramCode pc = new ProgramCode(line, l);
+			SourceCode pc = new SourceCode(line, l, filename);
 			
 			if (l.contains(":")) // if label, split to (possibly) parse code after label
 			{
@@ -328,11 +328,11 @@ public class CompilerJASM8 implements Compiler
 					}
 				}
 				
-				error = parseLine(new ProgramCode(line, t[0]+":")); // parse label
+				error = parseLine(new SourceCode(line, t[0]+":", filename)); // parse label
 				if (t.length == 2)// parse possibly code on the same line
 				{
 					String i = t[1].trim(); 
-					error = parseLine(new ProgramCode(line, i));
+					error = parseLine(new SourceCode(line, i, filename));
 				}
 			}
 			else
@@ -349,10 +349,11 @@ public class CompilerJASM8 implements Compiler
 		return CompilerError.NO_ERROR;
 	}
 	
-	private CompilerError parseLine(ProgramCode pc)
+	private CompilerError parseLine(SourceCode pc)
 	{
 		int num = pc.getLineNumber();
 		String line = pc.getLineText();
+		String file = pc.getSourceFile();
 		
 		if (line.equalsIgnoreCase("")) return CompilerError.NO_ERROR; // skip empty lines
 		
@@ -410,7 +411,7 @@ public class CompilerJASM8 implements Compiler
 			log.println(linemarker);
 		}
 		
-		code.add( new ProgramCode(num, line) );
+		code.add( new SourceCode(num, line, file) );
 		return CompilerError.NO_ERROR;
 	}
 	
@@ -449,7 +450,7 @@ public class CompilerJASM8 implements Compiler
 	 * ==================================================================
 	 */
 	
-	private CompilerError preprocessor(List<ProgramCode> code)
+	private CompilerError preprocessor(List<SourceCode> code)
 	{
 		if (verbose_preproc) strLeng = 2;
 		
@@ -459,7 +460,7 @@ public class CompilerJASM8 implements Compiler
 		 */
 		for (int i=0,l=code.size(); i<l; i++)
 		{
-			ProgramCode line = code.get(i);
+			SourceCode line = code.get(i);
 			CompilerError error = processLine(line);
 			if (error != CompilerError.NO_ERROR) return error;
 		}
@@ -510,7 +511,7 @@ public class CompilerJASM8 implements Compiler
 		return CompilerError.NO_ERROR;
 	}
 	
-	private CompilerError processLine(ProgramCode code) 
+	private CompilerError processLine(SourceCode code) 
 	{
 		String line = code.getLineText();
 		

@@ -6,7 +6,7 @@ public class DraftJASM8 implements InstructionsJASM8
 {
 	private boolean hasLabel = false;
 	private String label = "";
-	private ProgramCode codeline;
+	private SourceCode codeline;
 	private byte[] machine_code;
 	
 	public DraftJASM8(byte[] microcode)
@@ -25,8 +25,8 @@ public class DraftJASM8 implements InstructionsJASM8
 	 * ===========================================================
 	 */
 	
-	public final void setCodeLine(ProgramCode cl) {codeline = cl;}
-	public final ProgramCode getCodeLine() {return codeline;}
+	public final void setCodeLine(SourceCode cl) {codeline = cl;}
+	public final SourceCode getCodeLine() {return codeline;}
 
 	public final boolean hasLabel() {return hasLabel;}
 	public final String getLabel() {return label;}

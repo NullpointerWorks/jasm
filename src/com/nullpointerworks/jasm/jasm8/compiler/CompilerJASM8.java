@@ -183,7 +183,7 @@ public class CompilerJASM8 implements Compiler
 			{
 				if (verbose_parser)
 				{
-					log.println("\n include: "+inc+":\n");
+					log.println("\n include: "+inc+"\n");
 				}
 				String[] lines = loadCode(includePath+inc);
 				if (lines!=null) 
@@ -298,8 +298,6 @@ public class CompilerJASM8 implements Compiler
 			l = l.trim();
 			line++;
 			
-			ProgramCode pc = new ProgramCode(line, l);
-			
 			if (l.startsWith(";"))
 			{
 				continue; // skip comment
@@ -310,6 +308,8 @@ public class CompilerJASM8 implements Compiler
 				l = l.split(";")[0];
 				l = l.trim();
 			}
+			
+			ProgramCode pc = new ProgramCode(line, l);
 			
 			if (l.contains(":")) // if label, split to (possibly) parse code after label
 			{
@@ -576,18 +576,20 @@ public class CompilerJASM8 implements Compiler
 		if (verbose_compiler)
 		{
 			int count = 0;
-			int leng = machine_code.length >> 4;
-			if (leng<2)leng=2;
+			int address = 0;
+			String hex = String.format("%X", machine_code.length);
+			int leng = hex.length() + 1;
 			
 			log.print(String.format("%0"+leng+"X | ", count));
 			for (byte b : machine_code)
 			{
 				log.print(String.format("%02X ", b));
 				count++;
-				if (count > 15)
+				if (count > 7)
 				{
-					log.print(String.format("%0"+leng+"X | ", count)+"\n");
 					count=0;
+					address+=8;
+					log.print("\n"+String.format("%0"+leng+"X | ", address));
 				}
 			}
 			log.print("\n");

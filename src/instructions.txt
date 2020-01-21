@@ -14,10 +14,18 @@ include external *.jasm file
 
 .inc "[name].jasm"
 
+
 _________________________________________________
 define a name for a constant value
 
 .equ [name] [value]
+
+
+_________________________________________________
+define a label name to jump to
+
+[name]:
+
 
  ________________________________________________
 |                                                |

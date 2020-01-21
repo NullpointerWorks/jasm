@@ -57,7 +57,7 @@ public class MainCompiler
 	 */
 	public MainCompiler(String[] args)
 	{
-		args = new String[] {"-vrpc", "V:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"};
+		//args = new String[] {"-vrpc", "V:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"};
 		startCompiler(args);
 	}
 	

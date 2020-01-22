@@ -1,8 +1,8 @@
 package com.nullpointerworks.jasm.jasm8.processor;
 
-import com.nullpointerworks.jasm.jasm8.Memory;
-import com.nullpointerworks.jasm.jasm8.Monitor;
-import com.nullpointerworks.jasm.jasm8.Processor;
+import com.nullpointerworks.jasm.Memory;
+import com.nullpointerworks.jasm.Monitor;
+import com.nullpointerworks.jasm.Processor;
 
 public class ProcessorJASM8 
 implements Processor, InstructionsJASM8

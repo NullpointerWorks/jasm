@@ -5,16 +5,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import com.nullpointerworks.jasm.jasm8.Compiler;
-import com.nullpointerworks.jasm.jasm8.LogListener;
+import com.nullpointerworks.jasm.Compiler;
+import com.nullpointerworks.jasm.LogListener;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 
 public class CompilerJASM8 implements Compiler
 {
-	public static final String version = "v1.8 alpha";
+	public static final String version = "v1.0.0 beta";
 	
 	private boolean verbose_parser = false;
 	private boolean verbose_preproc = false;
@@ -30,8 +31,8 @@ public class CompilerJASM8 implements Compiler
 	private Map<String, String> equals = null;
 	private List<SourceCode> code = null;
 	private List<String> includes = null;
-	private List<DraftJASM8> draft = null;
-	private List<DraftJASM8> labeled = null;
+	private List<Draft> draft = null;
+	private List<Draft> labeled = null;
 	private byte[] machine_code = null;
 	
 	/*
@@ -79,10 +80,10 @@ public class CompilerJASM8 implements Compiler
 		unused = new ArrayList<String>();
 		
 		if (draft!=null) draft.clear();
-		draft = new ArrayList<DraftJASM8>();
+		draft = new ArrayList<Draft>();
 		
 		if (labeled!=null) labeled.clear();
-		labeled = new ArrayList<DraftJASM8>();
+		labeled = new ArrayList<Draft>();
 		
 		return this;
 	}
@@ -185,6 +186,7 @@ public class CompilerJASM8 implements Compiler
 				{
 					log.println("\n include: "+inc+"\n");
 				}
+				
 				String[] lines = loadCode(includePath+inc);
 				if (lines!=null) 
 				{
@@ -473,12 +475,12 @@ public class CompilerJASM8 implements Compiler
 		/*
 		 * insert label addresses
 		 */
-		for (DraftJASM8 d : labeled)
+		for (Draft d : labeled)
 		{
 			String label = d.getLabel();
 			if (!labels.containsKey(label))
 			{
-				return CompilerError.undefinedLabelError(d.getCodeLine());
+				return CompilerError.undefinedLabelError(d.getSourceCode());
 			}
 			
 			int addr = labels.get(label);
@@ -508,6 +510,30 @@ public class CompilerJASM8 implements Compiler
 			}
 		}
 		
+		/*
+		 * check for duplicate pointer labels
+		 */
+		var set = labels.entrySet();
+		int index = 0;
+		for (Entry<String, Integer> s : set)
+		{
+			int address = s.getValue();
+			if (labels.containsValue(address))
+			{
+				List<String> ls = getKeysByValue(index, labels, address);
+				if (ls.size() > 1)
+				{
+					String warning = "\n Uniform labels:\n";
+					for (String l : ls) 
+					{
+						warning += ("\n "+l);
+					}
+					log.error(warning);
+				}
+			}
+			index++;
+		}
+		
 		return CompilerError.NO_ERROR;
 	}
 	
@@ -527,26 +553,53 @@ public class CompilerJASM8 implements Compiler
 				if (strLeng > 24) strLeng = 24;
 			}
 			
+			if (labels.containsKey(label))
+			{
+				return CompilerError.duplicateLabelError(code);
+			}
+			
 			unused.add(label);
 			labels.put(label, rom_index);
 			return CompilerError.NO_ERROR;
 		}
 		
 		// is instruction
-		var draft_inst = DraftBuilderJASM8.getDraft(line);
+		var draft_inst = DraftBuilder.getDraft(line);
 		if (draft_inst != null)
 		{
-			draft_inst.setCodeLine(code);
+			draft_inst.setSourceCode(code);
 			rom_index += draft_inst.machineCode().length;
-			if (draft_inst.hasLabel()) labeled.add(draft_inst);
+			if (draft_inst.hasLabel())
+			{
+				labeled.add(draft_inst);
+			}
 			draft.add(draft_inst);
 		}
 		else
 		{
-			return CompilerError.lineError(code);
+			return CompilerError.syntaxError(code);
 		}
 		
 		return CompilerError.NO_ERROR;
+	}
+	
+	private <K,V> List<K> getKeysByValue(int ahead, Map<K, V> map, V value) 
+	{
+		List<K> keys = new ArrayList<K>();
+		if(map.containsValue(value))
+		{
+			int index = 0;
+			for (Map.Entry<K, V> entry : map.entrySet()) 
+			{
+				if (index < ahead) continue;
+				if (entry.getValue().equals(value))
+				{
+					keys.add(entry.getKey());
+				}
+				index++;
+			}
+		}
+		return keys;
 	}
 	
 	/* ==================================================================
@@ -559,13 +612,16 @@ public class CompilerJASM8 implements Compiler
 	 * 
 	 * ==================================================================
 	 */
-
-	private CompilerError compileDraft(List<DraftJASM8> draft)
+	
+	private CompilerError compileDraft(List<Draft> draft)
 	{
 		machine_code = new byte[rom_index];
 		int index = 0;
 		
-		for (DraftJASM8 d : draft)
+		/*
+		 * compile machine code
+		 */
+		for (Draft d : draft)
 		{
 			byte[] mc = d.machineCode();
 			for (byte b : mc)
@@ -574,6 +630,9 @@ public class CompilerJASM8 implements Compiler
 			}
 		}
 		
+		/*
+		 * output hex content
+		 */
 		if (verbose_compiler)
 		{
 			int count = 0;

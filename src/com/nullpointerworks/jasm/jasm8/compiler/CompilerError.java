@@ -11,7 +11,20 @@ public final class CompilerError
 	/**
 	 * 
 	 */
-	public static CompilerError lineError(SourceCode pc)
+	public static CompilerError duplicateLabelError(SourceCode sc)
+	{
+		int number = sc.getLineNumber();
+		String line = sc.getLineText();
+		String file = sc.getSourceFile();
+		return new CompilerError("Error in file: "+file+"\n"
+								+ "Error on line: "+number+"\n"
+								+ "Duplicate label defined: '"+line+"'");
+	}
+	
+	/**
+	 * 
+	 */
+	public static CompilerError syntaxError(SourceCode pc)
 	{
 		int number = pc.getLineNumber();
 		String line = pc.getLineText();

@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.jasm8;
+package com.nullpointerworks.jasm;
 
 public interface Monitor
 {

@@ -2,8 +2,7 @@ package com.nullpointerworks.jasm.jasm8.compiler;
 
 import java.io.IOException;
 
-import com.nullpointerworks.jasm.jasm8.LogListener;
-
+import com.nullpointerworks.jasm.LogListener;
 import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;

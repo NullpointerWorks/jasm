@@ -2,12 +2,10 @@ package com.nullpointerworks.jasm;
 
 import java.io.IOException;
 
-import com.nullpointerworks.jasm.jasm8.Memory;
-import com.nullpointerworks.jasm.jasm8.Monitor;
-import com.nullpointerworks.jasm.jasm8.Processor;
+import com.nullpointerworks.jasm.jasm8.Memory8bit;
 import com.nullpointerworks.jasm.jasm8.processor.InstructionsJASM8;
-import com.nullpointerworks.jasm.jasm8.processor.Memory8bit;
 import com.nullpointerworks.jasm.jasm8.processor.ProcessorJASM8;
+import com.nullpointerworks.jasm.util.Process;
 import com.nullpointerworks.game.LoopAdapter;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.concurrency.Threading;
@@ -16,7 +14,7 @@ import com.nullpointerworks.util.file.bytefile.ByteFileParser;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 
-public class MainPlayground
+class MainPlayground
 extends LoopAdapter
 implements InstructionsJASM8, Monitor
 {

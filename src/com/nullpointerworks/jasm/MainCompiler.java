@@ -3,8 +3,6 @@ package com.nullpointerworks.jasm;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import com.nullpointerworks.jasm.jasm8.Compiler;
-import com.nullpointerworks.jasm.jasm8.LogListener;
 import com.nullpointerworks.jasm.jasm8.compiler.CompilerJASM8;
 import com.nullpointerworks.jasm.jasm8.compiler.GenericLog;
 
@@ -30,7 +28,7 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
  * example: java -jar "jasmc.jar" -l -vrpc %1
  * 
  */
-public class MainCompiler
+class MainCompiler
 {
 	public static void main(String[] args) {new MainCompiler(args);}
 	
@@ -48,14 +46,10 @@ public class MainCompiler
 	 * 16 bit = 2^16 = 65536 = 0xFFFF = 0b1111 1111 1111 1111
 	 * 64 kiB max
 	 * 
-	 * TODO error and information
-	 * error when detecting duplicate labels
-	 * error when two labels are defined in sequence
-	 * 
 	 */
 	public MainCompiler(String[] args)
 	{
-		//args = new String[] {"-vrpc", "V:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"};
+		//args = new String[] {"-vrpc", "D:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"};
 		startCompiler(args);
 	}
 	

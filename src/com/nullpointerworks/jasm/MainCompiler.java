@@ -21,11 +21,12 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
  * r = parser
  * p = preprocessor
  * c = compiler
- * 
  * example: java -jar "jasmc.jar" -vrpc %1
  * 
- * -l = enable log
- * example: java -jar "jasmc.jar" -l -vrpc %1
+ * -verify = verify only
+ * 
+ * -log = logging
+ * example: java -jar "jasmc.jar" -log -vrp %1
  * 
  */
 class MainCompiler
@@ -36,6 +37,7 @@ class MainCompiler
 	private boolean preprocessorVerbose = false;
 	private boolean compilerVerbose = false;
 	private boolean enableLogging = false;
+	private boolean verifyOnly = false;
 	private LogListener log;
 	
 	/* 
@@ -49,7 +51,7 @@ class MainCompiler
 	 */
 	public MainCompiler(String[] args)
 	{
-		//args = new String[] {"-vrpc", "D:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"};
+		//args = new String[] {"-vrpc","-verify", "D:\\Development\\Assembly\\workspace\\jasm\\playground\\playground.jasm"};
 		startCompiler(args);
 	}
 	
@@ -99,8 +101,15 @@ class MainCompiler
 				continue;
 			}
 			
+			// enable toolchain stop
+			if (file.startsWith("-verify"))
+			{
+				verifyOnly = true;
+				continue;
+			}
+			
 			// enable logging
-			if (file.startsWith("-l"))
+			if (file.startsWith("-log"))
 			{
 				enableLogging = true;
 				continue;
@@ -140,6 +149,7 @@ class MainCompiler
 		jasm8.setParserVerbose(parserVerbose);
 		jasm8.setPreprocessorVerbose(preprocessorVerbose);
 		jasm8.setCompilerVerbose(compilerVerbose);
+		jasm8.setVerifyOnly(verifyOnly);
 		jasm8.setLogListener(log);
 		byte[] program = jasm8.parse(file, tf.getLines());
 		

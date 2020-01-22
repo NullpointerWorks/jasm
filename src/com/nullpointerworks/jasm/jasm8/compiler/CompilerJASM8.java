@@ -20,6 +20,7 @@ public class CompilerJASM8 implements Compiler
 	private boolean verbose_parser = false;
 	private boolean verbose_preproc = false;
 	private boolean verbose_compiler = false;
+	private boolean verify_only = false;
 	private String includePath = "";
 	private LogListener log;
 	
@@ -132,6 +133,16 @@ public class CompilerJASM8 implements Compiler
 	 * 
 	 */
 	@Override
+	public Compiler setVerifyOnly(boolean verify)
+	{
+		verify_only = verify;
+		return this;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
 	public Compiler setIncludesPath(String path)
 	{
 		if (path.endsWith("/") || path.endsWith("\\"))
@@ -232,25 +243,33 @@ public class CompilerJASM8 implements Compiler
 			log.println("\n preprocessing done\n");
 			log.println("--------------------------------------");
 		}
+
+		if (!verbose_compiler) log.println("--------------------------------------");
 		
 		/*
-		 * compiler
+		 * compile if not only verifying
 		 */
-		if (verbose_compiler)
+		if (!verify_only)
 		{
-			log.println("--------------------------------------");
-			log.println("\n ### Compiling ### \n");
+			if (verbose_compiler)
+			{
+				log.println("--------------------------------------");
+				log.println("\n ### Compiling ### \n");
+			}
+			
+			compile_results = compileDraft(draft);
+			if (compile_results != CompilerError.NO_ERROR)
+			{
+				log.error(compile_results.getDescription());
+				return null;
+			}
+			log.println("\n compiling successful\n");
+		}
+		else
+		{
+			log.println("\n verification successful\n");
 		}
 		
-		compile_results = compileDraft(draft);
-		if (compile_results != CompilerError.NO_ERROR)
-		{
-			log.error(compile_results.getDescription());
-			return null;
-		}
-		
-		if (!verbose_compiler) log.println("--------------------------------------");
-		log.println("\n compiling successful\n");
 		log.println(" external files  : "+includes.size());
 		log.println(" instructions    : "+draft.size());
 		log.println(" program size    : "+rom_index+" bytes");

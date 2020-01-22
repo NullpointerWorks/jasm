@@ -17,16 +17,14 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
  * 
  * options
  * 
- * -v = verbose
+ * -verbose = verbose
  * r = parser
  * p = preprocessor
  * c = compiler
- * example: java -jar "jasmc.jar" -vrpc %1
  * 
  * -verify = verify only
  * 
  * -log = logging
- * example: java -jar "jasmc.jar" -log -vrp %1
  * 
  */
 class MainCompiler
@@ -51,7 +49,10 @@ class MainCompiler
 	 */
 	public MainCompiler(String[] args)
 	{
-		//args = new String[] {"-vrpc","-verify", "D:\\Development\\Assembly\\workspace\\jasm\\playground\\playground.jasm"};
+		args = new String[] {"-verbose-rpc",
+							 "-verify",
+							 "-log",
+							 "V:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"};
 		startCompiler(args);
 	}
 	
@@ -93,8 +94,9 @@ class MainCompiler
 		for (String file : args)
 		{
 			// enable verbose
-			if (file.startsWith("-v"))
+			if (file.startsWith("-verbose-"))
 			{
+				file=file.substring(8);
 				if (file.contains("r")) parserVerbose = true;
 				if (file.contains("p")) preprocessorVerbose = true;
 				if (file.contains("c")) compilerVerbose = true;

@@ -9,13 +9,14 @@ import java.util.Map.Entry;
 
 import com.nullpointerworks.jasm.Compiler;
 import com.nullpointerworks.jasm.LogListener;
+import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 
 public class CompilerJASM8 implements Compiler
 {
-	public static final String version = "v1.0.1 beta";
+	public static final String version = "v1.1.0 beta";
 	
 	private boolean verbose_parser = false;
 	private boolean verbose_preproc = false;
@@ -530,27 +531,33 @@ public class CompilerJASM8 implements Compiler
 		}
 		
 		/*
+		 * TODO try something else
 		 * check for duplicate pointer labels
 		 */
-		var set = labels.entrySet();
-		int index = 0;
-		for (Entry<String, Integer> s : set)
+		if (verbose_preproc)
 		{
-			int address = s.getValue();
-			if (labels.containsValue(address))
+			/*
+			var set = labels.entrySet();
+			int index = 0;
+			for (Entry<String, Integer> s : set)
 			{
-				List<String> ls = getKeysByValue(index, labels, address);
-				if (ls.size() > 1)
+				int address = s.getValue();
+				if (labels.containsValue(address))
 				{
-					String warning = "\n Uniform labels:\n";
-					for (String l : ls) 
+					List<String> ls = getKeysByValue(index, labels, address);
+					if (ls.size() > 1)
 					{
-						warning += ("\n "+l);
+						String warning = "\n Uniform labels:\n";
+						for (String l : ls) 
+						{
+							warning += ("\n "+l);
+						}
+						log.error(warning);
 					}
-					log.error(warning);
 				}
+				index++;
 			}
-			index++;
+			//*/
 		}
 		
 		return CompilerError.NO_ERROR;
@@ -602,6 +609,7 @@ public class CompilerJASM8 implements Compiler
 		return CompilerError.NO_ERROR;
 	}
 	
+	/*
 	private <K,V> List<K> getKeysByValue(int ahead, Map<K, V> map, V value) 
 	{
 		List<K> keys = new ArrayList<K>();
@@ -610,7 +618,7 @@ public class CompilerJASM8 implements Compiler
 			int index = 0;
 			for (Map.Entry<K, V> entry : map.entrySet()) 
 			{
-				if (index < ahead) continue;
+				if (index >= ahead)
 				if (entry.getValue().equals(value))
 				{
 					keys.add(entry.getKey());
@@ -620,6 +628,7 @@ public class CompilerJASM8 implements Compiler
 		}
 		return keys;
 	}
+	//*/
 	
 	/* ==================================================================
 	 * 

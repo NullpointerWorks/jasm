@@ -15,7 +15,7 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
 
 public class CompilerJASM8 implements Compiler
 {
-	public static final String version = "v1.0.0 beta";
+	public static final String version = "v1.0.1 beta";
 	
 	private boolean verbose_parser = false;
 	private boolean verbose_preproc = false;
@@ -217,7 +217,7 @@ public class CompilerJASM8 implements Compiler
 		if (verbose_preproc)
 		{
 			log.println("--------------------------------------");
-			log.println("\n ### Pre-processor ###\n");
+			log.println("\n ### Preprocessor ###\n");
 		}
 		
 		compile_results = preprocessor(code);
@@ -229,7 +229,7 @@ public class CompilerJASM8 implements Compiler
 		
 		if (verbose_preproc)
 		{
-			log.println("\n pre-processing done\n");
+			log.println("\n preprocessing done\n");
 			log.println("--------------------------------------");
 		}
 		

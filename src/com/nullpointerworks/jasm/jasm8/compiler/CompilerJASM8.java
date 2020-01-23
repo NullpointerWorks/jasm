@@ -168,7 +168,7 @@ public class CompilerJASM8 implements Compiler
 		"  _  | | / _ \\ \\___ \\ | |\\/| |  / _ \\ \r\n" + 
 		" | |_| // ___ \\____) || |  | | | (_) |\r\n" + 
 		"  \\___//_/   \\______/ |_|  |_|  \\___/ \n");
-		log.println("       compiler "+version+"\n");
+		log.println("       Compiler "+version+"\n");
 		var compile_results = CompilerError.NO_ERROR;
 		
 		/*

@@ -2,6 +2,6 @@ package com.nullpointerworks.jasm;
 
 public interface Monitor
 {
-	void onOUT(int x);
+	void interrupt(int code);
 	void onEND(int x);
 }

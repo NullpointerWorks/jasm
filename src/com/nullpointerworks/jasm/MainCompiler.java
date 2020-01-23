@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import com.nullpointerworks.jasm.jasm8.compiler.CompilerJASM8;
 import com.nullpointerworks.jasm.jasm8.compiler.GenericLog;
-
 import com.nullpointerworks.util.FileUtil;
 import com.nullpointerworks.util.concurrency.Threading;
 import com.nullpointerworks.util.file.bytefile.ByteFileParser;
@@ -49,10 +48,7 @@ class MainCompiler
 	 */
 	public MainCompiler(String[] args)
 	{
-		args = new String[] {"-verbose-rpc",
-							 "-verify",
-							 "-log",
-							 "V:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"};
+		//args = new String[] {"-verbose-rpc", "-verify", "-log", "D:\\Development\\Assembly\\workspace\\jasm\\playground\\playground.jasm"};
 		startCompiler(args);
 	}
 	

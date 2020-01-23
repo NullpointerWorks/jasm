@@ -858,7 +858,7 @@ implements Processor, InstructionsJASM8
 		default: break;
 		}
 		
-		monitor.onOUT( output );
+		monitor.interrupt( output );
 	}
  	
     // ====================================================================

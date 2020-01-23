@@ -25,16 +25,18 @@ implements InstructionsJASM8, Monitor
 	
 	private byte[] program = null;
 	
-	private int fps			= 32;
-	private int cycles 		= fps * 625;  	// 10 kHz default
+	private int fps 		= 30;
+	private float spare 	= 0f;
+	private float cycles 	= 1f / 10000f; // 10 kHz
+	
 	private int rom_size 	= Memory.kiloByte; 	// 1 kilobyte default
-	private int ram_size 	= Memory.kiloByte*4; 	// 4 kilobytes default
+	private int ram_size 	= Memory.kiloByte*4; // 4 kilobytes default
 	
 	public static void main(String[] args) {new MainPlayground(args);}
 	
 	public MainPlayground(String[] args)
 	{
-		//args = new String[] {"D:\\Development\\Java\\export\\appJASM8\\playground.bin"};
+		//args = new String[] {"D:\\Development\\Assembly\\workspace\\jasm\\playground\\playground.bin"};
 		playground(args);
 	}
 	
@@ -88,11 +90,7 @@ implements InstructionsJASM8, Monitor
 					arg = arg.substring(2);
 					if (StringUtil.isInteger(arg))
 					{
-						int desCycles = Integer.parseInt(arg);
-						//to ensure 32 Hz program updates, divide desired cycles by 32 ( >> 5 )
-						desCycles = desCycles >> 5;
-						cycles = fps * desCycles;
-						if (cycles<1)cycles=1;
+						cycles = 1f / (float)Integer.parseInt(arg);
 					}
 					else
 					{
@@ -164,13 +162,18 @@ implements InstructionsJASM8, Monitor
 	{
 		rom = new Memory8bit( rom_size ).load(program);
 		ram = new Memory8bit( ram_size );
-		cpu = new ProcessorJASM8(this,rom,ram);
+		cpu = new ProcessorJASM8(this, rom, ram);
 	}
 	
 	@Override
 	public void onUpdate(double time)
 	{
-		for (int i=0; i<cycles; i++) cpu.cycle();
+		spare += time;
+		while (cycles < spare)
+		{
+			cpu.cycle();
+			spare -= cycles;
+		}
 	}
 	
 	@Override
@@ -181,7 +184,7 @@ implements InstructionsJASM8, Monitor
 	
 	// ==============================================================
 	
-	public void onOUT(int x) {System.out.println(""+x);}
+	public void interrupt(int code) {System.out.println(""+code);}
 	
 	public void onEND(int x) {loop.stop();}
 }

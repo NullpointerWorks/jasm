@@ -7,6 +7,7 @@ import com.nullpointerworks.jasm.jasm8.processor.InstructionsJASM8;
 import com.nullpointerworks.jasm.jasm8.processor.ProcessorJASM8;
 import com.nullpointerworks.jasm.util.Process;
 import com.nullpointerworks.game.LoopAdapter;
+import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.concurrency.Threading;
 import com.nullpointerworks.util.file.bytefile.ByteFile;
@@ -14,6 +15,19 @@ import com.nullpointerworks.util.file.bytefile.ByteFileParser;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 
+/*
+ * setting cpu cycles-per-second:
+ * -c[int]
+ * example: 
+ * -c10000
+ * 
+ * setting rom and ran size in bytes
+ * -ram[int]
+ * -rom[int]
+ * example: 
+ * -rom1024 -ram4096
+ * 
+ */
 class MainPlayground
 extends LoopAdapter
 implements InstructionsJASM8, Monitor
@@ -70,19 +84,6 @@ implements InstructionsJASM8, Monitor
 		String file = null;
 		for (String arg : args)
 		{
-			/*
-			 * setting cpu cycles-per-second:
-			 * -c[int]
-			 * example: 
-			 * -c10000
-			 * 
-			 * setting rom and ran size in bytes
-			 * -ram[int]
-			 * -rom[int]
-			 * example: 
-			 * -rom1024 -ram4096
-			 * 
-			 */
 			if (arg.startsWith("-"))
 			{
 				if (arg.startsWith("-c"))
@@ -163,6 +164,15 @@ implements InstructionsJASM8, Monitor
 		rom = new Memory8bit( rom_size ).load(program);
 		ram = new Memory8bit( ram_size );
 		cpu = new ProcessorJASM8(this, rom, ram);
+		
+		Log.out(
+		"      _    _    _________  __    ___  \r\n" + 
+		"     | |  / \\  / _____   \\/  |  ( _ ) \r\n" + 
+		"  _  | | / _ \\ \\___ \\ | |\\/| |  / _ \\ \r\n" + 
+		" | |_| // ___ \\____) || |  | | | (_) |\r\n" + 
+		"  \\___//_/   \\______/ |_|  |_|  \\___/ \n\n"+
+		"      Virtual Machine "+cpu.getVersion()+"\n");
+		
 	}
 	
 	@Override

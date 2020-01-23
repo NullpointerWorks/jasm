@@ -7,7 +7,7 @@ public interface InstructionsJASM8
 	 */
 	public static final byte NOP		= (byte)0b0000_0000;
 	public static final byte END		= (byte)0b1111_1111; // calls onEND(int)
-	public static final byte OUT		= (byte)0b0000_0001; // calls onOUT(int)
+	public static final byte OUT		= (byte)0b0000_0001; // calls interrupt(int)
 	public static final byte LOAD		= (byte)0b0000_0011;
 	public static final byte ADD		= (byte)0b0000_0100;
 	public static final byte SUB		= (byte)0b0000_0101;
@@ -30,6 +30,7 @@ public interface InstructionsJASM8
 	public static final byte SHL		= (byte)0b0001_0111;
 	public static final byte SHR		= (byte)0b0001_1000;
 	public static final byte BIT		= (byte)0b0001_1001;
+	public static final byte MRD		= (byte)0b0001_1010;
 	
 	/*
 	 * directives

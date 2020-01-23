@@ -12,6 +12,14 @@ import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 
 /*
+ * address range
+ * 16 bit = 2^16 = 65536 = 0xFFFF = 0b1111 1111 1111 1111
+ * 64 kiB max
+ * 32 kiB = 1024 * 32 = 32768
+ * 64 kiB = 1024 * 64 = 65536
+ * 
+ * 
+ * 
  * java -jar "jasmc.jar" %1
  * 
  * options
@@ -37,15 +45,6 @@ class MainCompiler
 	private boolean verifyOnly = false;
 	private LogListener log;
 	
-	/* 
-	 * 32 kiB = 1024 * 32 = 32768
-	 * 64 kiB = 1024 * 64 = 65536
-	 * 
-	 * address range
-	 * 16 bit = 2^16 = 65536 = 0xFFFF = 0b1111 1111 1111 1111
-	 * 64 kiB max
-	 * 
-	 */
 	public MainCompiler(String[] args)
 	{
 		//args = new String[] {"-verbose-rpc", "-verify", "-log", "D:\\Development\\Assembly\\workspace\\jasm\\playground\\playground.jasm"};

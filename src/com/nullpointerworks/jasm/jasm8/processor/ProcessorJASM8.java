@@ -7,6 +7,8 @@ import com.nullpointerworks.jasm.Processor;
 public class ProcessorJASM8 
 implements Processor, InstructionsJASM8
 {
+	public static final String version = "v1.1.0 beta";
+	
 	/*
 	 * 16-bit registers
 	 */
@@ -62,6 +64,12 @@ implements Processor, InstructionsJASM8
     	byte inst = _fetch();
     	_decode(inst);
     }
+	
+	@Override
+	public final String getVersion()
+	{
+		return version;
+	}
     
 	// ====================================================================
 	// 		INTERNAL
@@ -78,6 +86,7 @@ implements Processor, InstructionsJASM8
     	case PUSH: _push(); return;
     	case POP: _pop(); return;
     	case STO: _sto(); return;
+    	case MRD: _rd(); return;
     	case ADD: _add(false); return;
     	case SUB: _add(true); return;
     	case CMP: _cmp(); return;
@@ -399,7 +408,48 @@ implements Processor, InstructionsJASM8
 	}
     
     /*
-     * updated
+     * read memory
+     */
+    private final void _rd()
+    {
+    	byte directive 	= _fetch();
+    	byte H = (byte)((directive>>4)&0x0f);
+    	byte L = (byte)(directive&0x0f);
+    	
+    	short address = 0;
+    	byte b = 0;
+    	
+    	if (L == I)
+    	{
+        	address = _fetch16();
+    	}
+    	else
+    	{
+    		switch(H)
+    		{
+        	case IP: address = ip; return;
+        	case SP: address = sp; return;
+        	case RX: address = _to16(regXH, regXL); return;
+        	case RY: address = _to16(regYH, regYL); return;
+    		}
+    	}
+    	
+		b = ram.read(address);
+    	switch(H)
+		{
+    	case RA: regA = b; return;
+    	case RB: regB = b; return;
+    	case RC: regC = b; return;
+    	case RD: regD = b; return;
+    	case XH: regXH = b; return;
+    	case XL: regXL = b; return;
+    	case YH: regYH = b; return;
+    	case YL: regYL = b; return;
+		}
+    }
+    
+    /*
+     * storage
      */
     private final void _sto()
 	{
@@ -802,7 +852,10 @@ implements Processor, InstructionsJASM8
     		return;
     	}
     	
-    	// else, load from ram
+    	/*/ else, load from ram
+    	
+    	removed - load can no longer read directly from ram (as of 1.2.0 beta)
+    	
     	if ( L == M )
     	{
         	// 16 bit address from RAM to register
@@ -819,7 +872,7 @@ implements Processor, InstructionsJASM8
     		default: break;
     		}
     	}
-    	
+    	//*/
 	}
     
     /*

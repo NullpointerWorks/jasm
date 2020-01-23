@@ -36,6 +36,7 @@ implements InstructionsJASM8
 		 */
 		if (instruct.equals("load")) return inst.load(operands);
 		if (instruct.equals("sto")) return inst.sto(operands);
+		if (instruct.equals("rd")) return inst.rd(operands);
 		if (instruct.equals("push")) return inst.push(operands);
 		if (instruct.equals("pop")) return inst.latch(operands, POP);
 		
@@ -119,6 +120,43 @@ implements InstructionsJASM8
 			byte L = (byte)(imm16);
 			byte[] mc = new byte[] {PUSH, IL, H, L};
 			return new Draft(mc);
+		}
+		
+		return null; // generic error
+	}
+	
+	// ==================================================================
+	// RD
+	// ==================================================================
+	
+	private Draft rd(String operands)
+	{
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) return null; // error
+		String target = tokens[0];
+		String source = tokens[1];
+		
+		if ( isReg8(target) )
+		{
+			byte reg8 = getRegister(target);
+			if ( isAddress(source) )
+			{
+				source = source.substring(1);
+				byte dir = compileDirective(reg8,I);
+				short addr16 = getImm16(source);
+				byte H = (byte)(addr16>>8);
+				byte L = (byte)(addr16);
+				byte[] mc = new byte[] {MRD, dir, H, L};
+				return new Draft(mc);
+			}
+			
+			if ( isReg16(source) )
+			{
+				byte reg = getRegister(source);
+				byte dir = compileDirective(reg8,reg);
+				byte[] mc = new byte[] {MRD, dir};
+				return new Draft(mc);
+			}
 		}
 		
 		return null; // generic error
@@ -305,6 +343,10 @@ implements InstructionsJASM8
 				return new Draft(machine_code);
 			}
 			
+			/* 
+			
+			removed - load can no longer read directly from ram (as of 1.2.0 beta)
+			
 			if ( isAddress(source) )
 			{
 				source = source.substring(1);
@@ -315,6 +357,7 @@ implements InstructionsJASM8
 				machine_code = new byte[] {LOAD, dir, H, L};
 				return new Draft(machine_code);
 			}
+			//*/
 		}
 		
 		// register 8-bit

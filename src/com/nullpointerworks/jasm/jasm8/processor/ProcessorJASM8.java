@@ -435,11 +435,10 @@ implements Processor, InstructionsJASM8
     		case XL: address = (short)(regXL&0xff); break;
     		case YH: address = (short)(regYH&0xff); break;
     		case YL: address = (short)(regYL&0xff); break;
-    		
-        	case IP: address = ip; return;
-        	case SP: address = sp; return;
-        	case RX: address = _to16(regXH, regXL); return;
-        	case RY: address = _to16(regYH, regYL); return;
+        	case IP: address = ip; break;
+        	case SP: address = sp; break;
+        	case RX: address = _to16(regXH, regXL); break;
+        	case RY: address = _to16(regYH, regYL); break;
     		}
     	}
     	

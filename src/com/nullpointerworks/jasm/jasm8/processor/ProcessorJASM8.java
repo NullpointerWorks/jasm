@@ -7,7 +7,7 @@ import com.nullpointerworks.jasm.Processor;
 public class ProcessorJASM8 
 implements Processor, InstructionsJASM8
 {
-	public static final String version = "v1.1.0 beta";
+	public static final String version = "v1.0.0";
 	
 	/*
 	 * 16-bit registers
@@ -419,14 +419,23 @@ implements Processor, InstructionsJASM8
     	short address = 0;
     	byte b = 0;
     	
-    	if (L == I)
+    	if (L == IL)
     	{
         	address = _fetch16();
     	}
     	else
     	{
-    		switch(H)
+    		switch(L)
     		{
+    		case RA: address = (short)(regA&0xff); break;
+    		case RB: address = (short)(regB&0xff); break;
+    		case RC: address = (short)(regC&0xff); break;
+    		case RD: address = (short)(regD&0xff); break;
+    		case XH: address = (short)(regXH&0xff); break;
+    		case XL: address = (short)(regXL&0xff); break;
+    		case YH: address = (short)(regYH&0xff); break;
+    		case YL: address = (short)(regYL&0xff); break;
+    		
         	case IP: address = ip; return;
         	case SP: address = sp; return;
         	case RX: address = _to16(regXH, regXL); return;

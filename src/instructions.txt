@@ -282,12 +282,13 @@ _________________________________________________
 read ram
 
 syntax:
+	rd [reg8], [reg8]
 	rd [reg8], [reg16]
 	rd [reg8], &[imm16]
 	
 byte:
 	MRD, RR
-	MRD, R, (byte), (byte)
+	MRD, RI, (byte), (byte)
 	
 _________________________________________________
 pop from stack 

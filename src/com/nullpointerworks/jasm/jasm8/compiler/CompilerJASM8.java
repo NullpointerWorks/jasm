@@ -14,7 +14,7 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
 
 public class CompilerJASM8 implements Compiler
 {
-	public static final String version = "v2.0.0 beta";
+	public static final String version = "v1.0.0";
 	
 	private boolean verbose_parser = false;
 	private boolean verbose_preproc = false;

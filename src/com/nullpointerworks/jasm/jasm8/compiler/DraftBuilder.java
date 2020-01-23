@@ -142,7 +142,7 @@ implements InstructionsJASM8
 			if ( isAddress(source) )
 			{
 				source = source.substring(1);
-				byte dir = compileDirective(reg8,I);
+				byte dir = compileDirective(reg8,IL);
 				short addr16 = getImm16(source);
 				byte H = (byte)(addr16>>8);
 				byte L = (byte)(addr16);
@@ -150,7 +150,7 @@ implements InstructionsJASM8
 				return new Draft(mc);
 			}
 			
-			if ( isReg16(source) )
+			if ( isRegister(source) )
 			{
 				byte reg = getRegister(source);
 				byte dir = compileDirective(reg8,reg);

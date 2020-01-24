@@ -2,9 +2,12 @@ package com.nullpointerworks.jasm;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.nullpointerworks.jasm.jasm8.compiler.CompilerJASM8;
 import com.nullpointerworks.jasm.jasm8.compiler.GenericLog;
+import com.nullpointerworks.jasm.util.URL;
 import com.nullpointerworks.util.FileUtil;
 import com.nullpointerworks.util.concurrency.Threading;
 import com.nullpointerworks.util.file.bytefile.ByteFileParser;
@@ -33,6 +36,10 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
  * 
  * -log = logging
  * 
+ * -inc = include paths
+ * 
+ * -inc-path&path&...
+ * 
  */
 class MainCompiler
 {
@@ -43,11 +50,20 @@ class MainCompiler
 	private boolean compilerVerbose = false;
 	private boolean enableLogging = false;
 	private boolean verifyOnly = false;
+	private List<String> includepath;
 	private LogListener log;
 	
 	public MainCompiler(String[] args)
 	{
-		//args = new String[] {"-verbose-rpc", "-verify", "-log", "D:\\Development\\Assembly\\workspace\\jasm\\playground\\playground.jasm"};
+		//*
+		args = new String[] 
+		{
+			"-verbose-rpc", 
+			"-verify", 
+			"-log", 
+			"D:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"
+		};
+		//*/
 		startCompiler(args);
 	}
 	
@@ -82,6 +98,7 @@ class MainCompiler
 		}
 		
 		Threading.sleep(100);
+		includepath = new ArrayList<String>();
 		
 		/*
 		 * start compiling
@@ -112,12 +129,28 @@ class MainCompiler
 				continue;
 			}
 			
+			// enable logging
+			if (file.startsWith("-inc-"))
+			{
+				file = file.substring(5);
+				String[] paths = file.split("&");
+				for (String path : paths)
+				{
+					if (path.endsWith("/") || path.endsWith("\\")) { }
+					else path = (path+"\\");
+					includepath.add(path);
+				}
+				continue;
+			}
+			
 			compile(file);
 		}
 	}
 	
 	private void compile(String file)
 	{
+		includepath.add( new URL(file).folderPath() );
+		
 		/*
 		 * load text file
 		 */
@@ -148,6 +181,7 @@ class MainCompiler
 		jasm8.setCompilerVerbose(compilerVerbose);
 		jasm8.setVerifyOnly(verifyOnly);
 		jasm8.setLogListener(log);
+		jasm8.setIncludesPath(includepath);
 		byte[] program = jasm8.parse(file, tf.getLines());
 		
 		/*

@@ -20,7 +20,7 @@ public class CompilerJASM8 implements Compiler
 	private boolean verbose_preproc = false;
 	private boolean verbose_compiler = false;
 	private boolean verify_only = false;
-	private String includePath = "";
+	private List<String> includePath;
 	private LogListener log;
 	
 	/*
@@ -142,17 +142,9 @@ public class CompilerJASM8 implements Compiler
 	 * 
 	 */
 	@Override
-	public Compiler setIncludesPath(String path)
+	public Compiler setIncludesPath(List<String> paths)
 	{
-		if (path.endsWith("/") || path.endsWith("\\"))
-		{
-			includePath = path;
-		}
-		else
-		{
-			includePath = path+"\\";
-		}
-		
+		includePath = new ArrayList<String>(paths);
 		return this;
 	}
 	
@@ -197,20 +189,27 @@ public class CompilerJASM8 implements Compiler
 					log.println("\n include: "+inc+"\n");
 				}
 				
-				String[] lines = loadCode(includePath+inc);
-				if (lines!=null) 
+				/*
+				 * check each include path if the file can be found
+				 */
+				for (String path : includePath)
 				{
-					compile_results = parseCode(inc, lines);
-					if (compile_results != CompilerError.NO_ERROR) 
+					String[] lines = loadCode(path+inc);
+					if (lines!=null) 
 					{
-						log.error(compile_results.getDescription());
-						return null;
+						compile_results = parseCode(inc, lines);
+						if (compile_results != CompilerError.NO_ERROR) 
+						{
+							log.error(compile_results.getDescription());
+							return null;
+						}
 					}
-				}
-				else
-				{
-					log.error(inc+" (The system cannot find the file specified)");
-					return null;
+					else
+					{
+						//TODO
+						//log.error(inc+" (The system cannot find the file specified)");
+						//return null;
+					}
 				}
 			}
 		}

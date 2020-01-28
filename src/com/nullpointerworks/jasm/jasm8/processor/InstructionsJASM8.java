@@ -5,32 +5,32 @@ public interface InstructionsJASM8
 	/*
 	 * operation codes
 	 */
-	public static final byte NOP		= (byte)0b0000_0000;
-	public static final byte END		= (byte)0b1111_1111; // calls onEND(int)
-	public static final byte OUT		= (byte)0b0000_0001; // calls interrupt(int)
-	public static final byte LOAD		= (byte)0b0000_0011;
+	public static final byte NOP		= (byte)0b0000_0000; // 0
+	public static final byte OUT		= (byte)0b0000_0001; // 1 - calls interrupt(int)
+	public static final byte LOAD		= (byte)0b0000_0011; // 3
 	public static final byte ADD		= (byte)0b0000_0100;
 	public static final byte SUB		= (byte)0b0000_0101;
 	public static final byte CMP		= (byte)0b0000_0110;
 	public static final byte JMP		= (byte)0b0000_0111;
 	public static final byte NEG		= (byte)0b0000_1000;
-	public static final byte STO		= (byte)0b0000_1001;
-	public static final byte PUSH		= (byte)0b0000_1010;
-	public static final byte POP		= (byte)0b0000_1011;
+	public static final byte STO		= (byte)0b0000_1001; // 9
+	public static final byte PUSH		= (byte)0b0000_1010; // 10
+	public static final byte POP		= (byte)0b0000_1011; // 11
 	public static final byte CALL		= (byte)0b0000_1100;
-	public static final byte RET		= (byte)0b0000_1101;
+	public static final byte RET		= (byte)0b0000_1101; // 13
 	public static final byte JE			= (byte)0b0000_1110;
 	public static final byte JNE		= (byte)0b0000_1111;
 	public static final byte JL			= (byte)0b0001_0000;
 	public static final byte JLE		= (byte)0b0001_0001;
 	public static final byte JG			= (byte)0b0001_0010;
 	public static final byte JGE		= (byte)0b0001_0011;
-	public static final byte INC		= (byte)0b0001_0100;
+	public static final byte INC		= (byte)0b0001_0100; // 20
 	public static final byte DEC		= (byte)0b0001_0101;
 	public static final byte SHL		= (byte)0b0001_0111;
 	public static final byte SHR		= (byte)0b0001_1000;
 	public static final byte BIT		= (byte)0b0001_1001;
-	public static final byte MRD		= (byte)0b0001_1010;
+	public static final byte MRD		= (byte)0b0001_1010; // 26
+	public static final byte END		= (byte)0b1111_1111; // 255 - calls onEND(int)
 	
 	/*
 	 * directives

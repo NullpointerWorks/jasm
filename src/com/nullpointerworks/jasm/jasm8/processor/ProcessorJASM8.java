@@ -77,6 +77,7 @@ implements Processor, InstructionsJASM8
     
     private final void _decode(byte inst)
     {
+    	//Log.out( "inst: "+(inst&0xff)+" IP:"+(ip));
     	switch(inst)
     	{
     	case NOP: return;
@@ -395,7 +396,7 @@ implements Processor, InstructionsJASM8
     	case YL: regYL = data; return;
     	}
     	
-    	short pointer = (short)((ram.read(sp)<<8) + data);
+    	short pointer = _to16(ram.read(sp), data);
     	sp++;
     	
     	switch(directive)
@@ -674,9 +675,7 @@ implements Processor, InstructionsJASM8
     	sp++;
     	byte arrdsH = ram.read(sp);
     	sp++;
-    	
-    	short address = (short)((arrdsH<<8) + arrdsL);
-    	ip = address;
+    	ip = _to16(arrdsH, arrdsL);
 	}
     
     /*

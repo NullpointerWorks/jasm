@@ -32,6 +32,7 @@ public class CompilerJASM8 implements Compiler
 	private Map<String, String> equals = null;
 	private List<SourceCode> code = null;
 	private List<String> includes = null;
+	private List<String> includesAux = null;
 	private List<Draft> draft = null;
 	private List<Draft> labeled = null;
 	private byte[] machine_code = null;
@@ -69,7 +70,10 @@ public class CompilerJASM8 implements Compiler
 		code = new ArrayList<SourceCode>();
 		
 		if (includes!=null) includes.clear();
-		includes = new ArrayList<String>();
+		includes = new ArrayList<String>();		
+		
+		if (includesAux!=null) includesAux.clear();
+		includesAux = new ArrayList<String>();
 		
 		if (labels!=null) labels.clear();
 		labels = new HashMap<String, Integer>();
@@ -191,43 +195,54 @@ public class CompilerJASM8 implements Compiler
 		}
 		
 		/*
-		 * scan include paths
+		 * scan include paths.
+		 * each parse cycle adds new non-included source files. 
+		 * then they get parsed in the next iteration
 		 */
-		for (String inc : includes)
+		do 
 		{
-			if (inc.endsWith(".jasm"))
+			int l = includesAux.size()-1;
+			for (;l>=0;l--)
 			{
-				if (verbose_parser)
-				{
-					log.println("\n include: "+inc+"\n");
-				}
+				String inc = includesAux.get(l);
 				
-				/*
-				 * check each include path if the file can be found
-				 */
-				boolean found = false;
-				for (String path : includePath)
+				if (inc.endsWith(".jasm"))
 				{
-					String[] lines = loadCode(path+inc);
-					if (lines!=null) 
+					if (verbose_parser)
 					{
-						found = true;//path+inc;
-						compile_results = parseCode(inc, lines);
-						if (compile_results != CompilerError.NO_ERROR) 
+						log.println("\n include: "+inc+"\n");
+					}
+					
+					/*
+					 * check each include path if the file can be found
+					 */
+					boolean found = false;
+					for (String path : includePath)
+					{
+						String[] lines = loadCode(path+inc);
+						if (lines!=null) 
 						{
-							log.error(compile_results.getDescription());
-							return null;
+							found = true;
+							compile_results = parseCode(inc, lines);
+							if (compile_results != CompilerError.NO_ERROR) 
+							{
+								log.error(compile_results.getDescription());
+								return null;
+							}
 						}
+					}
+					
+					if (!found)
+					{
+						log.error(inc+" (The system cannot find the file specified)");
+						return null;
 					}
 				}
 				
-				if (!found)
-				{
-					log.error(inc+" (The system cannot find the file specified)");
-					return null;
-				}
+				includesAux.remove(l);
 			}
 		}
+		while(includesAux.size() > 0);
 		
 		if (verbose_parser)
 		{
@@ -403,7 +418,11 @@ public class CompilerJASM8 implements Compiler
 			if (include.startsWith("\"") && include.endsWith("\"")) 
 			{
 				include = include.replace("\"", "");
-				includes.add(include);
+				if (!includes.contains(include)) 
+				{
+					includes.add(include);
+					includesAux.add(include);
+				}
 				return CompilerError.NO_ERROR;
 			}
 			else

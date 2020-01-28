@@ -36,9 +36,7 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
  * 
  * -log = logging
  * 
- * -inc = include paths
- * 
- * -inc-path&path&...
+ * -link = include linker.txt file
  * 
  */
 class MainCompiler
@@ -49,6 +47,7 @@ class MainCompiler
 	private boolean preprocessorVerbose = false;
 	private boolean compilerVerbose = false;
 	private boolean enableLogging = false;
+	private boolean enableLinker = false;
 	private boolean verifyOnly = false;
 	private List<String> includepath;
 	private LogListener log;
@@ -60,7 +59,8 @@ class MainCompiler
 		{
 			"-verbose-rpc", 
 			"-verify", 
-			"-log", 
+			"-log",  
+			"-link", 
 			"D:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"
 		};
 		//*/
@@ -129,17 +129,10 @@ class MainCompiler
 				continue;
 			}
 			
-			// enable logging
-			if (file.startsWith("-inc-"))
+			// read linker file
+			if (file.startsWith("-link"))
 			{
-				file = file.substring(5);
-				String[] paths = file.split("&");
-				for (String path : paths)
-				{
-					if (path.endsWith("/") || path.endsWith("\\")) { }
-					else path = (path+"\\");
-					includepath.add(path);
-				}
+				enableLinker = true;
 				continue;
 			}
 			
@@ -149,7 +142,22 @@ class MainCompiler
 	
 	private void compile(String file)
 	{
-		includepath.add( new URL(file).folderPath() );
+		URL source = new URL(file);
+		
+		/*
+		 * add include paths. always have the source path as include path
+		 */
+		includepath.add( source.folderPath() );
+		if (enableLinker)
+		{
+			List<String> paths = null;
+			try {paths = includes( source.folderPath() );} 
+			catch (FileNotFoundException e) {e.printStackTrace();}
+			
+			if (paths != null)
+			for (String path : paths) 
+				includepath.add(path);
+		}
 		
 		/*
 		 * load text file
@@ -205,5 +213,26 @@ class MainCompiler
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	/*
+	 * read "includes.txt"
+	 */
+	private List<String> includes(String path) throws FileNotFoundException
+	{
+		TextFile tf = TextFileParser.file(path+"\\linker.txt");
+		List<String> paths = new ArrayList<String>();
+		
+		String[] lines = tf.getLines();
+		for (String line : lines)
+		{
+			line = line.trim();
+			if (!line.startsWith("#"))
+			{
+				line = line.replace("\\", "/");
+				paths.add(line);
+			}
+		}
+		return paths;
 	}
 }

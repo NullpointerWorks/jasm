@@ -170,7 +170,13 @@ public class CompilerJASM8 implements Compiler
 		if (verbose_parser)
 		{
 			log.println("--------------------------------------");
+			
+			log.println("\n ### linker ###\n");
+			for (String inc : includePath)
+				log.println("   "+inc);
+			
 			log.println("\n ### parsing ###\n");
+			
 		}
 		
 		compile_results = parseCode(filename, text);
@@ -180,6 +186,9 @@ public class CompilerJASM8 implements Compiler
 			return null;
 		}
 		
+		/*
+		 * scan include paths
+		 */
 		for (String inc : includes)
 		{
 			if (inc.endsWith(".jasm"))
@@ -192,11 +201,13 @@ public class CompilerJASM8 implements Compiler
 				/*
 				 * check each include path if the file can be found
 				 */
+				boolean found = false;
 				for (String path : includePath)
 				{
 					String[] lines = loadCode(path+inc);
 					if (lines!=null) 
 					{
+						found = true;//path+inc;
 						compile_results = parseCode(inc, lines);
 						if (compile_results != CompilerError.NO_ERROR) 
 						{
@@ -204,12 +215,12 @@ public class CompilerJASM8 implements Compiler
 							return null;
 						}
 					}
-					else
-					{
-						//TODO
-						//log.error(inc+" (The system cannot find the file specified)");
-						//return null;
-					}
+				}
+				
+				if (!found)
+				{
+					log.error(inc+" (The system cannot find the file specified)");
+					return null;
 				}
 			}
 		}

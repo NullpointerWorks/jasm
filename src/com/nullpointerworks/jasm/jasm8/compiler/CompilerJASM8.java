@@ -455,7 +455,14 @@ public class CompilerJASM8 implements Compiler
 				return CompilerError.numberError(pc);
 			}
 			
-			equals.put(name, value);
+			if (!equals.containsKey(name)) 
+			{
+				equals.put(name, value);
+			}
+			else
+			{
+				// notify duplicate include names TODO
+			}
 			return CompilerError.NO_ERROR;
 		}
 		

@@ -9,6 +9,7 @@ import com.nullpointerworks.jasm.jasm8.compiler.CompilerJASM8;
 import com.nullpointerworks.jasm.jasm8.compiler.GenericLog;
 import com.nullpointerworks.jasm.util.URL;
 import com.nullpointerworks.util.FileUtil;
+import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.concurrency.Threading;
 import com.nullpointerworks.util.file.bytefile.ByteFileParser;
 import com.nullpointerworks.util.file.textfile.TextFile;
@@ -54,14 +55,14 @@ class MainCompiler
 	
 	public MainCompiler(String[] args)
 	{
-		//*
+		/*
 		args = new String[] 
 		{
 			"-verbose-rpc", 
 			"-verify", 
 			"-log",  
 			"-link", 
-			"D:\\Development\\Assembly\\workspace\\jasm\\compilertest\\playground.jasm"
+			"D:\\Development\\Assembly\\workspace\\jasm\\playground\\playground.jasm"
 		};
 		//*/
 		startCompiler(args);
@@ -152,7 +153,12 @@ class MainCompiler
 		{
 			List<String> paths = null;
 			try {paths = includes( source.folderPath() );} 
-			catch (FileNotFoundException e) {e.printStackTrace();}
+			catch (FileNotFoundException e) 
+			{
+				//e.printStackTrace();
+				Log.err("Error: Linker file not found!\nAdd a \"linker.txt\" in the source directory.");
+				return;
+			}
 			
 			if (paths != null)
 			for (String path : paths) 

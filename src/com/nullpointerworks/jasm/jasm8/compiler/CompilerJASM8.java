@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.nullpointerworks.jasm.Compiler;
 import com.nullpointerworks.jasm.LogListener;
@@ -171,9 +172,12 @@ public class CompilerJASM8 implements Compiler
 		{
 			log.println("--------------------------------------");
 			
-			log.println("\n ### linker ###\n");
-			for (String inc : includePath)
-				log.println("   "+inc);
+			if (includePath.size() > 1)
+			{
+				log.println("\n ### linker ###\n");
+				for (String inc : includePath)
+					log.println("   "+inc);
+			}
 			
 			log.println("\n ### parsing ###\n");
 			
@@ -318,6 +322,9 @@ public class CompilerJASM8 implements Compiler
 		int totalLines = text.length;
 		strLeng = (""+totalLines).length() + 1;
 		
+		/*
+		 * first parse of source code
+		 */
 		for (String l : text)
 		{
 			error = CompilerError.NO_ERROR;
@@ -430,6 +437,7 @@ public class CompilerJASM8 implements Compiler
 			}
 			
 			equals.put(name, value);
+			return CompilerError.NO_ERROR;
 		}
 		
 		/*
@@ -448,9 +456,9 @@ public class CompilerJASM8 implements Compiler
 	private boolean isValidNumber(String number)
 	{
 		if (number.startsWith("&")) number = number.substring(1);
-		if (! StringUtil.isInteger(number)) return false;
-		if (! StringUtil.isHexadec(number)) return false;
-		return true;
+		if (StringUtil.isInteger(number)) return true;
+		if (StringUtil.isHexadec(number)) return true;
+		return false;
 	}
 	
 	private boolean isValidLabel(String label)
@@ -485,7 +493,7 @@ public class CompilerJASM8 implements Compiler
 		if (verbose_preproc) strLeng = 2;
 		
 		/*
-		 * track declaration and labels
+		 * track declaration, directives and labels
 		 * process instructions
 		 */
 		for (int i=0,l=code.size(); i<l; i++)
@@ -539,7 +547,6 @@ public class CompilerJASM8 implements Compiler
 		}
 		
 		/*
-		 * TODO try something else
 		 * check for duplicate pointer labels
 		 */
 		if (verbose_preproc)
@@ -574,6 +581,18 @@ public class CompilerJASM8 implements Compiler
 	private CompilerError processLine(SourceCode code) 
 	{
 		String line = code.getLineText();
+		
+		// check for equ directives
+		var equset = equals.entrySet();
+		for (Entry<String,String> equ : equset)
+		{
+			String name = equ.getKey();
+			if (line.contains(name))
+			{
+				line = line.replace(name, equ.getValue());
+				break;
+			}
+		}
 		
 		// is a label
 		if (line.contains(":")) 

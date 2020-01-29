@@ -891,28 +891,28 @@ implements Processor, InstructionsJASM8
 		int output = 0;
 		switch(directive)
 		{
-		case RA: output = regA&0xff; break;
-		case RB: output = regB&0xff; break;
-		case RC: output = regC&0xff; break;
-		case RD: output = regD&0xff; break;
-		case XH: output = regXH&0xff; break;
-		case XL: output = regXL&0xff; break;
-		case YH: output = regYH&0xff; break;
-		case YL: output = regYL&0xff; break;
-		case IP: output = ip&0xffff; break;
-		case SP: output = sp&0xffff; break;
+		case RA: output = regA; break;
+		case RB: output = regB; break;
+		case RC: output = regC; break;
+		case RD: output = regD; break;
+		case XH: output = regXH; break;
+		case XL: output = regXL; break;
+		case YH: output = regYH; break;
+		case YL: output = regYL; break;
+		case IP: output = ip; break;
+		case SP: output = sp; break;
 		case RX: output = _to16(regXH, regXL); break;
 		case RY: output = _to16(regYH, regYL); break;
 		case I:
 			{
 				byte operant = _fetch();
-				output = operant&0xff;
+				output = operant;
 				break;
 			}
 		case IL:
 			{
 				short operant = _fetch16();
-				output = operant&0xffff;
+				output = operant;
 				break;
 			}
 		default: break;
@@ -1056,6 +1056,9 @@ implements Processor, InstructionsJASM8
         return sum;
     }
 	
+ 	/*
+ 	 * simulate two's compliment. java VM probably already does that
+ 	 */
     private final byte _neg(byte num)
     {
         return (byte)(~num+1);

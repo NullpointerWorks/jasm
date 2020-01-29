@@ -58,7 +58,7 @@ class MainCompiler
 		/*
 		args = new String[] 
 		{
-			"-verbose-rpc", 
+			"-verbose-r", 
 			"-verify", 
 			"-log",  
 			"-link", 

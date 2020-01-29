@@ -2,16 +2,18 @@ package com.nullpointerworks.jasm.jasm8.compiler;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.nullpointerworks.jasm.Compiler;
 import com.nullpointerworks.jasm.LogListener;
+import com.nullpointerworks.jasm.util.EquRecord;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
+import com.nullpointerworks.util.pack.Tuple;
 
 public class CompilerJASM8 implements Compiler
 {
@@ -29,7 +31,10 @@ public class CompilerJASM8 implements Compiler
 	 */
 	private Map<String, Integer> labels = null;
 	private List<String> unused = null;
-	private Map<String, String> equals = null;
+	
+	private List<EquRecord> equals = null;
+	private List<EquRecord> equDups = null;
+	
 	private List<SourceCode> code = null;
 	private List<String> includes = null;
 	private List<String> includesAux = null;
@@ -79,7 +84,10 @@ public class CompilerJASM8 implements Compiler
 		labels = new HashMap<String, Integer>();
 		
 		if (equals!=null) equals.clear();
-		equals = new HashMap<String, String>();
+		equals = new ArrayList<EquRecord>();
+		
+		if (equDups!=null) equDups.clear();
+		equDups = new ArrayList<EquRecord>();
 		
 		if (unused!=null) unused.clear();
 		unused = new ArrayList<String>();
@@ -210,7 +218,7 @@ public class CompilerJASM8 implements Compiler
 				{
 					if (verbose_parser)
 					{
-						log.println("\n include: "+inc+"\n");
+						log.println("\n include: "+inc+"");
 					}
 					
 					/*
@@ -246,6 +254,17 @@ public class CompilerJASM8 implements Compiler
 		
 		if (verbose_parser)
 		{
+			// notify about duplicate ".equ" declarations
+			equDups.sort(comp); 
+			if (equDups.size() > 0)
+			{
+				log.println("\n Duplicate \"equ\" declared\n");
+				for (EquRecord entry : equDups)
+				{
+					log.println(" .equ "+entry.first + " "+entry.third.getSourceFile());
+				}
+			}
+			
 			log.println("\n parsing done\n");
 			log.println("--------------------------------------");
 		}
@@ -305,6 +324,22 @@ public class CompilerJASM8 implements Compiler
 		return machine_code;
 	}
 	
+	/*
+	 * lexicographic sort
+	 */
+	private Comparator<EquRecord> comp = new Comparator<EquRecord>()
+	{
+		@Override
+		public int compare(EquRecord p1, EquRecord p2) 
+		{
+			return p1.first.compareTo(p2.first);
+		}
+	};
+
+	/*
+	 * load a file into memory
+	 * return all lines as an array
+	 */
 	private String[] loadCode(String inc)
 	{
 		TextFile tf = null;
@@ -455,13 +490,20 @@ public class CompilerJASM8 implements Compiler
 				return CompilerError.numberError(pc);
 			}
 			
-			if (!equals.containsKey(name)) 
+			// find equ duplicates
+			var pack3 = findEquTuple(name,equals);
+			if (pack3 == null) 
 			{
-				equals.put(name, value);
+				putEqu(name, value, pc, equals);
 			}
 			else
 			{
-				// notify duplicate include names TODO
+				// make sure its only added once in the duplicate list hen found
+				if (findEquTuple(name,equDups) == null) 
+					equDups.add(pack3);
+				
+				// add name and source to duplicate list
+				equDups.add( new EquRecord(name, "", pc));
 			}
 			return CompilerError.NO_ERROR;
 		}
@@ -479,6 +521,18 @@ public class CompilerJASM8 implements Compiler
 		return CompilerError.NO_ERROR;
 	}
 	
+	private void putEqu(String n, String v, SourceCode sc, List<EquRecord> equs) 
+	{
+		equs.add( new EquRecord(n, v, sc) );
+	}
+	
+	private EquRecord findEquTuple(String name, List<EquRecord> equs) 
+	{
+		for (EquRecord t : equs)
+			if (t.first.equals(name)) return t;
+		return null;
+	}
+
 	private boolean isValidNumber(String number)
 	{
 		if (number.startsWith("&")) number = number.substring(1);
@@ -609,13 +663,12 @@ public class CompilerJASM8 implements Compiler
 		String line = code.getLineText();
 		
 		// check for equ directives
-		var equset = equals.entrySet();
-		for (Entry<String,String> equ : equset)
+		for (Tuple<String,String,SourceCode> equ : equals)
 		{
-			String name = equ.getKey();
+			String name = equ.first;
 			if (line.contains(name))
 			{
-				line = line.replace(name, equ.getValue());
+				line = line.replace(name, equ.second);
 				break;
 			}
 		}

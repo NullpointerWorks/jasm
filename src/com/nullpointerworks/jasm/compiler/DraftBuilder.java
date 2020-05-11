@@ -1,10 +1,9 @@
 package com.nullpointerworks.jasm.compiler;
 
-import com.nullpointerworks.jasm.processor.InstructionsJASM8;
 import com.nullpointerworks.util.StringUtil;
 
 public class DraftBuilder 
-implements InstructionsJASM8
+implements InstructionsJASM
 {
 	private static DraftBuilder inst = null;
 	public static DraftBuilder getInstance()
@@ -27,9 +26,8 @@ implements InstructionsJASM8
 		 * generic
 		 */
 		if (instruct.equals("nop")) return inst.comm(operands, NOP);
-		if (instruct.equals("end")) return inst.comm(operands, END);
 		if (instruct.equals("ret")) return inst.comm(operands, RET);
-		if (instruct.equals("out")) return inst.interrupt(operands);
+		if (instruct.equals("int")) return inst.interrupt(operands);
 		
 		/*
 		 * memory operations
@@ -409,12 +407,14 @@ implements InstructionsJASM8
 	{
 		byte[] machine_code = null;
 		
+		/*
 		if ( isRegister(op) )
 		{
 			byte reg = getRegister(op);
 			machine_code = new byte[] {INT, reg};
 			return new Draft(machine_code);
 		}
+		//*/
 		
 		if ( isImm8(op) )
 		{

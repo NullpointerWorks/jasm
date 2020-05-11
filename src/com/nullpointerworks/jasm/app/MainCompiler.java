@@ -58,11 +58,11 @@ class MainCompiler
 	
 	public MainCompiler(String[] args)
 	{
-		/*
+		//*
 		args = new String[] 
 		{
 			"-verbose-r", 
-			"-verify", 
+			//"-verify", // verify only, no compile
 			"-log",  
 			"-link", 
 			"D:\\Development\\Assembly\\workspace\\jasm\\playground\\playground.jasm"

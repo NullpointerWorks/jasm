@@ -1,8 +1,6 @@
 package com.nullpointerworks.jasm.compiler;
 
-import com.nullpointerworks.jasm.processor.InstructionsJASM8;
-
-public class Draft implements InstructionsJASM8
+public class Draft implements InstructionsJASM
 {
 	private boolean hasLabel = false;
 	private String label = "";

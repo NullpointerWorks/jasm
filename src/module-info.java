@@ -5,5 +5,4 @@ module libnpw.jasm
 
 	exports com.nullpointerworks.jasm;
 	exports com.nullpointerworks.jasm.compiler;
-	exports com.nullpointerworks.jasm.processor;
 }

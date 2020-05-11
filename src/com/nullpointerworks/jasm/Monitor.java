@@ -2,6 +2,5 @@ package com.nullpointerworks.jasm;
 
 public interface Monitor
 {
-	void interrupt(int code);
-	void onEND(int x);
+	void onInterrupt(Processor prog, int code);
 }

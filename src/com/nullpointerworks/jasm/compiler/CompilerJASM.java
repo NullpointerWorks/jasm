@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.nullpointerworks.jasm.Compiler;
 import com.nullpointerworks.jasm.LogListener;
-import com.nullpointerworks.jasm.util.EquRecord;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
@@ -168,12 +167,12 @@ public class CompilerJASM implements Compiler
 	public byte[] parse(String filename, String[] text)
 	{
 		log.println(
-		"      _    _    _________  __    ___  \r\n" + 
-		"     | |  / \\  / _____   \\/  |  ( _ ) \r\n" + 
-		"  _  | | / _ \\ \\___ \\ | |\\/| |  / _ \\ \r\n" + 
-		" | |_| // ___ \\____) || |  | | | (_) |\r\n" + 
-		"  \\___//_/   \\______/ |_|  |_|  \\___/ \n");
-		log.println("       Compiler "+version+"\n");
+		"       _    _    ________  __ \n" + 
+		"      | |  / \\  / ____   \\/  |\n" + 
+		"   _  | | / _ \\ \\___ \\| |\\/| |\n" + 
+		"  | |_| // ___ \\____) | |  | |\n" + 
+		"   \\___//_/   \\______/|_|  |_|\n");
+		log.println("         Compiler "+version+"\n");
 		var compile_results = CompilerError.NO_ERROR;
 		
 		/*

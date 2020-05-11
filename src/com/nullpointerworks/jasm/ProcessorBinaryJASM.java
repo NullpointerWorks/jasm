@@ -1,11 +1,10 @@
-package com.nullpointerworks.jasm.processor;
+package com.nullpointerworks.jasm;
 
-import com.nullpointerworks.jasm.Memory;
-import com.nullpointerworks.jasm.Monitor;
-import com.nullpointerworks.jasm.Processor;
+import com.nullpointerworks.jasm.compiler.InstructionsJASM;
+import com.nullpointerworks.jasm.compiler.Register;
 
-public class ProcessorJASM8 
-implements Processor, InstructionsJASM8
+public class ProcessorBinaryJASM 
+implements Processor, InstructionsJASM
 {
 	public static final String version = "v1.0.0";
 	
@@ -43,7 +42,7 @@ implements Processor, InstructionsJASM8
     private Memory rom = null;
     private Memory ram = null;
 	
-	public ProcessorJASM8(Monitor m, Memory rom, Memory ram) 
+	public ProcessorBinaryJASM(Monitor m, Memory rom, Memory ram) 
 	{
 		this.monitor=m;
 		this.rom=rom;
@@ -70,6 +69,28 @@ implements Processor, InstructionsJASM8
 	{
 		return version;
 	}
+
+	@Override
+	public int getRegister(Register reg) 
+	{
+		switch(reg)
+		{
+		case RA: return (regA&0xff);
+		case RB: return (regB&0xff);
+		case RC: return (regC&0xff);
+		case RD: return (regD&0xff);
+		case XH: return (regXH&0xff);
+		case XL: return (regXL&0xff);
+		case YH: return (regYH&0xff);
+		case YL: return (regYL&0xff);
+		case IP: return (ip&0xffff);
+		case SP: return (sp&0xffff);
+		case RX: return _to16(regXH, regXL);
+		case RY: return _to16(regYH, regYL);
+			default: break;
+		}
+		return 0;
+	}
     
 	// ====================================================================
 	// 		INTERNAL
@@ -94,7 +115,6 @@ implements Processor, InstructionsJASM8
     	case SHL: _shl(); return;
     	case SHR: _shr(); return;
     	case BIT: _bit(); return;
-    	case END: _end(); return;
     	case LOAD: _load(); return;
     	case INT: _int(); return;
     	case RET: _ret(); return;
@@ -681,15 +701,6 @@ implements Processor, InstructionsJASM8
     /*
      * updated
      */
-    private final void _end()
-	{
-    	HF = true;
-    	monitor.onEND(regD);
-	}
-    
-    /*
-     * updated
-     */
     private final void _jmp()
 	{
     	short addrs16 = _fetch16(); // label as address to instruction
@@ -918,7 +929,7 @@ implements Processor, InstructionsJASM8
 		default: break;
 		}
 		
-		monitor.interrupt( output );
+		monitor.onInterrupt(this, output);
 	}
  	
     // ====================================================================

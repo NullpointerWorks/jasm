@@ -1,6 +1,5 @@
-package com.nullpointerworks.jasm.util;
+package com.nullpointerworks.jasm.compiler;
 
-import com.nullpointerworks.jasm.compiler.SourceCode;
 import com.nullpointerworks.util.pack.Tuple;
 
 /*

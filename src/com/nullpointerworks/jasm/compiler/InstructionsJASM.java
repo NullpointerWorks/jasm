@@ -1,6 +1,6 @@
-package com.nullpointerworks.jasm.processor;
+package com.nullpointerworks.jasm.compiler;
 
-public interface InstructionsJASM8
+public interface InstructionsJASM
 {
 	/*
 	 * operation codes
@@ -30,7 +30,6 @@ public interface InstructionsJASM8
 	public static final byte SHR		= (byte)0b0001_1000;
 	public static final byte BIT		= (byte)0b0001_1001;
 	public static final byte MRD		= (byte)0b0001_1010; // 26
-	public static final byte END		= (byte)0b1111_1111; // 255 - calls onEND(int)
 	
 	/*
 	 * directives
@@ -54,7 +53,6 @@ public interface InstructionsJASM8
 	/*
 	 * pre-compiled
 	 */
-	
 	public static final byte RAI	= (byte)0b0001_0000; // immediate -> register A
 	public static final byte RBI 	= (byte)0b0010_0000; // immediate -> register B
 	public static final byte RCI 	= (byte)0b0011_0000; // immediate -> register C

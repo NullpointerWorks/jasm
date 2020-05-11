@@ -6,8 +6,9 @@ import com.nullpointerworks.jasm.Memory;
 import com.nullpointerworks.jasm.Memory8bit;
 import com.nullpointerworks.jasm.Monitor;
 import com.nullpointerworks.jasm.Processor;
-import com.nullpointerworks.jasm.processor.InstructionsJASM8;
-import com.nullpointerworks.jasm.processor.ProcessorJASM8;
+import com.nullpointerworks.jasm.ProcessorBinaryJASM;
+import com.nullpointerworks.jasm.compiler.InstructionsJASM;
+import com.nullpointerworks.jasm.compiler.Register;
 import com.nullpointerworks.jasm.util.Process;
 import com.nullpointerworks.game.LoopAdapter;
 import com.nullpointerworks.util.Log;
@@ -33,7 +34,7 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
  */
 class MainPlayground
 extends LoopAdapter
-implements InstructionsJASM8, Monitor
+implements InstructionsJASM, Monitor
 {
 	private Process loop;
 	private Memory rom; // read-only memory
@@ -53,7 +54,7 @@ implements InstructionsJASM8, Monitor
 	
 	public MainPlayground(String[] args)
 	{
-		//args = new String[] {"D:\\Development\\Assembly\\workspace\\jasm\\playground\\playground.bin"};
+		args = new String[] {"D:\\Development\\Assembly\\workspace\\jasm\\playground\\playground.bin"};
 		playground(args);
 	}
 	
@@ -166,15 +167,16 @@ implements InstructionsJASM8, Monitor
 	{
 		rom = new Memory8bit( rom_size ).load(program);
 		ram = new Memory8bit( ram_size );
-		cpu = new ProcessorJASM8(this, rom, ram);
+		cpu = new ProcessorBinaryJASM(this, rom, ram);
 		
 		Log.out(
-		"      _    _    _________  __    ___  \r\n" + 
-		"     | |  / \\  / _____   \\/  |  ( _ ) \r\n" + 
-		"  _  | | / _ \\ \\___ \\ | |\\/| |  / _ \\ \r\n" + 
-		" | |_| // ___ \\____) || |  | | | (_) |\r\n" + 
-		"  \\___//_/   \\______/ |_|  |_|  \\___/ \n\n"+
-		"      Virtual Machine "+cpu.getVersion()+"\n");
+		"          _    _    ________  __ \r\n" + 
+		"         | |  / \\  / ____   \\/  |\r\n" + 
+		"      _  | | / _ \\ \\___ \\| |\\/| |\r\n" + 
+		"     | |_| // ___ \\____) | |  | |\r\n" + 
+		"      \\___//_/   \\______/|_|  |_|\r\n\r\n" + 
+		"    Java 8-bit binary virtual machine\r\n" + 
+		"    JASM Version "+cpu.getVersion()+"\n");
 		
 	}
 	
@@ -197,7 +199,25 @@ implements InstructionsJASM8, Monitor
 	
 	// ==============================================================
 	
-	public void interrupt(int code) {System.out.println(""+code);}
-	
-	public void onEND(int x) {loop.stop();}
+	@Override
+	public void onInterrupt(Processor prog, int code) 
+	{
+		System.out.println("interrupt : "+code);
+		switch(code)
+		{
+		case 0:
+			int regV = prog.getRegister(Register.RA);
+			System.out.println(""+regV);
+			regV = prog.getRegister(Register.RB);
+			System.out.println(""+regV);
+			regV = prog.getRegister(Register.RC);
+			System.out.println(""+regV);
+			regV = prog.getRegister(Register.RD);
+			System.out.println(""+regV);
+			break;
+			
+		default: 
+			System.exit(0);
+		}
+	}
 }

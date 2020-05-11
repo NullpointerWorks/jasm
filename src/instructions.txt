@@ -1,11 +1,12 @@
-      _    _    _________  __    ___  
-     | |  / \  / _____   \/  |  ( _ ) 
-  _  | | / _ \ \___ \ | |\/| |  / _ \ 
- | |_| // ___ \____) || |  | | | (_) |
-  \___//_/   \______/ |_|  |_|  \___/ 
-
-       Java 8-bit virtual machine
-
+          _    _    ________  __ 
+         | |  / \  / ____   \/  |
+      _  | | / _ \ \___ \| |\/| |
+     | |_| // ___ \____) | |  | |
+      \___//_/   \______/|_|  |_|
+	
+    Java 8-bit binary virtual machine
+    JASM Version 1.0.0
+	
  ________________________________________________
 |                                                |
 |      Compiler instructions                     |
@@ -14,18 +15,15 @@ include external *.jasm file
 
 .inc "[name].jasm"
 
-
 _________________________________________________
 define a name for a constant value
 
 .equ [name] [value]
 
-
 _________________________________________________
 define a label name to jump to
 
 [name]:
-
 
  ________________________________________________
 |                                                |
@@ -40,25 +38,13 @@ byte:
 	NOP
 
 _________________________________________________
-halt program 
-
-syntax:
-	end
-
-byte:
-	END
-
-_________________________________________________
 interrupt program
 
 syntax:
-	int [reg8]
-	int [reg16]
 	int [imm8]
 	int [imm16]
 
 byte:
-	INT, R
 	INT, I, (byte)
 	INT, IL, (byte), (byte)
 

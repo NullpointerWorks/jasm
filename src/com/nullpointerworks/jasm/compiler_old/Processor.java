@@ -1,6 +1,4 @@
-package com.nullpointerworks.jasm;
-
-import com.nullpointerworks.jasm.compiler.Register;
+package com.nullpointerworks.jasm.compiler_old;
 
 public interface Processor
 {

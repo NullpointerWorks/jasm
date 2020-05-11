@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.jasm.compiler_old;
 
 public class Draft implements InstructionsJASM
 {

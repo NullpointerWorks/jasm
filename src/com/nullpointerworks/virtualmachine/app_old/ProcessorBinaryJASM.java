@@ -1,7 +1,10 @@
-package com.nullpointerworks.jasm;
+package com.nullpointerworks.virtualmachine.app_old;
 
-import com.nullpointerworks.jasm.compiler.InstructionsJASM;
-import com.nullpointerworks.jasm.compiler.Register;
+import com.nullpointerworks.jasm.compiler_old.InstructionsJASM;
+import com.nullpointerworks.jasm.compiler_old.Memory;
+import com.nullpointerworks.jasm.compiler_old.Monitor;
+import com.nullpointerworks.jasm.compiler_old.Processor;
+import com.nullpointerworks.jasm.compiler_old.Register;
 
 public class ProcessorBinaryJASM 
 implements Processor, InstructionsJASM

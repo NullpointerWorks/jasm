@@ -1,15 +1,12 @@
-package com.nullpointerworks.jasm.app;
+package com.nullpointerworks.virtualmachine.app_old;
 
 import java.io.IOException;
 
-import com.nullpointerworks.jasm.Memory;
-import com.nullpointerworks.jasm.Memory8bit;
-import com.nullpointerworks.jasm.Monitor;
-import com.nullpointerworks.jasm.Processor;
-import com.nullpointerworks.jasm.ProcessorBinaryJASM;
-import com.nullpointerworks.jasm.compiler.InstructionsJASM;
-import com.nullpointerworks.jasm.compiler.Register;
-import com.nullpointerworks.jasm.util.Process;
+import com.nullpointerworks.jasm.compiler_old.InstructionsJASM;
+import com.nullpointerworks.jasm.compiler_old.Memory;
+import com.nullpointerworks.jasm.compiler_old.Monitor;
+import com.nullpointerworks.jasm.compiler_old.Processor;
+import com.nullpointerworks.jasm.compiler_old.Register;
 import com.nullpointerworks.game.LoopAdapter;
 import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.StringUtil;

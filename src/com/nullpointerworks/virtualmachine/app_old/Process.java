@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.util;
+package com.nullpointerworks.virtualmachine.app_old;
 
 import com.nullpointerworks.game.LoopListener;
 

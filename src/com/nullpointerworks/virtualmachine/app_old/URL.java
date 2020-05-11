@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.util;
+package com.nullpointerworks.virtualmachine.app_old;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,16 +1,14 @@
-package com.nullpointerworks.jasm.app;
+package com.nullpointerworks.virtualmachine.app_old;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nullpointerworks.jasm.LogListener;
-import com.nullpointerworks.jasm.Compiler;
-import com.nullpointerworks.jasm.compiler.CompilerJASM;
-import com.nullpointerworks.jasm.compiler.GenericLog;
-import com.nullpointerworks.jasm.util.URL;
-
+import com.nullpointerworks.jasm.compiler_old.Compiler;
+import com.nullpointerworks.jasm.compiler_old.CompilerJASM;
+import com.nullpointerworks.jasm.compiler_old.GenericLog;
+import com.nullpointerworks.jasm.compiler_old.LogListener;
 import com.nullpointerworks.util.FileUtil;
 import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.concurrency.Threading;

@@ -1,4 +1,6 @@
-package com.nullpointerworks.jasm;
+package com.nullpointerworks.virtualmachine.app_old;
+
+import com.nullpointerworks.jasm.compiler_old.Memory;
 
 /*
  * byte memory module

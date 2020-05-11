@@ -1,8 +1,7 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.jasm.compiler_old;
 
 import java.io.IOException;
 
-import com.nullpointerworks.jasm.LogListener;
 import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;

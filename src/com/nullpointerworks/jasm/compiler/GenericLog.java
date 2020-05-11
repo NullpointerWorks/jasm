@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.jasm8.compiler;
+package com.nullpointerworks.jasm.compiler;
 
 import java.io.IOException;
 

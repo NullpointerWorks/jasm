@@ -1,13 +1,16 @@
-package com.nullpointerworks.jasm;
+package com.nullpointerworks.jasm.app;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nullpointerworks.jasm.jasm8.compiler.CompilerJASM8;
-import com.nullpointerworks.jasm.jasm8.compiler.GenericLog;
+import com.nullpointerworks.jasm.LogListener;
+import com.nullpointerworks.jasm.Compiler;
+import com.nullpointerworks.jasm.compiler.CompilerJASM;
+import com.nullpointerworks.jasm.compiler.GenericLog;
 import com.nullpointerworks.jasm.util.URL;
+
 import com.nullpointerworks.util.FileUtil;
 import com.nullpointerworks.util.Log;
 import com.nullpointerworks.util.concurrency.Threading;
@@ -189,7 +192,7 @@ class MainCompiler
 		/*
 		 * compile into jasm8
 		 */
-		Compiler jasm8 = new CompilerJASM8();
+		Compiler jasm8 = new CompilerJASM();
 		jasm8.setParserVerbose(parserVerbose);
 		jasm8.setPreprocessorVerbose(preprocessorVerbose);
 		jasm8.setCompilerVerbose(compilerVerbose);

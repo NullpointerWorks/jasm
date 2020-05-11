@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.jasm8.processor;
+package com.nullpointerworks.jasm.processor;
 
 import com.nullpointerworks.jasm.Memory;
 import com.nullpointerworks.jasm.Monitor;
@@ -96,7 +96,7 @@ implements Processor, InstructionsJASM8
     	case BIT: _bit(); return;
     	case END: _end(); return;
     	case LOAD: _load(); return;
-    	case OUT: _out(); return;
+    	case INT: _int(); return;
     	case RET: _ret(); return;
     	case CALL: _call(); return;
     	case JMP: _jmp(); return;
@@ -885,7 +885,7 @@ implements Processor, InstructionsJASM8
     /*
      * updated
      */
- 	private final void _out()
+ 	private final void _int()
 	{
 		byte directive = _fetch();
 		int output = 0;

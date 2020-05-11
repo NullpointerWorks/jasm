@@ -1,6 +1,6 @@
-package com.nullpointerworks.jasm.jasm8.compiler;
+package com.nullpointerworks.jasm.compiler;
 
-import com.nullpointerworks.jasm.jasm8.processor.InstructionsJASM8;
+import com.nullpointerworks.jasm.processor.InstructionsJASM8;
 import com.nullpointerworks.util.StringUtil;
 
 public class DraftBuilder 
@@ -29,7 +29,7 @@ implements InstructionsJASM8
 		if (instruct.equals("nop")) return inst.comm(operands, NOP);
 		if (instruct.equals("end")) return inst.comm(operands, END);
 		if (instruct.equals("ret")) return inst.comm(operands, RET);
-		if (instruct.equals("out")) return inst.out(operands);
+		if (instruct.equals("out")) return inst.interrupt(operands);
 		
 		/*
 		 * memory operations
@@ -402,24 +402,24 @@ implements InstructionsJASM8
 	}
 	
 	// ==================================================================
-	// OUT
+	// INT
 	// ==================================================================
 	
-	private Draft out(String op)
+	private Draft interrupt(String op)
 	{
 		byte[] machine_code = null;
 		
 		if ( isRegister(op) )
 		{
 			byte reg = getRegister(op);
-			machine_code = new byte[] {OUT, reg};
+			machine_code = new byte[] {INT, reg};
 			return new Draft(machine_code);
 		}
 		
 		if ( isImm8(op) )
 		{
 			byte imm8 = getImm8(op);
-			machine_code = new byte[] {OUT, I, imm8};
+			machine_code = new byte[] {INT, I, imm8};
 			return new Draft(machine_code);
 		}
 		
@@ -428,7 +428,7 @@ implements InstructionsJASM8
 			short imm16 = getImm16(op);
 			byte H = (byte)(imm16>>8);
 			byte L = (byte)(imm16);
-			machine_code = new byte[] {OUT, IL, H, L};
+			machine_code = new byte[] {INT, IL, H, L};
 			return new Draft(machine_code);
 		}
 		

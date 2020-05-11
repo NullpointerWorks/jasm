@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.jasm8.processor;
+package com.nullpointerworks.jasm.processor;
 
 public interface InstructionsJASM8
 {
@@ -6,7 +6,7 @@ public interface InstructionsJASM8
 	 * operation codes
 	 */
 	public static final byte NOP		= (byte)0b0000_0000; // 0
-	public static final byte OUT		= (byte)0b0000_0001; // 1 - calls interrupt(int)
+	public static final byte INT		= (byte)0b0000_0001; // 1
 	public static final byte LOAD		= (byte)0b0000_0011; // 3
 	public static final byte ADD		= (byte)0b0000_0100;
 	public static final byte SUB		= (byte)0b0000_0101;

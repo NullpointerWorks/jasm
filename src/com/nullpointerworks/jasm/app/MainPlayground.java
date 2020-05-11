@@ -1,10 +1,13 @@
-package com.nullpointerworks.jasm;
+package com.nullpointerworks.jasm.app;
 
 import java.io.IOException;
 
-import com.nullpointerworks.jasm.jasm8.Memory8bit;
-import com.nullpointerworks.jasm.jasm8.processor.InstructionsJASM8;
-import com.nullpointerworks.jasm.jasm8.processor.ProcessorJASM8;
+import com.nullpointerworks.jasm.Memory;
+import com.nullpointerworks.jasm.Memory8bit;
+import com.nullpointerworks.jasm.Monitor;
+import com.nullpointerworks.jasm.Processor;
+import com.nullpointerworks.jasm.processor.InstructionsJASM8;
+import com.nullpointerworks.jasm.processor.ProcessorJASM8;
 import com.nullpointerworks.jasm.util.Process;
 import com.nullpointerworks.game.LoopAdapter;
 import com.nullpointerworks.util.Log;

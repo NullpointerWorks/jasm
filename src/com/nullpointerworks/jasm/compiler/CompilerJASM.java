@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.jasm8.compiler;
+package com.nullpointerworks.jasm.compiler;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 import com.nullpointerworks.util.pack.Tuple;
 
-public class CompilerJASM8 implements Compiler
+public class CompilerJASM implements Compiler
 {
 	public static final String version = "v1.0.0";
 	
@@ -48,7 +48,7 @@ public class CompilerJASM8 implements Compiler
 	private int strLeng = 2;
 	private int rom_index = 0;
 	
-	public CompilerJASM8()
+	public CompilerJASM()
 	{
 		reset();
 	}

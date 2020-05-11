@@ -1,6 +1,10 @@
 package com.nullpointerworks.jasm.preprocessor;
 
+import com.nullpointerworks.jasm.instructions.Instruction;
+import com.nullpointerworks.jasm.instructions.InstructionFactory;
+import com.nullpointerworks.jasm.instructions.InstructionSet;
 import com.nullpointerworks.jasm.parser.SourceCode;
+import com.nullpointerworks.jasm.processor.Select;
 import com.nullpointerworks.util.StringUtil;
 
 public class DraftJASM
@@ -172,7 +176,7 @@ public class DraftJASM
 	 */
 	private void _nop()
 	{
-		draft = JASM.NOP();
+		draft = InstructionFactory.NOP();
 	}
 	
 	private void _int(String operands)
@@ -180,7 +184,7 @@ public class DraftJASM
 		if ( isImmediate(operands) )
 		{
 			int imm = getImmediate(operands);
-			draft = JASM.INT(imm);
+			draft = InstructionFactory.INT(imm);
 		}
 		else
 		{
@@ -212,13 +216,13 @@ public class DraftJASM
 				return; // error
 			}
 			
-			draft = JASM.GEN_SS(inst, reg1, reg2);
+			draft = InstructionFactory.GEN_SS(inst, reg1, reg2);
 		}
 		else
 		if ( isImmediate(source) )
 		{
 			int imm = getImmediate(source);
-			draft = JASM.GEN_SI(inst, reg1, imm);
+			draft = InstructionFactory.GEN_SI(inst, reg1, imm);
 		}
 		else
 		{
@@ -229,7 +233,7 @@ public class DraftJASM
 	private void _jump(InstructionSet inst, String operands)
 	{
 		label = operands;
-		draft = JASM.GEN_JMP(inst);
+		draft = InstructionFactory.GEN_JMP(inst);
 	}
 	
 	

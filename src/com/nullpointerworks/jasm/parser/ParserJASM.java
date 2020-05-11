@@ -14,17 +14,15 @@ public class ParserJASM implements Parser
 	private List<String> includes = null; // keeps a list of all included files. this list is leading
 	private List<String> includesAux = null; // contains file yet to be included. this list gets modified
 	private List<String> includesPath = null; // all traceable paths to look for jasm source code 
-	
-	private List<SourceCode> code = null;
-	
-	private List<EquRecord> equals = null;
+
+	private List<EquRecord> equals = null; // contains all equ code
 	private List<EquRecord> equDups = null;
 	
-	private List<ParseError> errors;
+	private List<SourceCode> code = null; // contains parsed code
+	private List<ParseError> errors; // contains errors
 	
 	private boolean verbose_parser = false;
 	private int strLeng = 2;
-	
 	
 	/*
 	 * lexicographic sort

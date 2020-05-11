@@ -9,6 +9,7 @@ import java.util.Map;
  * parser reference
  */
 import com.nullpointerworks.jasm.parser.SourceCode;
+import com.nullpointerworks.jasm.instructions.Instruction;
 import com.nullpointerworks.jasm.parser.Parser;
 
 import com.nullpointerworks.util.Log;

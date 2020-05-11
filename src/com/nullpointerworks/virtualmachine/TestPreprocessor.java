@@ -6,8 +6,11 @@ import java.util.List;
 import com.nullpointerworks.jasm.parser.ParseError;
 import com.nullpointerworks.jasm.parser.Parser;
 import com.nullpointerworks.jasm.parser.ParserJASM;
+import com.nullpointerworks.jasm.preprocessor.Preprocessor;
+import com.nullpointerworks.jasm.preprocessor.PreprocessorJASM;
+import com.nullpointerworks.jasm.preprocessor.PreProcessingError;
 
-public class TestParser 
+public class TestPreprocessor 
 {
 	public static void main(String[] args) 
 	{
@@ -19,10 +22,10 @@ public class TestParser
 		};
 		//*/
 		
-		new TestParser(args);
+		new TestPreprocessor(args);
 	}
 	
-	public TestParser(String[] args)
+	public TestPreprocessor(String[] args)
 	{
 		/*
 		 * load primary source file
@@ -42,7 +45,7 @@ public class TestParser
 		 * parse text into code
 		 */
 		Parser jasmParser = new ParserJASM();
-		jasmParser.setVerbose(true);
+		jasmParser.setVerbose(false);
 		jasmParser.setIncludesPath(paths);
 		jasmParser.parse(filename);
 		if (jasmParser.hasErrors())
@@ -52,6 +55,27 @@ public class TestParser
 			{
 				System.out.println( err.getDescription() );
 			}
+			return;
 		}
+		
+		/*
+		 * do pre-processing
+		 */
+		Preprocessor preproc = new PreprocessorJASM();
+		preproc.setVerbose(true);
+		preproc.preprocess(jasmParser);
+		if (preproc.hasErrors())
+		{
+			var errors = preproc.getErrors();
+			for (PreProcessingError err : errors)
+			{
+				System.out.println( err.getDescription() );
+			}
+			return;
+		}
+		
+		
+		
+		
 	}
 }

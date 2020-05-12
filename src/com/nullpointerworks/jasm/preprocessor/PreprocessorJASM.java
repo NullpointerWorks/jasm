@@ -15,7 +15,7 @@ public class PreprocessorJASM implements Preprocessor
 	private boolean verbose_preproc = false;
 	private int instIndex = 0; // label instruction index
 	
-	private List<PreProcessingError> errors = null;
+	private List<PreProcessorError> errors = null;
 	private Map<String, Integer> labels = null;
 	private List<DraftJASM> draft = null;
 	private List<DraftJASM> labelled = null;
@@ -29,7 +29,7 @@ public class PreprocessorJASM implements Preprocessor
 	public Preprocessor reset() 
 	{
 		if (errors!=null) errors.clear();
-		errors = new ArrayList<PreProcessingError>();
+		errors = new ArrayList<PreProcessorError>();
 		
 		if (labels!=null) labels.clear();
 		labels = new HashMap<String, Integer>();
@@ -71,19 +71,19 @@ public class PreprocessorJASM implements Preprocessor
 		}
 		return this;
 	}
-
+	
 	@Override
 	public boolean hasErrors() 
 	{
 		return errors.size() > 0;
 	}
-
+	
 	@Override
-	public List<PreProcessingError> getErrors() 
+	public List<PreProcessorError> getErrors() 
 	{
 		return errors;
 	}
-
+	
 	@Override
 	public List<DraftJASM> getDraft() 
 	{
@@ -216,6 +216,6 @@ public class PreprocessorJASM implements Preprocessor
 	
 	private void addError(SourceCode code, String message)
 	{
-		errors.add( new PreProcessingError(code, message) );
+		errors.add( new PreProcessorError(code, message) );
 	}
 }

@@ -35,7 +35,7 @@ public class TestParser
 		 * add linker directory
 		 */
 		List<String> paths = new ArrayList<String>();
-		paths.add(url.folderPath()); // always source directory as primary linker
+		paths.add(url.folderPath()); // always set source directory as primary linker
 		for (int i=1,l=args.length; i<l; i++)
 		{
 			paths.add(args[i]);
@@ -45,7 +45,7 @@ public class TestParser
 		 * parse text into code
 		 */
 		jasmParser = new ParserJASM();
-		jasmParser.setVerbose(isVerbose());
+		jasmParser.setVerbose(verbose);
 		jasmParser.setIncludesPath(paths);
 		jasmParser.parse(url.filePath());
 		if (jasmParser.hasErrors())
@@ -59,18 +59,13 @@ public class TestParser
 		}
 	}
 	
-	protected boolean isVerbose() 
-	{
-		return verbose;
-	}
-	
-	protected void setVerbose(boolean v) 
-	{
-		verbose = v;
-	}
-	
 	protected Parser getParser()
 	{
 		return jasmParser;
+	}
+	
+	protected void setParserVerbose(boolean v) 
+	{
+		verbose = v;
 	}
 }

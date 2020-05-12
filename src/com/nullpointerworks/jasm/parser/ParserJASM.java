@@ -307,7 +307,7 @@ public class ParserJASM implements Parser
 	 * source code parser
 	 * 
 	 * responsibility:
-	 * 
+	 * check to see if the line of code can be added 
 	 * 
 	 * ==================================================================
 	 */
@@ -324,24 +324,7 @@ public class ParserJASM implements Parser
 		 */
 		if (line.startsWith(".inc "))
 		{
-			String include = line.substring(5);
-			
-			/*
-			 * the include name must be between quotation marks
-			 */
-			if (include.startsWith("\"") && include.endsWith("\"")) 
-			{
-				include = include.replace("\"", "");
-				if (!includes.contains(include)) 
-				{
-					includes.add(include);
-					includesAux.add(include);
-				}
-			}
-			else
-			{
-				addError(sc, "Bad include syntax");
-			}
+			parseInclude(sc);
 			return;
 		}
 		
@@ -350,58 +333,7 @@ public class ParserJASM implements Parser
 		 */
 		if (line.startsWith(".equ "))
 		{
-			String equates = line.substring(5);
-			String[] tokens = equates.split(" ");
-			/*
-			 * if there are more than 2 tokens, invalid equ definition
-			 */
-			if (tokens.length != 2)
-			{
-				addError(sc, "Invalid equate syntax");
-				return;
-			}
-			
-			/*
-			 * if the first token is a bad name, error
-			 */
-			String name = tokens[0];
-			if (!isValidLabel(name))
-			{
-				addError(sc, "Invalid label characters used");
-				return;
-			}
-			
-			/*
-			 * if the second name is a bad number, error
-			 */
-			String value = tokens[1];
-			if (!isValidNumber(value))
-			{
-				addError(sc, "Invalid number syntax");
-				return;
-			}
-			
-			/*
-			 * find equ duplicates
-			 */
-			var pack3 = findEqu(name,equals);
-			if (pack3 == null) 
-			{
-				putEqu(name, value, sc, equals);
-			}
-			else
-			{
-				/*
-				 * make sure its only added once in the duplicate list when found
-				 */
-				if (findEqu(name,equDups) == null) 
-					equDups.add(pack3);
-				
-				/*
-				 * add name and source to duplicate list
-				 */
-				equDups.add( new EquRecord(name, "", sc));
-			}
+			parseEquals(sc);
 		}
 		
 		/*
@@ -416,8 +348,88 @@ public class ParserJASM implements Parser
 		code.add(sc);
 	}
 	
-	// ==================================================================
+	private void parseInclude(SourceCode sc) 
+	{
+		String line = sc.getLine();
+		String include = line.substring(5);
+		
+		/*
+		 * the include name must be between quotation marks
+		 */
+		if (include.startsWith("\"") && include.endsWith("\"")) 
+		{
+			include = include.replace("\"", "");
+			if (!includes.contains(include)) 
+			{
+				includes.add(include);
+				includesAux.add(include);
+			}
+		}
+		else
+		{
+			addError(sc, "Bad include syntax");
+		}
+	}
 	
+	private void parseEquals(SourceCode sc) 
+	{
+		String line = sc.getLine();
+		String equates = line.substring(5);
+		String[] tokens = equates.split(" ");
+		/*
+		 * if there are more than 2 tokens, invalid equ definition
+		 */
+		if (tokens.length != 2)
+		{
+			addError(sc, "Invalid equate syntax");
+			return;
+		}
+		
+		/*
+		 * if the first token is a bad name, error
+		 */
+		String name = tokens[0];
+		if (!isValidLabel(name))
+		{
+			addError(sc, "Invalid label characters used");
+			return;
+		}
+		
+		/*
+		 * if the second name is a bad number, error
+		 */
+		String value = tokens[1];
+		if (!isValidNumber(value))
+		{
+			addError(sc, "Invalid number syntax");
+			return;
+		}
+		
+		/*
+		 * find equ duplicates
+		 */
+		var pack3 = findEqu(name,equals);
+		if (pack3 == null) 
+		{
+			putEqu(name, value, sc, equals);
+		}
+		else
+		{
+			/*
+			 * make sure its only added once in the duplicate list when found
+			 */
+			if (findEqu(name,equDups) == null) 
+				equDups.add(pack3);
+			
+			/*
+			 * add name and source to duplicate list
+			 */
+			equDups.add( new EquRecord(name, "", sc));
+		}
+	}
+	
+	// ==================================================================
+
 	private String[] loadCode(String inc)
 	{
 		TextFile tf = null;

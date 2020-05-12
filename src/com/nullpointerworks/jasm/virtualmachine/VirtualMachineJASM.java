@@ -10,6 +10,7 @@ public class VirtualMachineJASM implements VirtualMachine
 	private InterruptListener interrupt;
 	private List<Instruction> instructions;
 	private List<Integer> stack;
+	private List<Integer> memref;
 	
 	private Register rCounter; // instruction pointer
 	private Register rStack; // stack pointer
@@ -40,18 +41,29 @@ public class VirtualMachineJASM implements VirtualMachine
 	}
 	
 	@Override
-	public void addInstructions(List<Instruction> instructions)
+	public void throwInterrupt(int intcode)
 	{
-		for (Instruction i : instructions)
-		{
-			addInstruction(i);
-		}
+		interrupt.onInterrupt(this, intcode);
+	}
+	
+	// =======================================================
+	
+	@Override
+	public void setMemory(List<Integer> mem)
+	{
+		memref = mem;
 	}
 	
 	@Override
-	public void addInstruction(Instruction inst)
+	public void storeMemory(int index, int value)
 	{
-		instructions.add(inst);
+		memref.add(index, value);
+	}
+	
+	@Override
+	public int readMemory(int index)
+	{
+		return memref.get(index);
 	}
 	
 	@Override
@@ -64,16 +76,28 @@ public class VirtualMachineJASM implements VirtualMachine
 	@Override
 	public int popStack()
 	{
-		int x = stack.get(rStack.getValue());
-		stack.remove(rStack.getValue());
-		rStack.setValue(rStack.getValue()-1);
+		int sp = rStack.getValue();
+		int x = stack.get(sp);
+		stack.remove(sp);
+		rStack.setValue(sp-1);
 		return x;
 	}
 	
+	// =======================================================
+	
 	@Override
-	public void throwInterrupt(int intcode)
+	public void addInstructions(List<Instruction> instructions)
 	{
-		interrupt.onInterrupt(this, intcode);
+		for (Instruction i : instructions)
+		{
+			addInstruction(i);
+		}
+	}
+	
+	@Override
+	public void addInstruction(Instruction inst)
+	{
+		instructions.add(inst);
 	}
 	
 	@Override

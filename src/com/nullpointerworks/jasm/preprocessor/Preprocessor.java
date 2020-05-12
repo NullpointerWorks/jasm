@@ -29,7 +29,7 @@ public interface Preprocessor
 	/**
 	 * 
 	 */
-	List<PreProcessingError> getErrors();
+	List<PreProcessorError> getErrors();
 	
 	/**
 	 * 

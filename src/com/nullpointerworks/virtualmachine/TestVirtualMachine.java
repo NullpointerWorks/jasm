@@ -1,5 +1,8 @@
 package com.nullpointerworks.virtualmachine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.nullpointerworks.jasm.compiler.Compiler;
 import com.nullpointerworks.jasm.virtualmachine.InterruptListener;
 import com.nullpointerworks.jasm.virtualmachine.Register;
@@ -22,10 +25,14 @@ public class TestVirtualMachine extends TestCompiler implements InterruptListene
 	}
 	
 	private VirtualMachine jasmVM;
+	private List<Integer> memory;
 	
 	public TestVirtualMachine(String[] args)
 	{
-		setVerbose(true);
+		setParserVerbose(false);
+		setPreProcessorVerbose(false);
+		setCompilerVerbose(false);
+		
 		runCompiler(args);
 		
 		/*
@@ -35,10 +42,17 @@ public class TestVirtualMachine extends TestCompiler implements InterruptListene
 		if (compiler==null) return;
 		
 		/*
+		 * prepare
+		 */
+		memory = new ArrayList<Integer>(2048);
+		for (int l=2048; l>0;l--) memory.add(0);
+		
+		/*
 		 * run instructions
 		 */
 		jasmVM = new VirtualMachineJASM(this);
 		jasmVM.addInstructions( compiler.getInstructions() );
+		jasmVM.setMemory(memory);
 		while(jasmVM.hasInstruction())
 		{
 			jasmVM.nextInstruction();

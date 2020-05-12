@@ -18,7 +18,8 @@ public class TestCompiler extends TestPreprocessor
 		
 		new TestCompiler().runCompiler(args);
 	}
-	
+
+	private boolean verbose = false;
 	private Compiler jasmCompiler;
 	
 	public void runCompiler(String[] args)
@@ -35,7 +36,7 @@ public class TestCompiler extends TestPreprocessor
 		 * do pre-processing
 		 */
 		jasmCompiler = new CompilerJASM();
-		jasmCompiler.setVerbose(isVerbose());
+		jasmCompiler.setVerbose(verbose);
 		jasmCompiler.compile(preproc);
 		if (jasmCompiler.hasErrors())
 		{
@@ -50,5 +51,10 @@ public class TestCompiler extends TestPreprocessor
 	protected Compiler getCompiler()
 	{
 		return jasmCompiler;
+	}
+	
+	protected void setCompilerVerbose(boolean v) 
+	{
+		verbose = v;
 	}
 }

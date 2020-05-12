@@ -3,6 +3,10 @@ package com.nullpointerworks.jasm.preprocessor;
 import com.nullpointerworks.jasm.instruction.Instruction;
 import com.nullpointerworks.jasm.instruction.InstructionFactory;
 import com.nullpointerworks.jasm.instruction.InstructionSet;
+import com.nullpointerworks.jasm.instruction.arithmetic.*;
+import com.nullpointerworks.jasm.instruction.controlflow.*;
+import com.nullpointerworks.jasm.instruction.dataflow.*;
+import com.nullpointerworks.jasm.instruction.system.*;
 
 import com.nullpointerworks.jasm.parser.SourceCode;
 import com.nullpointerworks.jasm.virtualmachine.Select;
@@ -50,16 +54,21 @@ public class DraftJASM
 	private void draft(int index, String instruct, String operands)
 	{
 		code_index = index;
-
+		
+		/*
+		 * system
+		 */
 		if (instruct.equals("nop")) {_nop(); return;}
 		if (instruct.equals("int")) {_int(operands); return;}
 		
 		/*
 		 * arithmetic
 		 */
-		if (instruct.equals("add")) {_generic(InstructionSet.ADD, operands); return;}
-		if (instruct.equals("sub")) {_generic(InstructionSet.SUB, operands); return;}
-		if (instruct.equals("cmp")) {_generic(InstructionSet.CMP, operands); return;}
+		if (instruct.equals("add")) {_add(operands); return;}
+		if (instruct.equals("sub")) {_sub(operands); return;}
+		if (instruct.equals("cmp")) {_cmp(operands); return;}
+		if (instruct.equals("sl")) {_sl(operands); return;}
+		if (instruct.equals("sr")) {_sr(operands); return;}
 		//if (instruct.equals("inc")) {_inc(operands); return;}
 		//if (instruct.equals("dec")) {_dec(operands); return;}
 		//if (instruct.equals("neg")) {_neg(operands); return;}
@@ -67,47 +76,67 @@ public class DraftJASM
 		/*
 		 * data transfer
 		 */
-		if (instruct.equals("load")) {_generic(InstructionSet.LOAD, operands); return;}
-		//if (instruct.equals("push")) {_push(operands); return;}
-		//if (instruct.equals("pop")) {_pop(operands); return;}
+		if (instruct.equals("load")) {_generic_RX(InstructionSet.LOAD, operands); return;}
+		if (instruct.equals("push")) {_push(operands); return;}
+		if (instruct.equals("pop")) {_pop(operands); return;}
 		//if (instruct.equals("sto")) {_sto(operands); return;}
+		//if (instruct.equals("read")) {_read(operands); return;}
 		
 		/*
 		 * control flow
 		 */
-		if (instruct.equals("jmp")) {_jump(InstructionSet.JMP, operands); return;}
-		if (instruct.equals("je")) {_jump(InstructionSet.JE, operands); return;}
-		if (instruct.equals("jne")) {_jump(InstructionSet.JNE, operands); return;}
+		if (instruct.equals("call")) {_call(operands); return;}
+		if (instruct.equals("jmp")) {_jump(operands); return;}
+		if (instruct.equals("je")) {_jequal(operands); return;}
+		if (instruct.equals("jne")) {_jnotequal(operands); return;}
 		if (instruct.equals("jl")) {_jump(InstructionSet.JL, operands); return;}
 		if (instruct.equals("jle")) {_jump(InstructionSet.JLE, operands); return;}
 		if (instruct.equals("jg")) {_jump(InstructionSet.JG, operands); return;}
 		if (instruct.equals("jge")) {_jump(InstructionSet.JGE, operands); return;}
-		if (instruct.equals("call")) {_jump(InstructionSet.CALL,operands); return;}
 		if (instruct.equals("ret")) {_return(); return;}
 	}
 	
+	/* ================================================================================
+	 * 
+	 * 		system
+	 * 
+	 * ============================================================================= */
+	
 	/*
-	 * ===========================================================
+	 * nop
 	 */
 	private void _nop()
 	{
-		instruction = InstructionFactory.Nop();
+		instruction = new NoOperation();
 	}
 	
+	/*
+	 * int <imm>
+	 */
 	private void _int(String operands)
 	{
 		if ( isImmediate(operands) )
 		{
 			int imm = getImmediate(operands);
-			instruction = InstructionFactory.Int(imm);
+			instruction = new Interrupt(imm);
 		}
 		else
 		{
 			// error
 		}
 	}
-	
-	private void _generic(InstructionSet inst, String operands)
+
+	/* ================================================================================
+	 * 
+	 * 		arithmetic
+	 * 
+	 * ============================================================================= */
+
+	/*
+	 * add <reg>,<reg>
+	 * add <reg>,<imm>
+	 */
+	private void _add(String operands)
 	{
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) 
@@ -131,13 +160,13 @@ public class DraftJASM
 				return; // error
 			}
 			
-			instruction = InstructionFactory.Generic_SS(inst, reg1, reg2);
+			instruction = new Addition_SS(reg1,reg2);
 		}
 		else
 		if ( isImmediate(source) )
 		{
 			int imm = getImmediate(source);
-			instruction = InstructionFactory.Generic_SI(inst, reg1, imm);
+			instruction = new Addition_SI(reg1,imm);
 		}
 		else
 		{
@@ -145,21 +174,206 @@ public class DraftJASM
 		}
 	}
 	
-	private void _jump(InstructionSet inst, String operands)
+	/*
+	 * sub <reg>,<reg>
+	 * sub <reg>,<imm>
+	 */
+	private void _sub(String operands)
+	{
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) 
+		{
+			return; // error
+		}
+		
+		String target = tokens[0];
+		Select reg1 = getRegister(target);
+		if ( reg1 == null )
+		{
+			return; // error
+		}
+		
+		String source = tokens[1];
+		Select reg2 = getRegister(source);
+		if ( isRegister(source) )
+		{
+			if ( reg2 == null )
+			{
+				return; // error
+			}
+			
+			instruction = new Subtract_SS(reg1,reg2);
+		}
+		else
+		if ( isImmediate(source) )
+		{
+			int imm = getImmediate(source);
+			instruction = new Subtract_SI(reg1,imm);
+		}
+		else
+		{
+			// error
+		}
+	}
+
+	/*
+	 * cmp <reg>,<reg>
+	 * cmp <reg>,<imm>
+	 */
+	private void _cmp(String operands)
+	{
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) 
+		{
+			return; // error
+		}
+		
+		String target = tokens[0];
+		Select reg1 = getRegister(target);
+		if ( reg1 == null )
+		{
+			return; // error
+		}
+		
+		String source = tokens[1];
+		Select reg2 = getRegister(source);
+		if ( isRegister(source) )
+		{
+			if ( reg2 == null )
+			{
+				return; // error
+			}
+			
+			instruction = new Compare_SS(reg1,reg2);
+		}
+		else
+		if ( isImmediate(source) )
+		{
+			int imm = getImmediate(source);
+			instruction = new Compare_SI(reg1,imm);
+		}
+		else
+		{
+			// error
+		}
+	}
+	
+	/*
+	 * sl <reg>
+	 */
+	private void _sl(String operands)
+	{
+		if ( isRegister(operands) )
+		{
+			Select reg = getRegister(operands);
+			instruction = new ShiftLeft_S(reg);
+		}
+		else
+		{
+			// error
+		}
+	}
+	
+	/*
+	 * sr <reg>
+	 */
+	private void _sr(String operands)
+	{
+		if ( isRegister(operands) )
+		{
+			Select reg = getRegister(operands);
+			instruction = new ShiftRight_S(reg);
+		}
+		else
+		{
+			// error
+		}
+	}
+
+	/* ================================================================================
+	 * 
+	 * 		data transfer
+	 * 
+	 * ============================================================================= */
+
+	/*
+	 * push <reg>
+	 * push <imm>
+	 */
+	private void _push(String operands)
+	{
+		if ( isRegister(operands) )
+		{
+			Select reg = getRegister(operands);
+			instruction = new Push_S(reg);
+		}
+		else
+		if ( isImmediate(operands) )
+		{
+			int imm = getImmediate(operands);
+			instruction = new Push_I(imm);
+		}
+		else
+		{
+			// error
+		}
+	}
+	
+	/*
+	 * pop <reg>
+	 */
+	private void _pop(String operands)
+	{
+		if ( isRegister(operands) )
+		{
+			Select reg = getRegister(operands);
+			instruction = InstructionFactory.Pop(reg);
+		}
+		else
+		{
+			// error
+		}
+	}
+	
+	/* ================================================================================
+	 * 
+	 * 		control flow
+	 * 
+	 * ============================================================================= */
+
+	private void _call(String operands)
 	{
 		label = operands;
-		instruction = InstructionFactory.Generic_JMP(inst);
+		instruction = new Call(0);
+	}
+	
+	private void _jump(String operands)
+	{
+		label = operands;
+		instruction = new Jump(0);
+	}
+	
+	private void _jequal(String operands)
+	{
+		label = operands;
+		instruction = new JumpEqual(0);
+	}
+	
+	private void _jnotequal(String operands)
+	{
+		label = operands;
+		instruction = new JumpNotEqual(0);
 	}
 	
 	private void _return()
 	{
-		instruction = InstructionFactory.Return();
+		instruction = new Return();
 	}
 	
 	/*
 	 * ===========================================================
 	 */
-
+	
 	private boolean isImmediate(String imm)
 	{
 		if (StringUtil.isInteger(imm)) return true;
@@ -189,6 +403,10 @@ public class DraftJASM
 		return val;
 	}
 	
+	/*
+	 * ===========================================================
+	 */
+	
 	private boolean isRegister(String reg)
 	{
 		return getRegister(reg) != null;
@@ -209,6 +427,10 @@ public class DraftJASM
 		}
 		return null; // error
 	}
+	
+	/*
+	 * ===========================================================
+	 */
 	
 	private boolean isAddress(String addr)
 	{

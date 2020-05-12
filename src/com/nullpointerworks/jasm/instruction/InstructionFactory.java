@@ -1,11 +1,10 @@
 package com.nullpointerworks.jasm.instruction;
 
-import com.nullpointerworks.jasm.instruction.system.*;
 import com.nullpointerworks.jasm.virtualmachine.Select;
+import com.nullpointerworks.jasm.instruction.system.*;
 import com.nullpointerworks.jasm.instruction.arithmetic.*;
 import com.nullpointerworks.jasm.instruction.dataflow.*;
 import com.nullpointerworks.jasm.instruction.controlflow.*;
-
 
 public final class InstructionFactory
 {
@@ -30,6 +29,26 @@ public final class InstructionFactory
 		case SUB: return new Subtract_SI(s1,imm);
 		case CMP: return new Compare_SI(s1,imm);
 		case LOAD: return new Load_SI(s1,imm);
+		default: break;
+		}
+		return null; // error
+	}
+	
+	public static Instruction Generic_S(InstructionSet inst, Select s1)
+	{
+		switch(inst)
+		{
+		case SL: return new ShiftLeft_S(s1);
+		case SR: return new ShiftRight_S(s1);
+		default: break;
+		}
+		return null; // error
+	}
+	
+	public static Instruction Generic_S(InstructionSet inst, int imm)
+	{
+		switch(inst)
+		{
 		default: break;
 		}
 		return null; // error
@@ -96,6 +115,16 @@ public final class InstructionFactory
 	public static Instruction Cmp(Select s, int imm)
 	{
 		return new Compare_SI(s,imm);
+	}
+	
+	public static Instruction Sl(Select s)
+	{
+		return new ShiftLeft_S(s);
+	}
+	
+	public static Instruction Sr(Select s)
+	{
+		return new ShiftRight_S(s);
 	}
 	
 	/*
@@ -174,5 +203,4 @@ public final class InstructionFactory
 	{
 		return new Pop_S(s);
 	}
-	
 }

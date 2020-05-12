@@ -8,8 +8,17 @@ public enum InstructionSet
 	ADD,
 	SUB,
 	CMP,
+	SL,
+	SR,
+	INC,
+	DEC,
+	NEG,
 	
 	LOAD,
+	PUSH,
+	POP,
+	STO,
+	READ,
 	
 	JMP,
 	JE,
@@ -19,8 +28,5 @@ public enum InstructionSet
 	JG,
 	JGE,
 	CALL,
-	RET,
-	
-	
-	
+	RET;
 }

@@ -1,8 +1,8 @@
 package com.nullpointerworks.jasm.instruction.controlflow;
 
 import com.nullpointerworks.jasm.instruction.Instruction;
-import com.nullpointerworks.jasm.processor.Processor;
-import com.nullpointerworks.jasm.processor.Select;
+import com.nullpointerworks.jasm.virtualmachine.Select;
+import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
 
 public class Jump implements Instruction
 {
@@ -20,12 +20,12 @@ public class Jump implements Instruction
 	}
 	
 	@Override
-	public void execute(Processor prog)
+	public void execute(VirtualMachine prog)
 	{
 		execute(prog, addr);
 	}
 	
-	public void execute(Processor prog, int address)
+	public void execute(VirtualMachine prog, int address)
 	{
 		prog.setRegister(Select.IP, address);
 	}

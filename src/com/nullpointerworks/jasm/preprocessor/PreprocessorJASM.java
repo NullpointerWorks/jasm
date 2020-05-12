@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.nullpointerworks.jasm.parser.EquRecord;
 import com.nullpointerworks.jasm.parser.Parser;
 import com.nullpointerworks.jasm.parser.SourceCode;
 import com.nullpointerworks.util.Log;
@@ -49,21 +50,11 @@ public class PreprocessorJASM implements Preprocessor
 		return this;
 	}
 	
-	/* ==================================================================
-	 * 
-	 * pre-processor
-	 * 
-	 * responsibility:
-	 * handles directives
-	 * turns labels into addresses
-	 * drafts machine instructions
-	 * 
-	 * ==================================================================
-	 */
 	@Override
 	public Preprocessor preprocess(Parser parser) 
 	{
 		List<SourceCode> code = parser.getSourceCode();
+		List<EquRecord> def = parser.getDefinitions();
 		
 		if (verbose_preproc)
 		{
@@ -71,7 +62,7 @@ public class PreprocessorJASM implements Preprocessor
 			Log.out("\n Pre-processor\n");
 		}
 		
-		process(code);
+		process(code,def);
 		
 		if (verbose_preproc)
 		{
@@ -84,25 +75,72 @@ public class PreprocessorJASM implements Preprocessor
 	@Override
 	public boolean hasErrors() 
 	{
-		return false;
+		return errors.size() > 0;
 	}
 
 	@Override
 	public List<PreProcessingError> getErrors() 
 	{
-		return null;
+		return errors;
 	}
 
 	@Override
 	public List<DraftJASM> getDraft() 
 	{
-		return null;
+		return draft;
 	}
 	
-	// ==================================================================
-
-	private Preprocessor process(List<SourceCode> code) 
+	/* ==================================================================
+	 * 
+	 * pre-processor
+	 * 
+	 * responsibility:
+	 * insert "equ" directives
+	 * turns labels into addresses
+	 * drafts machine instructions
+	 * inserts addresses into draft
+	 * 
+	 * ==================================================================
+	 */
+	private Preprocessor process(List<SourceCode> code, List<EquRecord> def) 
 	{
+		/*
+		 * print definitions
+		 */
+		if (verbose_preproc)
+		{
+			System.out.println(" Definitions:");
+			for (EquRecord equ : def)
+			{
+				System.out.println( "  "+equ.NAME +" = "+equ.VALUE );
+			}
+		}
+		
+		/*
+		 * insert definitions
+		 */
+		for (int i=0,l=code.size(); i<l; i++)
+		{
+			SourceCode loc = code.get(i);
+			String line = loc.getLine();
+			
+			// if not a definition line
+			if (line.startsWith(".equ")) continue;
+			
+			for (EquRecord equ : def)
+			{
+				String name = equ.NAME;
+				if (line.contains(name))
+				{
+					line = line.replace(name, equ.VALUE);
+					loc.setLine(line);
+					break;
+				}
+			}
+			
+			if (hasErrors()) return this;
+		}
+		
 		/*
 		 * track directives and labels
 		 * process instructions
@@ -110,34 +148,8 @@ public class PreprocessorJASM implements Preprocessor
 		for (int i=0,l=code.size(); i<l; i++)
 		{
 			SourceCode loc = code.get(i);
-			String line = loc.getLine();
-			if (line.startsWith("."))
-			{
-				continue;
-			}
-			
-			// is a label
-			if (line.contains(":")) 
-			{
-				String label = line.substring(0,line.length()-1);
-				labels.put(label, instIndex);
-				continue;
-			}
-			
-			instIndex += 1;
-			var draft_inst = buildDraft(instIndex, loc);
-			
-			if (draft_inst.hasError())
-			{
-				
-			}
-			
-			if (draft_inst.hasLabel())
-			{
-				labelled.add(draft_inst);
-			}
-			
-			draft.add(draft_inst);
+			processLine(loc);
+			if (hasErrors()) return this;
 		}
 		
 		/*
@@ -156,6 +168,45 @@ public class PreprocessorJASM implements Preprocessor
 		}
 		
 		return this;
+	}
+
+	private void processLine(SourceCode loc) 
+	{
+		String line = loc.getLine();
+		
+		/*
+		 * is a definition
+		 */
+		if (line.startsWith("."))
+		{
+			
+			return;
+		}
+		
+		/*
+		 * is a label
+		 */
+		if (line.contains(":"))
+		{
+			String label = line.substring(0,line.length()-1);
+			labels.put(label, instIndex);
+			return;
+		}
+		
+		instIndex += 1;
+		var draft_inst = buildDraft(instIndex, loc);
+		
+		if (draft_inst.hasError())
+		{
+			return;
+		}
+		
+		if (draft_inst.hasLabel())
+		{
+			labelled.add(draft_inst);
+		}
+		
+		draft.add(draft_inst);
 	}
 
 	private DraftJASM buildDraft(int index, SourceCode loc)

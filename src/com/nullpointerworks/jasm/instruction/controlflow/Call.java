@@ -1,8 +1,8 @@
 package com.nullpointerworks.jasm.instruction.controlflow;
 
-import com.nullpointerworks.jasm.processor.Processor;
-import com.nullpointerworks.jasm.processor.Register;
-import com.nullpointerworks.jasm.processor.Select;
+import com.nullpointerworks.jasm.virtualmachine.Register;
+import com.nullpointerworks.jasm.virtualmachine.Select;
+import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
 
 public class Call extends Jump
 {
@@ -12,7 +12,7 @@ public class Call extends Jump
 	}
 	
 	@Override
-	public void execute(Processor prog, int address)
+	public void execute(VirtualMachine prog, int address)
 	{
 		Register ip = prog.getRegister(Select.IP);
 		prog.pushStack(ip.getValue());

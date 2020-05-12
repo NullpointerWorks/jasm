@@ -4,12 +4,12 @@
      | |_| // ___ \____) | |  | |
       \___//_/   \______/|_|  |_|
 	
-    Java 8-bit binary virtual machine
+    Java Assembler Virtual Machine
     JASM Version 1.0.0
 	
  ________________________________________________
 |                                                |
-|      Compiler instructions                     |
+|      Pre-processor instructions                |
 |________________________________________________|
 include external *.jasm file
 
@@ -34,109 +34,59 @@ no-operation
 syntax:
 	nop	
 
-byte:
-	NOP
-
 _________________________________________________
 interrupt program
 
 syntax:
-	int [imm8]
-	int [imm16]
-
-byte:
-	INT, I, (byte)
-	INT, IL, (byte), (byte)
-
-_________________________________________________
-load register
-
-syntax:
-	load [reg8] ,[reg8]
-	load [reg16],[reg8]
-	load [reg16],[reg16]
-	
-	load [reg8] ,[imm8]
-	load [reg16],[imm8]
-	load [reg16],[imm16]
-
-byte:
-	LOAD, RR
-	LOAD, RI, (byte)
+	int <imm>
 
 _________________________________________________
 jump 
 
 syntax:
-	jmp [label]
-
-byte:
-	JMP, (byte), (byte)
+	jmp <label>
 
 _________________________________________________
 jump if equal, or jump if zero
 
 syntax:
-	je [label]
-	jz [label]
-
-byte:
-	JE, (byte), (byte)
+	je <label>
 
 _________________________________________________
 jump if not equal, or jump if not zero
 
 syntax:
-	jne [label]	
-	jnz [label]	
-
-byte:
-	JNE, (byte), (byte)
+	jne <label>
 
 _________________________________________________
 jump if greater 
 
 syntax:
-	jg [label]
-
-byte:
-	JG, (byte), (byte)
+	jg <label>
 
 _________________________________________________
 jump if greater or equal 
 
 syntax:
-	jge [label]
-
-byte:
-	JGE, (byte), (byte)
+	jge <label>
 
 _________________________________________________
 jump if less 
 
 syntax:
-	jl [label]
-
-byte:
-	JL, (byte), (byte)
+	jl <label>
 
 _________________________________________________
 jump if less or equal 
 
 syntax:
-	jle [label]
-
-byte:
-	JLE, (byte), (byte)
+	jle <label>
 
 _________________________________________________
 call label 
 
 syntax:
-	call [label]
-
-byte:
-	CALL, (byte), (byte)
+	call <label>
 
 _________________________________________________
 return to previous call 
@@ -144,110 +94,76 @@ return to previous call
 syntax:
 	ret	
 
-byte:
-	RET
-
 _________________________________________________
 bit-shift left
 
 syntax:
-	shl [reg8]
-	shl [reg16]
-
-byte:
-	SHL R
+	shl <reg>
 
 _________________________________________________
 bit-shift right
 
 syntax:
-	shr [reg8]
-	shr [reg16]
-
-byte:
-	SHR R
+	shr <reg>
 
 _________________________________________________
 addition
 
 syntax:
-	add [reg8],[reg8]
-	add [reg16],[reg8]
-	add [reg16],[reg16]
-	
-	add [reg8],[imm8]
-	add [reg16],[imm8]
-	add [reg16],[imm16]
-
-byte:
-	ADD, RR
-	ADD, RI, (byte)
-	ADD, RIL, (byte), (byte)
-
+	add <reg>, <reg>
+	add <reg>, <imm>
 
 _________________________________________________
 subtraction 
 
 syntax:
-	sub [reg8],[reg8]
-	sub [reg16],[reg8]
-	sub [reg16],[reg16]
-	
-	sub [reg8],[imm8]
-	sub [reg16],[imm8]
-	sub [reg16],[imm16]
-
-byte:
-	SUB, RR
-	SUB, RI, (byte)
-	SUB, RIL, (byte), (byte)
+	sub <reg>, <reg>
+	sub <reg>, <imm>
 
 _________________________________________________
 compare 
 
 syntax:
-	cmp [reg8],[reg8]
-	cmp [reg16],[reg8]
-	cmp [reg16],[reg16]
-	
-	cmp [reg8],[imm8]
-	cmp [reg16],[imm8]
-	cmp [reg16],[imm16]
-
-byte:
-	CMP, RR
-	CMP, RI, (byte)
-	CMP, RIL, (byte), (byte)
+	cmp <reg>, <reg>
+	cmp <reg>, <imm>
 
 _________________________________________________
 negation 
 
 syntax:
-	neg [reg8]
-	neg [reg16]
-
-byte:
-	NEG, R
+	neg <reg>
 
 _________________________________________________
 increment register 
 
 syntax:
-	inc [reg8]
-	inc [reg16]
-
-byte:
-	INC, R
+	inc <reg>
 
 _________________________________________________
 decrement register 
 
 syntax:
-	dec [reg8]
-	dec [reg16]
+	dec <reg>
 
-byte:
-	DEC, R
+_________________________________________________
+load register
+
+syntax:
+	load <reg>, <reg>
+	load <reg>, <imm>
+
+_________________________________________________
+push to stack
+
+syntax:
+	push <reg>
+	push <imm>
+
+_________________________________________________
+pop from stack 
+
+syntax:
+	pop <reg>
 
 _________________________________________________
 storage 
@@ -258,55 +174,10 @@ syntax:
 	sto [reg16],[reg8]
 	sto [reg16],[imm8]
 	
-byte:
-	STO, RR
-	STO, RI, (byte)
-	STO, R, (byte), (byte)
-	STO, I, (byte), (byte), (byte)
-	
 _________________________________________________
 read ram
 
 syntax:
-	rd [reg8], [reg8]
-	rd [reg8], [reg16]
-	rd [reg8], &[imm16]
-	
-byte:
-	MRD, RR
-	MRD, RI, (byte), (byte)
-	
-_________________________________________________
-pop from stack 
-
-syntax:
-	pop [reg8]
-	pop [reg16]
-
-byte:
-	POP, R
-
-_________________________________________________
-push to stack 
-
-syntax:
-	push [reg8]
-	push [reg16]
-	push [imm8]
-	push [imm16]
-
-byte:
-	PUSH, R
-	PUSH, I, (byte)
-	PUSH, IL, (byte), (byte)
-
-_________________________________________________
-get register bit value
-
-syntax:
-	bit [reg8],[imm8]
-	bit [reg16],[imm8]
-
-byte:
-	BIT, R, (byte)
+	read <reg>, &<reg>
+	read <reg>, &<imm>
 	

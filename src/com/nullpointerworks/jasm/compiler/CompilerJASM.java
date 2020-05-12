@@ -54,15 +54,14 @@ public class CompilerJASM implements Compiler
 	@Override
 	public Compiler compile(Preprocessor preproc)
 	{
-		/*
-		 * 
-		 */
 		if (verbose_compiler)
 		{
 			Log.out("-------------------------------");
 			Log.out("\n Compiling\n");
 		}
+		
 		compileDraft(preproc.getDraft());
+		
 		if (verbose_compiler)
 		{
 			Log.out("\n Successful\n");

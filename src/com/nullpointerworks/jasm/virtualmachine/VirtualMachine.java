@@ -1,10 +1,10 @@
-package com.nullpointerworks.jasm.processor;
+package com.nullpointerworks.jasm.virtualmachine;
 
 import java.util.List;
 
 import com.nullpointerworks.jasm.instruction.Instruction;
 
-public interface Processor 
+public interface VirtualMachine 
 {
 	void resetCounter(int c);
 	void resetFlags();

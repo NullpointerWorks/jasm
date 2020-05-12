@@ -18,12 +18,13 @@ public class TestParser
 		};
 		//*/
 		
-		new TestParser(args);
+		new TestParser().runParser(args);
 	}
 	
+	private boolean verbose = false;
 	private Parser jasmParser;
 	
-	public TestParser(String[] args)
+	public void runParser(String[] args)
 	{
 		/*
 		 * load primary source file
@@ -44,7 +45,7 @@ public class TestParser
 		 * parse text into code
 		 */
 		jasmParser = new ParserJASM();
-		jasmParser.setVerbose(true);
+		jasmParser.setVerbose(isVerbose());
 		jasmParser.setIncludesPath(paths);
 		jasmParser.parse(url.filePath());
 		if (jasmParser.hasErrors())
@@ -54,12 +55,21 @@ public class TestParser
 			{
 				System.out.println( err.getDescription() );
 			}
-			
 			jasmParser = null;
 		}
 	}
 	
-	public Parser getParser()
+	protected boolean isVerbose() 
+	{
+		return verbose;
+	}
+	
+	protected void setVerbose(boolean v) 
+	{
+		verbose = v;
+	}
+	
+	protected Parser getParser()
 	{
 		return jasmParser;
 	}

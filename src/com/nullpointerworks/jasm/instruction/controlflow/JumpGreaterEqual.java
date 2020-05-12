@@ -1,7 +1,7 @@
 package com.nullpointerworks.jasm.instruction.controlflow;
 
-import com.nullpointerworks.jasm.processor.Processor;
-import com.nullpointerworks.jasm.processor.Select;
+import com.nullpointerworks.jasm.virtualmachine.Select;
+import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
 
 public class JumpGreaterEqual extends Jump
 {
@@ -11,7 +11,7 @@ public class JumpGreaterEqual extends Jump
 	}
 	
 	@Override
-	public void execute(Processor prog, int address)
+	public void execute(VirtualMachine prog, int address)
 	{
 		boolean zero = prog.getFlag(Select.ZERO).getValue();
 		boolean sign = !prog.getFlag(Select.SIGN).getValue();

@@ -1,7 +1,7 @@
 package com.nullpointerworks.jasm.instruction.dataflow;
 
 import com.nullpointerworks.jasm.instruction.Instruction;
-import com.nullpointerworks.jasm.processor.Processor;
+import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
 
 public class Push_I implements Instruction
 {
@@ -13,7 +13,7 @@ public class Push_I implements Instruction
 	}
 
 	@Override
-	public void execute(Processor prog)
+	public void execute(VirtualMachine prog)
 	{
 		prog.pushStack(imm);
 	}

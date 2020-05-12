@@ -5,7 +5,7 @@ import com.nullpointerworks.jasm.instruction.InstructionFactory;
 import com.nullpointerworks.jasm.instruction.InstructionSet;
 
 import com.nullpointerworks.jasm.parser.SourceCode;
-import com.nullpointerworks.jasm.processor.Select;
+import com.nullpointerworks.jasm.virtualmachine.Select;
 import com.nullpointerworks.util.StringUtil;
 
 public class DraftJASM
@@ -13,9 +13,9 @@ public class DraftJASM
 	private DraftError error_flag = DraftError.NO_ERROR;
 	private SourceCode loc = null;
 	
+	private Instruction instruction = null;
 	private String label = "";
 	private int code_index = 0;
-	private Instruction draft = null;
 	
 	public DraftJASM(int index, SourceCode loc)
 	{
@@ -29,13 +29,13 @@ public class DraftJASM
 	
 	public SourceCode getLineOfCode() {return loc;}
 	
-	public Instruction getInstruction() {return draft;}
+	public Instruction getInstruction() {return instruction;}
 	
 	public final boolean hasLabel() {return label.length() > 0;}
 	
 	public final String getLabel() {return label;}
 	
-	public final void setLabelAddress(int addr) {draft.setJumpAddress(addr);}
+	public final void setLabelAddress(int addr) {instruction.setJumpAddress(addr);}
 	
 	public final int getCodeIndex() {return code_index;}
 	
@@ -60,8 +60,17 @@ public class DraftJASM
 		if (instruct.equals("add")) {_generic(InstructionSet.ADD, operands); return;}
 		if (instruct.equals("sub")) {_generic(InstructionSet.SUB, operands); return;}
 		if (instruct.equals("cmp")) {_generic(InstructionSet.CMP, operands); return;}
+		//if (instruct.equals("inc")) {_inc(operands); return;}
+		//if (instruct.equals("dec")) {_dec(operands); return;}
+		//if (instruct.equals("neg")) {_neg(operands); return;}
 		
+		/*
+		 * data transfer
+		 */
 		if (instruct.equals("load")) {_generic(InstructionSet.LOAD, operands); return;}
+		//if (instruct.equals("push")) {_push(operands); return;}
+		//if (instruct.equals("pop")) {_pop(operands); return;}
+		//if (instruct.equals("sto")) {_sto(operands); return;}
 		
 		/*
 		 * control flow
@@ -75,19 +84,6 @@ public class DraftJASM
 		if (instruct.equals("jge")) {_jump(InstructionSet.JGE, operands); return;}
 		if (instruct.equals("call")) {_jump(InstructionSet.CALL,operands); return;}
 		if (instruct.equals("ret")) {_return(); return;}
-		
-		/*
-		// arithmetic
-		if (instruct.equals("inc")) {_inc(operands); return;}
-		if (instruct.equals("dec")) {_dec(operands); return;}
-		if (instruct.equals("neg")) {_neg(operands); return;}
-		
-		// other
-		if (instruct.equals("end")) {_end(); return;}
-		if (instruct.equals("sto")) {_sto(operands); return;}
-		if (instruct.equals("push")) {_push(operands); return;}
-		if (instruct.equals("pop")) {_pop(operands); return;}
-		//*/
 	}
 	
 	/*
@@ -95,7 +91,7 @@ public class DraftJASM
 	 */
 	private void _nop()
 	{
-		draft = InstructionFactory.Nop();
+		instruction = InstructionFactory.Nop();
 	}
 	
 	private void _int(String operands)
@@ -103,7 +99,7 @@ public class DraftJASM
 		if ( isImmediate(operands) )
 		{
 			int imm = getImmediate(operands);
-			draft = InstructionFactory.Int(imm);
+			instruction = InstructionFactory.Int(imm);
 		}
 		else
 		{
@@ -135,13 +131,13 @@ public class DraftJASM
 				return; // error
 			}
 			
-			draft = InstructionFactory.Generic_SS(inst, reg1, reg2);
+			instruction = InstructionFactory.Generic_SS(inst, reg1, reg2);
 		}
 		else
 		if ( isImmediate(source) )
 		{
 			int imm = getImmediate(source);
-			draft = InstructionFactory.Generic_SI(inst, reg1, imm);
+			instruction = InstructionFactory.Generic_SI(inst, reg1, imm);
 		}
 		else
 		{
@@ -152,12 +148,12 @@ public class DraftJASM
 	private void _jump(InstructionSet inst, String operands)
 	{
 		label = operands;
-		draft = InstructionFactory.Generic_JMP(inst);
+		instruction = InstructionFactory.Generic_JMP(inst);
 	}
 	
 	private void _return()
 	{
-		draft = InstructionFactory.Return();
+		instruction = InstructionFactory.Return();
 	}
 	
 	/*

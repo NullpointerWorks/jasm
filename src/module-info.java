@@ -7,5 +7,5 @@ module libnpw.jasm
 	exports com.nullpointerworks.jasm.preprocessor;
 	exports com.nullpointerworks.jasm.compiler;
 	exports com.nullpointerworks.jasm.instruction;
-	exports com.nullpointerworks.jasm.processor;
+	exports com.nullpointerworks.jasm.virtualmachine;
 }

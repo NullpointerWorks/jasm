@@ -1,11 +1,10 @@
 package com.nullpointerworks.jasm.instruction;
 
 import com.nullpointerworks.jasm.instruction.system.*;
+import com.nullpointerworks.jasm.virtualmachine.Select;
 import com.nullpointerworks.jasm.instruction.arithmetic.*;
 import com.nullpointerworks.jasm.instruction.dataflow.*;
 import com.nullpointerworks.jasm.instruction.controlflow.*;
-
-import com.nullpointerworks.jasm.processor.Select;
 
 
 public final class InstructionFactory

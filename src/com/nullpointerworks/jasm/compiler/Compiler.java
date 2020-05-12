@@ -23,7 +23,7 @@ public interface Compiler
 	/**
 	 * 
 	 */
-	Compiler compile(Preprocessor parser);
+	Compiler compile(Preprocessor preproc);
 	
 	/**
 	 * 

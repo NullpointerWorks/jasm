@@ -1,9 +1,9 @@
 package com.nullpointerworks.jasm.instruction.dataflow;
 
 import com.nullpointerworks.jasm.instruction.Instruction;
-import com.nullpointerworks.jasm.processor.Processor;
-import com.nullpointerworks.jasm.processor.Register;
-import com.nullpointerworks.jasm.processor.Select;
+import com.nullpointerworks.jasm.virtualmachine.Register;
+import com.nullpointerworks.jasm.virtualmachine.Select;
+import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
 
 public class Load_SS implements Instruction
 {
@@ -17,7 +17,7 @@ public class Load_SS implements Instruction
 	}
 
 	@Override
-	public void execute(Processor prog)
+	public void execute(VirtualMachine prog)
 	{
 		Register rb = prog.getRegister(sb);
 		prog.setRegister(sa, rb.getValue());

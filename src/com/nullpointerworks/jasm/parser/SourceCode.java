@@ -4,7 +4,7 @@ public class SourceCode
 {
 	private final String filename;
 	private final int linenumber;
-	private final String line;
+	private String line;
 	
 	public SourceCode(String filename, int linenumber, String line)
 	{
@@ -21,6 +21,11 @@ public class SourceCode
 	public int getLinenumber()
 	{
 		return linenumber;
+	}
+	
+	public void setLine(String line)
+	{
+		this.line=line;
 	}
 
 	public String getLine()

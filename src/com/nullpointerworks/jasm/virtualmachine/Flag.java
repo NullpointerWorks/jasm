@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.processor;
+package com.nullpointerworks.jasm.virtualmachine;
 
 public class Flag
 {

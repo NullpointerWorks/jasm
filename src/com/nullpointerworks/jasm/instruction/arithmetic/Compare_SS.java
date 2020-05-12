@@ -1,7 +1,7 @@
 package com.nullpointerworks.jasm.instruction.arithmetic;
 
 import com.nullpointerworks.jasm.instruction.*;
-import com.nullpointerworks.jasm.processor.*;
+import com.nullpointerworks.jasm.virtualmachine.*;
 
 /*
  * compare
@@ -18,7 +18,7 @@ public class Compare_SS implements Instruction
 	}
 	
 	@Override
-	public void execute(Processor prog)
+	public void execute(VirtualMachine prog)
 	{
 		Register ra = prog.getRegister(sa);
 		Register rb = prog.getRegister(sb);
@@ -26,7 +26,7 @@ public class Compare_SS implements Instruction
 		setFlags(prog,res);
 	}
 	
-	protected void setFlags(Processor prog, int res)
+	protected void setFlags(VirtualMachine prog, int res)
 	{
 		prog.resetFlags();
 		if (res==0) prog.setFlag(Select.ZERO, true);

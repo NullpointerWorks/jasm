@@ -16,14 +16,14 @@ public class TestPreprocessor extends TestParser
 		};
 		//*/
 		
-		new TestPreprocessor(args);
+		new TestPreprocessor().runPreprocessor(args);
 	}
 	
 	private Preprocessor jasmPreProc;
 	
-	public TestPreprocessor(String[] args)
+	public void runPreprocessor(String[] args)
 	{
-		super(args);
+		super.runParser(args);
 		
 		/*
 		 * get parser results
@@ -35,7 +35,7 @@ public class TestPreprocessor extends TestParser
 		 * do pre-processing
 		 */
 		jasmPreProc = new PreprocessorJASM();
-		jasmPreProc.setVerbose(true);
+		jasmPreProc.setVerbose(isVerbose());
 		jasmPreProc.preprocess(parser);
 		if (jasmPreProc.hasErrors())
 		{
@@ -44,10 +44,11 @@ public class TestPreprocessor extends TestParser
 			{
 				System.out.println( err.getDescription() );
 			}
+			jasmPreProc = null;
 		}
 	}
 	
-	public Preprocessor getPreprocessor()
+	protected Preprocessor getPreprocessor()
 	{
 		return jasmPreProc;
 	}

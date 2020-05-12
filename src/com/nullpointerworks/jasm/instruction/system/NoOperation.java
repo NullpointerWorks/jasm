@@ -1,7 +1,7 @@
 package com.nullpointerworks.jasm.instruction.system;
 
 import com.nullpointerworks.jasm.instruction.Instruction;
-import com.nullpointerworks.jasm.processor.Processor;
+import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
 
 public class NoOperation implements Instruction
 {
@@ -11,7 +11,7 @@ public class NoOperation implements Instruction
 	}
 	
 	@Override
-	public void execute(Processor prog)
+	public void execute(VirtualMachine prog)
 	{
 		
 	}

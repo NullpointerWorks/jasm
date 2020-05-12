@@ -1,11 +1,11 @@
-package com.nullpointerworks.jasm.processor;
+package com.nullpointerworks.jasm.virtualmachine;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.nullpointerworks.jasm.instruction.Instruction;
 
-public class ProcessorJASM implements Processor
+public class VirtualMachineJASM implements VirtualMachine
 {
 	private InterruptListener interrupt;
 	private List<Instruction> instructions;
@@ -21,7 +21,7 @@ public class ProcessorJASM implements Processor
 	private Flag zero;
 	private Flag sign;
 	
-	public ProcessorJASM(InterruptListener il)
+	public VirtualMachineJASM(InterruptListener il)
 	{
 		interrupt = il;
 		

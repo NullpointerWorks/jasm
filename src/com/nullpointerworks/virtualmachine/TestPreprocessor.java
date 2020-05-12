@@ -1,9 +1,9 @@
 package com.nullpointerworks.virtualmachine;
 
+import com.nullpointerworks.jasm.preprocessor.PreProcessorError;
 import com.nullpointerworks.jasm.preprocessor.Preprocessor;
 import com.nullpointerworks.jasm.preprocessor.PreprocessorJASM;
 import com.nullpointerworks.jasm.parser.Parser;
-import com.nullpointerworks.jasm.preprocessor.PreProcessorError;
 
 public class TestPreprocessor extends TestParser
 {

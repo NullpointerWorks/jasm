@@ -1,8 +1,6 @@
 package com.nullpointerworks.jasm.preprocessor;
 
 import com.nullpointerworks.jasm.instruction.Instruction;
-import com.nullpointerworks.jasm.instruction.InstructionFactory;
-import com.nullpointerworks.jasm.instruction.InstructionSet;
 import com.nullpointerworks.jasm.instruction.arithmetic.*;
 import com.nullpointerworks.jasm.instruction.controlflow.*;
 import com.nullpointerworks.jasm.instruction.dataflow.*;
@@ -69,14 +67,14 @@ public class DraftJASM
 		if (instruct.equals("cmp")) {_cmp(operands); return;}
 		if (instruct.equals("sl")) {_sl(operands); return;}
 		if (instruct.equals("sr")) {_sr(operands); return;}
-		//if (instruct.equals("inc")) {_inc(operands); return;}
-		//if (instruct.equals("dec")) {_dec(operands); return;}
+		if (instruct.equals("inc")) {_inc(operands); return;}
+		if (instruct.equals("dec")) {_dec(operands); return;}
 		//if (instruct.equals("neg")) {_neg(operands); return;}
 		
 		/*
 		 * data transfer
 		 */
-		if (instruct.equals("load")) {_generic_RX(InstructionSet.LOAD, operands); return;}
+		if (instruct.equals("load")) {_load(operands); return;}
 		if (instruct.equals("push")) {_push(operands); return;}
 		if (instruct.equals("pop")) {_pop(operands); return;}
 		//if (instruct.equals("sto")) {_sto(operands); return;}
@@ -89,10 +87,10 @@ public class DraftJASM
 		if (instruct.equals("jmp")) {_jump(operands); return;}
 		if (instruct.equals("je")) {_jequal(operands); return;}
 		if (instruct.equals("jne")) {_jnotequal(operands); return;}
-		if (instruct.equals("jl")) {_jump(InstructionSet.JL, operands); return;}
-		if (instruct.equals("jle")) {_jump(InstructionSet.JLE, operands); return;}
-		if (instruct.equals("jg")) {_jump(InstructionSet.JG, operands); return;}
-		if (instruct.equals("jge")) {_jump(InstructionSet.JGE, operands); return;}
+		if (instruct.equals("jl")) {_jless(operands); return;}
+		if (instruct.equals("jle")) {_jlessequal(operands); return;}
+		if (instruct.equals("jg")) {_jgreater(operands); return;}
+		if (instruct.equals("jge")) {_jgreaterequal(operands); return;}
 		if (instruct.equals("ret")) {_return(); return;}
 	}
 	
@@ -273,7 +271,7 @@ public class DraftJASM
 			// error
 		}
 	}
-	
+
 	/*
 	 * sr <reg>
 	 */
@@ -289,13 +287,87 @@ public class DraftJASM
 			// error
 		}
 	}
+	
+	/*
+	 * inc <reg>
+	 */
+	private void _inc(String operands)
+	{
+		if ( isRegister(operands) )
+		{
+			Select reg = getRegister(operands);
+			instruction = new Increment_S(reg);
+		}
+		else
+		{
+			// error
+		}
+	}
+	
+	/*
+	 * dec <reg>
+	 */
+	private void _dec(String operands)
+	{
+		if ( isRegister(operands) )
+		{
+			Select reg = getRegister(operands);
+			instruction = new Decrement_S(reg);
+		}
+		else
+		{
+			// error
+		}
+	}
 
 	/* ================================================================================
 	 * 
 	 * 		data transfer
 	 * 
 	 * ============================================================================= */
-
+	
+	/*
+	 * load <reg>,<reg>
+	 * load <reg>,<imm>
+	 */
+	private void _load(String operands)
+	{
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) 
+		{
+			return; // error
+		}
+		
+		String target = tokens[0];
+		Select reg1 = getRegister(target);
+		if ( reg1 == null )
+		{
+			return; // error
+		}
+		
+		String source = tokens[1];
+		Select reg2 = getRegister(source);
+		if ( isRegister(source) )
+		{
+			if ( reg2 == null )
+			{
+				return; // error
+			}
+			
+			instruction = new Load_SS(reg1,reg2);
+		}
+		else
+		if ( isImmediate(source) )
+		{
+			int imm = getImmediate(source);
+			instruction = new Load_SI(reg1,imm);
+		}
+		else
+		{
+			// error
+		}
+	}
+	
 	/*
 	 * push <reg>
 	 * push <imm>
@@ -327,7 +399,7 @@ public class DraftJASM
 		if ( isRegister(operands) )
 		{
 			Select reg = getRegister(operands);
-			instruction = InstructionFactory.Pop(reg);
+			instruction = new Pop_S(reg);
 		}
 		else
 		{
@@ -360,6 +432,30 @@ public class DraftJASM
 	}
 	
 	private void _jnotequal(String operands)
+	{
+		label = operands;
+		instruction = new JumpNotEqual(0);
+	}
+	
+	private void _jless(String operands)
+	{
+		label = operands;
+		instruction = new JumpNotEqual(0);
+	}
+	
+	private void _jlessequal(String operands)
+	{
+		label = operands;
+		instruction = new JumpNotEqual(0);
+	}
+	
+	private void _jgreater(String operands)
+	{
+		label = operands;
+		instruction = new JumpNotEqual(0);
+	}
+	
+	private void _jgreaterequal(String operands)
 	{
 		label = operands;
 		instruction = new JumpNotEqual(0);

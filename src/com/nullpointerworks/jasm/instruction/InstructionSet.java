@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.instructions;
+package com.nullpointerworks.jasm.instruction;
 
 public enum InstructionSet
 {

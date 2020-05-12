@@ -17,8 +17,7 @@ public class TestPreprocessor
 		//*
 		args = new String[] 
 		{
-			"D:/Development/Assembly/workspace/jasm2/playground.jasm",
-			"D:/Development/Assembly/workspace/jasm2/"
+			"D:/Development/Assembly/workspace/jasm/playground/playground.jasm",
 		};
 		//*/
 		
@@ -30,12 +29,13 @@ public class TestPreprocessor
 		/*
 		 * load primary source file
 		 */
-		String filename = args[0];
+		URL url = new URL(args[0]);
 		
 		/*
 		 * add linker directory
 		 */
 		List<String> paths = new ArrayList<String>();
+		paths.add(url.folderPath()); // always source directory as primary linker
 		for (int i=1,l=args.length; i<l; i++)
 		{
 			paths.add(args[i]);
@@ -47,7 +47,7 @@ public class TestPreprocessor
 		Parser jasmParser = new ParserJASM();
 		jasmParser.setVerbose(false);
 		jasmParser.setIncludesPath(paths);
-		jasmParser.parse(filename);
+		jasmParser.parse(url.filePath());
 		if (jasmParser.hasErrors())
 		{
 			var errors = jasmParser.getErrors();
@@ -73,9 +73,6 @@ public class TestPreprocessor
 			}
 			return;
 		}
-		
-		
-		
 		
 	}
 }

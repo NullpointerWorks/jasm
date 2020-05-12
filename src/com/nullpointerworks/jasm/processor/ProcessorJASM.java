@@ -3,7 +3,7 @@ package com.nullpointerworks.jasm.processor;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nullpointerworks.jasm.instructions.Instruction;
+import com.nullpointerworks.jasm.instruction.Instruction;
 
 public class ProcessorJASM implements Processor
 {
@@ -38,7 +38,8 @@ public class ProcessorJASM implements Processor
 		instructions = new ArrayList<Instruction>();
 		stack = new ArrayList<Integer>();
 	}
-
+	
+	@Override
 	public void addInstructions(List<Instruction> instructions)
 	{
 		for (Instruction i : instructions)
@@ -47,17 +48,20 @@ public class ProcessorJASM implements Processor
 		}
 	}
 	
+	@Override
 	public void addInstruction(Instruction inst)
 	{
 		instructions.add(inst);
 	}
 	
+	@Override
 	public void pushStack(int x)
 	{
 		rStack.setValue( rStack.getValue()+1 );
 		stack.add(rStack.getValue(), x);
 	}
 	
+	@Override
 	public int popStack()
 	{
 		int x = stack.get(rStack.getValue());
@@ -66,47 +70,72 @@ public class ProcessorJASM implements Processor
 		return x;
 	}
 	
-	public boolean hasInstruction()
-	{
-		return !(rCounter.getValue() >= instructions.size());
-	}
-
+	@Override
 	public void throwInterrupt(int intcode)
 	{
 		interrupt.onInterrupt(this, intcode);
 	}
 	
+	@Override
+	public boolean hasInstruction()
+	{
+		return !(rCounter.getValue() >= instructions.size());
+	}
+	
+	@Override
 	public void nextInstruction()
 	{
 		var instruct = instructions.get(rCounter.getValue());
-		rCounter.setValue( rCounter.getValue() + 1 );
+		rCounter.setValue( rCounter.getValue() + 1 ); // set to next instruction
 		instruct.execute(this);
 	}
 	
-	public void resetCounter(int c)
-	{
-		rCounter.setValue(c);
-	}
+	// =======================================================
 	
-	public void setSelection(Select s, int v)
-	{
-		Register r = getRegister(s);
-		if (r==null) return; // throw error
-		r.setValue(v);
-	}
-	
+	@Override
 	public void resetFlags()
 	{
 		zero.setValue(false);
 		sign.setValue(false);
 	}
-
+	
+	@Override
 	public void setFlag(Select s, boolean flag)
 	{
 		Flag f = getFlag(s);
 		f.setValue(flag);
 	}
 	
+	@Override
+	public Flag getFlag(Select s)
+	{
+		switch(s)
+		{
+		case ZERO: return zero;
+		case SIGN: return sign;
+		
+		default: break; // throw error
+		}
+		return null;
+	}
+	
+	// =======================================================
+	
+	@Override
+	public void resetCounter(int c)
+	{
+		rCounter.setValue(c);
+	}
+	
+	@Override
+	public void setRegister(Select s, int v)
+	{
+		Register r = getRegister(s);
+		if (r==null) return; // throw error
+		r.setValue(v);
+	}
+	
+	@Override
 	public Register getRegister(Select s)
 	{
 		switch(s)
@@ -117,19 +146,6 @@ public class ProcessorJASM implements Processor
 		case REG_B: return rB;
 		case REG_C: return rC;
 		case REG_D: return rD;
-		
-		
-		default: break; // throw error
-		}
-		return null;
-	}
-	
-	public Flag getFlag(Select s)
-	{
-		switch(s)
-		{
-		case ZERO: return zero;
-		case SIGN: return sign;
 		
 		default: break; // throw error
 		}

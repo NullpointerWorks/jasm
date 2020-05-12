@@ -2,9 +2,9 @@ package com.nullpointerworks.logger;
 
 public class LoggerFactory 
 {
-	public static Logger getNullLogger()
+	public static Logger getNoLogger()
 	{
-		return new NullLogger();
+		return new NoLogger();
 	}
 	
 	public static Logger getLogger()

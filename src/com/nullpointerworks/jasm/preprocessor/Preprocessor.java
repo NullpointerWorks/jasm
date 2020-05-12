@@ -2,7 +2,6 @@ package com.nullpointerworks.jasm.preprocessor;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.instructions.Instruction;
 import com.nullpointerworks.jasm.parser.Parser;
 
 public interface Preprocessor 
@@ -35,5 +34,5 @@ public interface Preprocessor
 	/**
 	 * 
 	 */
-	List<Instruction> getInstructions();
+	List<DraftJASM> getDraft();
 }

@@ -1,14 +1,14 @@
-package com.nullpointerworks.jasm.instructions.arithmetic;
+package com.nullpointerworks.jasm.instruction.arithmetic;
 
-import com.nullpointerworks.jasm.instructions.*;
+import com.nullpointerworks.jasm.instruction.*;
 import com.nullpointerworks.jasm.processor.*;
 
-public class ADD_SS extends AbstractInstruction
+public class Subtract_SS extends AbstractInstruction
 {
 	private Select sa;
 	private Select sb;
 	
-	public ADD_SS(Select sa, Select sb) 
+	public Subtract_SS(Select sa, Select sb) 
 	{
 		this.sa=sa;
 		this.sb=sb;
@@ -19,8 +19,8 @@ public class ADD_SS extends AbstractInstruction
 	{
 		Register ra = prog.getRegister(sa);
 		Register rb = prog.getRegister(sb);
-		int res = ra.getValue() + rb.getValue();
-		prog.setSelection(sa, res);
+		int res = ra.getValue() - rb.getValue();
+		prog.setRegister(sa, res);
 		setFlags(prog,res);
 	}
 }

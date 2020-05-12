@@ -32,7 +32,7 @@ public class ParserJASM implements Parser
 		@Override
 		public int compare(EquRecord p1, EquRecord p2) 
 		{
-			return p1.first.compareTo(p2.first);
+			return p1.NAME.compareTo(p2.NAME);
 		}
 	};
 	public ParserJASM() {reset();}
@@ -172,7 +172,7 @@ public class ParserJASM implements Parser
 				out("\n Duplicate \"equ\" declared\n");
 				for (EquRecord entry : equDups)
 				{
-					out(" .equ "+entry.first + " "+entry.third.getFilename());
+					out(" .equ "+entry.NAME + " "+entry.SOURCE.getFilename());
 				}
 			}
 			out("\n parsing done\n");
@@ -473,7 +473,7 @@ public class ParserJASM implements Parser
 	private EquRecord findEqu(String name, List<EquRecord> equs) 
 	{
 		for (EquRecord t : equs)
-			if (t.first.equals(name)) return t;
+			if (t.NAME.equals(name)) return t;
 		return null;
 	}
 	

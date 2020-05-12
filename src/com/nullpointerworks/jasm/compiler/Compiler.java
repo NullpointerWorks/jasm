@@ -2,7 +2,7 @@ package com.nullpointerworks.jasm.compiler;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.instructions.Instruction;
+import com.nullpointerworks.jasm.instruction.Instruction;
 import com.nullpointerworks.jasm.preprocessor.Preprocessor;
 
 /**

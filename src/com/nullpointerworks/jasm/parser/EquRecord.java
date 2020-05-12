@@ -1,11 +1,18 @@
 package com.nullpointerworks.jasm.parser;
 
-import com.nullpointerworks.util.pack.Tuple;
-
 /*
  * tuple delegate
  */
-public class EquRecord extends Tuple<String, String, SourceCode> 
+public class EquRecord
 {
-	public EquRecord(String a, String b, SourceCode c) {super(a, b, c);}
+	public final String NAME; 
+	public final String VALUE;
+	public final SourceCode SOURCE;
+	
+	public EquRecord(String a, String b, SourceCode c)
+	{
+		this.NAME=a;
+		this.VALUE=b;
+		this.SOURCE=c;
+	}
 }

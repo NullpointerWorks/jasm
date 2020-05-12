@@ -1,17 +1,14 @@
-package com.nullpointerworks.jasm.instructions.arithmetic;
+package com.nullpointerworks.jasm.instruction.arithmetic;
 
-import com.nullpointerworks.jasm.instructions.*;
+import com.nullpointerworks.jasm.instruction.*;
 import com.nullpointerworks.jasm.processor.*;
 
-/*
- * compare
- */
-public class CMP_SS extends AbstractInstruction
+public class Addition_SS extends AbstractInstruction
 {
 	private Select sa;
 	private Select sb;
 	
-	public CMP_SS(Select sa, Select sb) 
+	public Addition_SS(Select sa, Select sb) 
 	{
 		this.sa=sa;
 		this.sb=sb;
@@ -22,7 +19,8 @@ public class CMP_SS extends AbstractInstruction
 	{
 		Register ra = prog.getRegister(sa);
 		Register rb = prog.getRegister(sb);
-		int res = ra.getValue() - rb.getValue();
+		int res = ra.getValue() + rb.getValue();
+		prog.setRegister(sa, res);
 		setFlags(prog,res);
 	}
 }

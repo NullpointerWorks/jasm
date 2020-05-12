@@ -1,14 +1,17 @@
-package com.nullpointerworks.jasm.instructions.arithmetic;
+package com.nullpointerworks.jasm.instruction.arithmetic;
 
-import com.nullpointerworks.jasm.instructions.*;
+import com.nullpointerworks.jasm.instruction.*;
 import com.nullpointerworks.jasm.processor.*;
 
-public class SUB_SS extends AbstractInstruction
+/*
+ * compare
+ */
+public class Compare_SS extends AbstractInstruction
 {
 	private Select sa;
 	private Select sb;
 	
-	public SUB_SS(Select sa, Select sb) 
+	public Compare_SS(Select sa, Select sb) 
 	{
 		this.sa=sa;
 		this.sb=sb;
@@ -20,7 +23,6 @@ public class SUB_SS extends AbstractInstruction
 		Register ra = prog.getRegister(sa);
 		Register rb = prog.getRegister(sb);
 		int res = ra.getValue() - rb.getValue();
-		prog.setSelection(sa, res);
 		setFlags(prog,res);
 	}
 }

@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.instructions;
+package com.nullpointerworks.jasm.instruction;
 
 import com.nullpointerworks.jasm.processor.Processor;
 import com.nullpointerworks.jasm.processor.Select;

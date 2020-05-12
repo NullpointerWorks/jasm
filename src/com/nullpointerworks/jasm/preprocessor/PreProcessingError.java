@@ -1,11 +1,18 @@
 package com.nullpointerworks.jasm.preprocessor;
 
+import com.nullpointerworks.jasm.parser.SourceCode;
+
 public class PreProcessingError 
 {
-
-	public String getDescription() 
+	private final SourceCode code;
+	private final String desc;
+	
+	public PreProcessingError(SourceCode code, String desc)
 	{
-		return "";
+		this.code=code;
+		this.desc=desc;
 	}
+	
+	public String getDescription() {return desc;}
 
 }

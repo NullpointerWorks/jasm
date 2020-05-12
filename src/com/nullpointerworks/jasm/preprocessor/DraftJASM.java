@@ -1,8 +1,9 @@
 package com.nullpointerworks.jasm.preprocessor;
 
-import com.nullpointerworks.jasm.instructions.Instruction;
-import com.nullpointerworks.jasm.instructions.InstructionFactory;
-import com.nullpointerworks.jasm.instructions.InstructionSet;
+import com.nullpointerworks.jasm.instruction.Instruction;
+import com.nullpointerworks.jasm.instruction.InstructionFactory;
+import com.nullpointerworks.jasm.instruction.InstructionSet;
+
 import com.nullpointerworks.jasm.parser.SourceCode;
 import com.nullpointerworks.jasm.processor.Select;
 import com.nullpointerworks.util.StringUtil;

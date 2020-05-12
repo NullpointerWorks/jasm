@@ -1,6 +1,6 @@
 package com.nullpointerworks.logger;
 
-public class NullLogger implements Logger
+public class NoLogger implements Logger
 {
 	@Override
 	public void info(String message) {}

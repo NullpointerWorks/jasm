@@ -6,7 +6,7 @@ import com.nullpointerworks.jasm.processor.*;
 /*
  * compare
  */
-public class Compare_SS extends AbstractInstruction
+public class Compare_SS implements Instruction
 {
 	private Select sa;
 	private Select sb;
@@ -24,5 +24,12 @@ public class Compare_SS extends AbstractInstruction
 		Register rb = prog.getRegister(sb);
 		int res = ra.getValue() - rb.getValue();
 		setFlags(prog,res);
+	}
+	
+	protected void setFlags(Processor prog, int res)
+	{
+		prog.resetFlags();
+		if (res==0) prog.setFlag(Select.ZERO, true);
+		if (res < 0) prog.setFlag(Select.SIGN, true);
 	}
 }

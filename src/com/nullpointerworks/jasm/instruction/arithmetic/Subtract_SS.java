@@ -3,7 +3,7 @@ package com.nullpointerworks.jasm.instruction.arithmetic;
 import com.nullpointerworks.jasm.instruction.*;
 import com.nullpointerworks.jasm.processor.*;
 
-public class Subtract_SS extends AbstractInstruction
+public class Subtract_SS implements Instruction
 {
 	private Select sa;
 	private Select sb;
@@ -22,5 +22,12 @@ public class Subtract_SS extends AbstractInstruction
 		int res = ra.getValue() - rb.getValue();
 		prog.setRegister(sa, res);
 		setFlags(prog,res);
+	}
+	
+	protected void setFlags(Processor prog, int res)
+	{
+		prog.resetFlags();
+		if (res==0) prog.setFlag(Select.ZERO, true);
+		if (res < 0) prog.setFlag(Select.SIGN, true);
 	}
 }

@@ -1,16 +1,11 @@
 package com.nullpointerworks.virtualmachine;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.nullpointerworks.jasm.parser.ParseError;
-import com.nullpointerworks.jasm.parser.Parser;
-import com.nullpointerworks.jasm.parser.ParserJASM;
 import com.nullpointerworks.jasm.preprocessor.Preprocessor;
 import com.nullpointerworks.jasm.preprocessor.PreprocessorJASM;
+import com.nullpointerworks.jasm.parser.Parser;
 import com.nullpointerworks.jasm.preprocessor.PreProcessingError;
 
-public class TestPreprocessor 
+public class TestPreprocessor extends TestParser
 {
 	public static void main(String[] args) 
 	{
@@ -24,55 +19,36 @@ public class TestPreprocessor
 		new TestPreprocessor(args);
 	}
 	
+	private Preprocessor jasmPreProc;
+	
 	public TestPreprocessor(String[] args)
 	{
-		/*
-		 * load primary source file
-		 */
-		URL url = new URL(args[0]);
+		super(args);
 		
 		/*
-		 * add linker directory
+		 * get parser results
 		 */
-		List<String> paths = new ArrayList<String>();
-		paths.add(url.folderPath()); // always source directory as primary linker
-		for (int i=1,l=args.length; i<l; i++)
-		{
-			paths.add(args[i]);
-		}
-		
-		/*
-		 * parse text into code
-		 */
-		Parser jasmParser = new ParserJASM();
-		jasmParser.setVerbose(false);
-		jasmParser.setIncludesPath(paths);
-		jasmParser.parse(url.filePath());
-		if (jasmParser.hasErrors())
-		{
-			var errors = jasmParser.getErrors();
-			for (ParseError err : errors)
-			{
-				System.out.println( err.getDescription() );
-			}
-			return;
-		}
+		Parser parser = super.getParser();
+		if (parser==null) return;
 		
 		/*
 		 * do pre-processing
 		 */
-		Preprocessor preproc = new PreprocessorJASM();
-		preproc.setVerbose(true);
-		preproc.preprocess(jasmParser);
-		if (preproc.hasErrors())
+		jasmPreProc = new PreprocessorJASM();
+		jasmPreProc.setVerbose(true);
+		jasmPreProc.preprocess(parser);
+		if (jasmPreProc.hasErrors())
 		{
-			var errors = preproc.getErrors();
+			var errors = jasmPreProc.getErrors();
 			for (PreProcessingError err : errors)
 			{
 				System.out.println( err.getDescription() );
 			}
-			return;
 		}
-		
+	}
+	
+	public Preprocessor getPreprocessor()
+	{
+		return jasmPreProc;
 	}
 }

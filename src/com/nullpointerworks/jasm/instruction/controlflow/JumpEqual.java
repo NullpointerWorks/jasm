@@ -1,23 +1,20 @@
 package com.nullpointerworks.jasm.instruction.controlflow;
 
-import com.nullpointerworks.jasm.instruction.Instruction;
 import com.nullpointerworks.jasm.processor.Processor;
 import com.nullpointerworks.jasm.processor.Select;
 
-public class JumpEqual implements Instruction
+public class JumpEqual extends Jump
 {
-	private int addr = 0;
-	
 	public JumpEqual(int a)
 	{
-		addr = a;
+		super(a);
 	}
 	
 	@Override
-	public void execute(Processor prog)
+	public void execute(Processor prog, int address)
 	{
 		boolean zero = prog.getFlag(Select.ZERO).getValue();
-		if (zero) prog.setRegister(Select.IP, addr);
+		if (zero) prog.setRegister(Select.IP, address);
 	}
 	
 }

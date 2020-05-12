@@ -21,6 +21,8 @@ public class TestParser
 		new TestParser(args);
 	}
 	
+	private Parser jasmParser;
+	
 	public TestParser(String[] args)
 	{
 		/*
@@ -41,7 +43,7 @@ public class TestParser
 		/*
 		 * parse text into code
 		 */
-		Parser jasmParser = new ParserJASM();
+		jasmParser = new ParserJASM();
 		jasmParser.setVerbose(true);
 		jasmParser.setIncludesPath(paths);
 		jasmParser.parse(url.filePath());
@@ -52,6 +54,13 @@ public class TestParser
 			{
 				System.out.println( err.getDescription() );
 			}
+			
+			jasmParser = null;
 		}
+	}
+	
+	public Parser getParser()
+	{
+		return jasmParser;
 	}
 }

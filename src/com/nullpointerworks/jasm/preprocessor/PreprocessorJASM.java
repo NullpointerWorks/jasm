@@ -71,6 +71,38 @@ public class PreprocessorJASM implements Preprocessor
 			Log.out("\n Pre-processor\n");
 		}
 		
+		process(code);
+		
+		if (verbose_preproc)
+		{
+			Log.out("\n Done\n");
+			Log.out("-------------------------------");
+		}
+		return this;
+	}
+
+	@Override
+	public boolean hasErrors() 
+	{
+		return false;
+	}
+
+	@Override
+	public List<PreProcessingError> getErrors() 
+	{
+		return null;
+	}
+
+	@Override
+	public List<DraftJASM> getDraft() 
+	{
+		return null;
+	}
+	
+	// ==================================================================
+
+	private Preprocessor process(List<SourceCode> code) 
+	{
 		/*
 		 * track directives and labels
 		 * process instructions
@@ -123,48 +155,13 @@ public class PreprocessorJASM implements Preprocessor
 			d.setLabelAddress(addr);
 		}
 		
-		if (verbose_preproc)
-		{
-			Log.out("\n Done\n");
-			Log.out("-------------------------------");
-		}
 		return this;
 	}
 
-	@Override
-	public boolean hasErrors() 
-	{
-		return false;
-	}
-
-	@Override
-	public List<PreProcessingError> getErrors() 
-	{
-		return null;
-	}
-
-	@Override
-	public List<DraftJASM> getDraft() 
-	{
-		return null;
-	}
-	
-	/* ==================================================================
-	 * 
-	 * draft builder
-	 * 
-	 * responsibility:
-	 * takes a line of code and turns it into an instruction
-	 * 
-	 * 
-	 * ==================================================================
-	 */
 	private DraftJASM buildDraft(int index, SourceCode loc)
 	{
 		return new DraftJASM(index, loc);
 	}
-	
-	// ==================================================================
 	
 	private void addError(SourceCode code, String message)
 	{

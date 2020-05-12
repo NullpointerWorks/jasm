@@ -27,6 +27,26 @@ public class DraftJASM
 		draft(index,instruct,operands);
 	}
 	
+	public SourceCode getLineOfCode() {return loc;}
+	
+	public Instruction getInstruction() {return draft;}
+	
+	public final boolean hasLabel() {return label.length() > 0;}
+	
+	public final String getLabel() {return label;}
+	
+	public final void setLabelAddress(int addr) {draft.setJumpAddress(addr);}
+	
+	public final int getCodeIndex() {return code_index;}
+	
+	public boolean hasError() {return error_flag != DraftError.NO_ERROR;}
+	
+	public DraftError getError() {return error_flag;}
+
+	/*
+	 * ===========================================================
+	 */
+	
 	private void draft(int index, String instruct, String operands)
 	{
 		code_index = index;
@@ -34,13 +54,18 @@ public class DraftJASM
 		if (instruct.equals("nop")) {_nop(); return;}
 		if (instruct.equals("int")) {_int(operands); return;}
 		
+		/*
+		 * arithmetic
+		 */
 		if (instruct.equals("add")) {_generic(InstructionSet.ADD, operands); return;}
 		if (instruct.equals("sub")) {_generic(InstructionSet.SUB, operands); return;}
 		if (instruct.equals("cmp")) {_generic(InstructionSet.CMP, operands); return;}
 		
 		if (instruct.equals("load")) {_generic(InstructionSet.LOAD, operands); return;}
 		
-		
+		/*
+		 * control flow
+		 */
 		if (instruct.equals("jmp")) {_jump(InstructionSet.JMP, operands); return;}
 		if (instruct.equals("je")) {_jump(InstructionSet.JE, operands); return;}
 		if (instruct.equals("jne")) {_jump(InstructionSet.JNE, operands); return;}
@@ -48,6 +73,8 @@ public class DraftJASM
 		if (instruct.equals("jle")) {_jump(InstructionSet.JLE, operands); return;}
 		if (instruct.equals("jg")) {_jump(InstructionSet.JG, operands); return;}
 		if (instruct.equals("jge")) {_jump(InstructionSet.JGE, operands); return;}
+		if (instruct.equals("call")) {_jump(InstructionSet.CALL,operands); return;}
+		if (instruct.equals("ret")) {_return(); return;}
 		
 		/*
 		// arithmetic
@@ -55,17 +82,82 @@ public class DraftJASM
 		if (instruct.equals("dec")) {_dec(operands); return;}
 		if (instruct.equals("neg")) {_neg(operands); return;}
 		
-		// jump
-		if (instruct.equals("call")) {_jmp(CALL,operands); return;}
-		
 		// other
 		if (instruct.equals("end")) {_end(); return;}
-		if (instruct.equals("load")) {_load(operands); return;}
 		if (instruct.equals("sto")) {_sto(operands); return;}
 		if (instruct.equals("push")) {_push(operands); return;}
 		if (instruct.equals("pop")) {_pop(operands); return;}
-		if (instruct.equals("ret")) {_ret(operands); return;}
 		//*/
+	}
+	
+	/*
+	 * ===========================================================
+	 */
+	private void _nop()
+	{
+		draft = InstructionFactory.Nop();
+	}
+	
+	private void _int(String operands)
+	{
+		if ( isImmediate(operands) )
+		{
+			int imm = getImmediate(operands);
+			draft = InstructionFactory.Int(imm);
+		}
+		else
+		{
+			// error
+		}
+	}
+	
+	private void _generic(InstructionSet inst, String operands)
+	{
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) 
+		{
+			return; // error
+		}
+		
+		String target = tokens[0];
+		Select reg1 = getRegister(target);
+		if ( reg1 == null )
+		{
+			return; // error
+		}
+		
+		String source = tokens[1];
+		Select reg2 = getRegister(source);
+		if ( isRegister(source) )
+		{
+			if ( reg2 == null )
+			{
+				return; // error
+			}
+			
+			draft = InstructionFactory.Generic_SS(inst, reg1, reg2);
+		}
+		else
+		if ( isImmediate(source) )
+		{
+			int imm = getImmediate(source);
+			draft = InstructionFactory.Generic_SI(inst, reg1, imm);
+		}
+		else
+		{
+			// error
+		}
+	}
+	
+	private void _jump(InstructionSet inst, String operands)
+	{
+		label = operands;
+		draft = InstructionFactory.Generic_JMP(inst);
+	}
+	
+	private void _return()
+	{
+		draft = InstructionFactory.Return();
 	}
 	
 	/*
@@ -151,157 +243,4 @@ public class DraftJASM
 		
 		return val;
 	}
-	
-	/*
-	 * ===========================================================
-	 */
-	
-	public SourceCode getLineOfCode() {return loc;}
-	
-	public Instruction getInstruction() {return draft;}
-	
-	public final boolean hasLabel() {return label.length() > 0;}
-	
-	public final String getLabel() {return label;}
-	
-	public final void setLabelAddress(int addr) {draft.setAddress(addr);}
-	
-	public final int getCodeIndex() {return code_index;}
-	
-	public boolean hasError() {return error_flag != DraftError.NO_ERROR;}
-	
-	public DraftError getError() {return error_flag;}
-	
-	/*
-	 * ===========================================================
-	 */
-	private void _nop()
-	{
-		draft = InstructionFactory.NOP();
-	}
-	
-	private void _int(String operands)
-	{
-		if ( isImmediate(operands) )
-		{
-			int imm = getImmediate(operands);
-			draft = InstructionFactory.INT(imm);
-		}
-		else
-		{
-			// error
-		}
-	}
-	
-	private void _generic(InstructionSet inst, String operands)
-	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
-		{
-			return; // error
-		}
-		
-		String target = tokens[0];
-		Select reg1 = getRegister(target);
-		if ( reg1 == null )
-		{
-			return; // error
-		}
-		
-		String source = tokens[1];
-		Select reg2 = getRegister(source);
-		if ( isRegister(source) )
-		{
-			if ( reg2 == null )
-			{
-				return; // error
-			}
-			
-			draft = InstructionFactory.GEN_SS(inst, reg1, reg2);
-		}
-		else
-		if ( isImmediate(source) )
-		{
-			int imm = getImmediate(source);
-			draft = InstructionFactory.GEN_SI(inst, reg1, imm);
-		}
-		else
-		{
-			// error
-		}
-	}
-	
-	private void _jump(InstructionSet inst, String operands)
-	{
-		label = operands;
-		draft = InstructionFactory.GEN_JMP(inst);
-	}
-	
-	
-	
-	
-	
-	
-	/*
-	 * push [reg8]					PUSH, Rx
-	 * push [reg16]					PUSH, Rx
-	 * push [imm8]					PUSH, I, (byte)0x00,
-	 * push &[addr16]				PUSH, M, (byte)0x00,(byte)0x00,
-	 
-	protected void _push(String operands)
-	{
-		if ( isReg8(operands) )
-		{
-			byte dir = getReg8(operands);
-			machine_code = new byte[] {PUSH, dir};
-		}
-		else
-		if ( isReg16(operands) )
-		{
-			byte dir = getReg16(operands);
-			machine_code = new byte[] {PUSH, dir};
-		}
-		else
-		if ( isAddr16(operands) )
-		{
-			short addr16 = getAddr16(operands);
-			byte H = (byte)(addr16>>8);
-			byte L = (byte)(addr16);
-			machine_code = new byte[] {PUSH, I, H, L};
-		}
-		else
-		if ( isImm8(operands) )
-		{
-			byte dir = getImm8(operands);
-			machine_code = new byte[] {PUSH, I, dir};
-		}
-		else
-		{
-			return;
-			// error
-		}
-	}
-	
-	private void _pop(String operands)
-	{
-		if ( isReg8(operands) )
-		{
-			byte dir = getReg8(operands);
-			machine_code = new byte[] {POP, dir};
-		}
-		else
-		if ( isReg16(operands) )
-		{
-			byte dir = getReg16(operands);
-			machine_code = new byte[] {POP, dir};
-		}
-		else
-		{
-			return;
-			// error
-		}
-	}
-	
-	//*/
-	
 }

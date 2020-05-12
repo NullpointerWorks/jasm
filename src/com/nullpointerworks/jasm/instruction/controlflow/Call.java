@@ -1,11 +1,12 @@
 package com.nullpointerworks.jasm.instruction.controlflow;
 
 import com.nullpointerworks.jasm.processor.Processor;
+import com.nullpointerworks.jasm.processor.Register;
 import com.nullpointerworks.jasm.processor.Select;
 
-public class JumpNotEqual extends Jump
+public class Call extends Jump
 {
-	public JumpNotEqual(int a)
+	public Call(int a) 
 	{
 		super(a);
 	}
@@ -13,8 +14,9 @@ public class JumpNotEqual extends Jump
 	@Override
 	public void execute(Processor prog, int address)
 	{
-		boolean zero = prog.getFlag(Select.ZERO).getValue();
-		if (!zero) prog.setRegister(Select.IP, address);
+		Register ip = prog.getRegister(Select.IP);
+		prog.pushStack(ip.getValue());
+		ip.setValue(address);
 	}
 	
 }

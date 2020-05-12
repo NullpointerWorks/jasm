@@ -10,43 +10,44 @@ import com.nullpointerworks.jasm.processor.Select;
 
 public final class InstructionFactory
 {
-	public static Instruction GEN_SS(InstructionSet inst, Select s1, Select s2)
+	public static Instruction Generic_SS(InstructionSet inst, Select s1, Select s2)
 	{
 		switch(inst)
 		{
 		case ADD: return new Addition_SS(s1,s2);
 		case SUB: return new Subtract_SS(s1,s2);
 		case CMP: return new Compare_SS(s1,s2);
-		case LOAD: return new LOAD_SS(s1,s2);
+		case LOAD: return new Load_SS(s1,s2);
 		default: break;
 		}
 		return null; // error
 	}
 
-	public static Instruction GEN_SI(InstructionSet inst, Select s1, int imm)
+	public static Instruction Generic_SI(InstructionSet inst, Select s1, int imm)
 	{
 		switch(inst)
 		{
 		case ADD: return new Addition_SI(s1,imm);
 		case SUB: return new Subtract_SI(s1,imm);
 		case CMP: return new Compare_SI(s1,imm);
-		case LOAD: return new LOAD_SI(s1,imm);
+		case LOAD: return new Load_SI(s1,imm);
 		default: break;
 		}
 		return null; // error
 	}
 	
-	public static Instruction GEN_JMP(InstructionSet inst)
+	public static Instruction Generic_JMP(InstructionSet inst)
 	{
 		switch(inst)
 		{
 		case JMP: return new Jump(0);
-		case JE: return new JE(0);
-		case JNE: return new JNE(0);
-		case JL: return new JL(0);
-		case JLE: return new JLE(0);
-		case JG: return new JG(0);
-		case JGE: return new JGE(0);
+		case JE: return new JumpEqual(0);
+		case JNE: return new JumpNotEqual(0);
+		case JL: return new JumpLess(0);
+		case JLE: return new JumpLessEqual(0);
+		case JG: return new JumpGreater(0);
+		case JGE: return new JumpGreaterEqual(0);
+		case CALL: return new Call(0);
 		default: break;
 		}
 		return null; // error
@@ -55,12 +56,12 @@ public final class InstructionFactory
 	/*
 	 * system internal
 	 */
-	public static Instruction NOP()
+	public static Instruction Nop()
 	{
 		return new NoOperation();
 	}
 	
-	public static Instruction INT(int v)
+	public static Instruction Int(int v)
 	{
 		return new Interrupt(v);
 	}
@@ -113,27 +114,38 @@ public final class InstructionFactory
 	
 	public static Instruction Jne(int p)
 	{
-		return new JNE(p);
+		return new JumpNotEqual(p);
 	}
 	
 	public static Instruction Jl(int p)
 	{
-		return new JL(p);
+		return new JumpLess(p);
 	}
 	
 	public static Instruction Jle(int p)
 	{
-		return new JLE(p);
+		return new JumpLessEqual(p);
 	}
 	
 	public static Instruction Jg(int p)
 	{
-		return new JG(p);
+		return new JumpGreater(p);
 	}
 	
 	public static Instruction Jge(int p)
 	{
-		return new JGE(p);
+		return new JumpGreaterEqual(p);
+	}
+	
+	
+	public static Instruction Call(int p)
+	{
+		return new Call(p);
+	}
+	
+	public static Instruction Return()
+	{
+		return new Return();
 	}
 	
 	/*
@@ -141,31 +153,27 @@ public final class InstructionFactory
 	 */
 	public static Instruction Load(Select s1, Select s2)
 	{
-		return new LOAD_SS(s1,s2);
+		return new Load_SS(s1,s2);
 	}
 	
 	public static Instruction Load(Select s, int imm)
 	{
-		return new LOAD_SI(s,imm);
+		return new Load_SI(s,imm);
 	}
 	
 	public static Instruction Push(Select s)
 	{
-		return new PUSH_S(s);
+		return new Push_S(s);
 	}
 	
 	public static Instruction Push(int v)
 	{
-		return new PUSH_I(v);
+		return new Push_I(v);
 	}
 	
 	public static Instruction Pop(Select s)
 	{
-		return new POP_S(s);
+		return new Pop_S(s);
 	}
-	
-	
-	
-	
 	
 }

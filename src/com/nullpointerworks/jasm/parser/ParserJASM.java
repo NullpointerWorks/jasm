@@ -146,7 +146,6 @@ public class ParserJASM implements Parser
 						out("\n include: "+inc+"\n");
 						found = true;
 						parseCode(inc, lines);
-						//if (hasErrors()) return this; // if errors occurred, return
 					}
 				}
 				
@@ -258,35 +257,28 @@ public class ParserJASM implements Parser
 			{
 				String t[] = line.split(":");
 				
-				/*
-				 * test for allowed label characters
-				 */
-				if (!isValidLabel(t[0]))
+				int l = t.length - 1;
+				for (int i=0; i<l;i++)
 				{
-					addError(sc, "  Invalid label name");
-				}
-				
-				if (t.length > 2)
-				{
-					if (t[1].contains(" "))
+					/*
+					 * test for allowed label characters
+					 */
+					if (!isValidLabel(t[i]))
 					{
-						addError(sc, "  Invalid label location");
+						addError(sc, "  Invalid label name");
 					}
+					
+					/*
+					 * insert the marked label into the code list
+					 */
+					processLine( new SourceCode(filename, linenumber, t[i]+":") );
 				}
-				
-				/*
-				 * insert the marked label into the code list
-				 */
-				processLine( new SourceCode(filename, linenumber, t[0]+":") );
 				
 				/*
 				 * parse possibly code on the same line
 				 */
-				if (t.length == 2)
-				{
-					String i = t[1].trim();
-					processLine( new SourceCode(filename, linenumber, i) );
-				}
+				String i = t[l].trim();
+				processLine( new SourceCode(filename, linenumber, i) );
 			}
 			else
 			{
@@ -295,11 +287,6 @@ public class ParserJASM implements Parser
 				 */
 				processLine( sc );
 			}
-			
-			/*
-			 * if there are errors, return the method
-			 */
-			//if (hasErrors()) return;
 		}
 	}
 	
@@ -318,7 +305,6 @@ public class ParserJASM implements Parser
 		String line = sc.getLine();
 		
 		if (line.equalsIgnoreCase("")) return;
-		//if (hasErrors()) return;
 		
 		/*
 		 * include external code

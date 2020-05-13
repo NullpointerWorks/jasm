@@ -38,7 +38,7 @@ public class TestVirtualMachine extends TestCompiler implements InterruptListene
 		//runCompiler(args);
 		
 		/*
-		 * get parser results
+		 * get compiler results
 		 */
 		Compiler compiler = getCompiler();
 		if (compiler==null) return;

@@ -80,6 +80,11 @@ public class ParserJASM implements Parser
 	@Override
 	public Parser parse(String filename)
 	{
+		if (!isValidFile(filename))
+		{
+			return null; // fatal error
+		}
+		
 		String[] text = loadCode(filename);
 		
 		/*
@@ -115,47 +120,43 @@ public class ParserJASM implements Parser
 			for (;l>=0;l--)
 			{
 				String inc = includesAux.get(l);
+				includesAux.remove(l);
 				
 				/*
-				 * if the file is a jasm source file
+				 * if the file is not a jasm source file, skip
 				 */
-				if (inc.endsWith(".jasm"))
+				if (!isValidFile(inc)) continue;
+				
+				/*
+				 * check each include path if the file can be found
+				 */
+				boolean found = false;
+				for (String path : includesPath)
 				{
-					out("\n include: "+inc+"\n");
+					/*
+					 * try to load a file
+					 */
+					String[] lines = loadCode(path+inc);
 					
 					/*
-					 * check each include path if the file can be found
+					 * if text was returned, file loading was successful
 					 */
-					boolean found = false;
-					for (String path : includesPath)
+					if (lines!=null) 
 					{
-						/*
-						 * try to load a file
-						 */
-						String[] lines = loadCode(path+inc);
-						
-						/*
-						 * if text was returned, file loading was successful
-						 */
-						if (lines!=null) 
-						{
-							found = true;
-							parseCode(inc, lines);
-							if (hasErrors()) return this; // if errors occurred, return
-						}
-					}
-					
-					/*
-					 * if the included file was not found in any linker path, throw an error
-					 */
-					if (!found)
-					{
-						out(inc+" (The system cannot find the file specified)");
-						return this;
+						out("\n include: "+inc+"\n");
+						found = true;
+						parseCode(inc, lines);
+						//if (hasErrors()) return this; // if errors occurred, return
 					}
 				}
 				
-				includesAux.remove(l);
+				/*
+				 * if the included file was not found in any linker path, throw an error
+				 */
+				if (!found)
+				{
+					addError( getIncludeErrorMessage(inc) );
+				}
 			}
 		}
 		while(includesAux.size() > 0);
@@ -169,10 +170,10 @@ public class ParserJASM implements Parser
 			equDups.sort(comp); 
 			if (equDups.size() > 0)
 			{
-				out("\n Duplicate \"equ\" declared\n");
+				out("\n Duplicate \"equ\" declarations\n");
 				for (EquRecord entry : equDups)
 				{
-					out(" .equ "+entry.NAME + " "+entry.SOURCE.getFilename());
+					out(entry.NAME + " "+entry.SOURCE.getFilename()+" on line "+entry.SOURCE.getLinenumber());
 				}
 			}
 			out("\n parsing done\n");
@@ -262,14 +263,14 @@ public class ParserJASM implements Parser
 				 */
 				if (!isValidLabel(t[0]))
 				{
-					addError(sc, "Invalid label name");
+					addError(sc, "  Invalid label name");
 				}
 				
 				if (t.length > 2)
 				{
 					if (t[1].contains(" "))
 					{
-						addError(sc, "Invalid label location");
+						addError(sc, "  Invalid label location");
 					}
 				}
 				
@@ -298,7 +299,7 @@ public class ParserJASM implements Parser
 			/*
 			 * if there are errors, return the method
 			 */
-			if (hasErrors()) return;
+			//if (hasErrors()) return;
 		}
 	}
 	
@@ -317,7 +318,7 @@ public class ParserJASM implements Parser
 		String line = sc.getLine();
 		
 		if (line.equalsIgnoreCase("")) return;
-		if (hasErrors()) return;
+		//if (hasErrors()) return;
 		
 		/*
 		 * include external code
@@ -439,7 +440,7 @@ public class ParserJASM implements Parser
 		} 
 		catch (FileNotFoundException e)
 		{
-			err(inc+" (The system cannot find the file specified)");
+			//err(inc+" (The system cannot find the file specified)");
 			return null;
 		}
 		if (tf == null) return null;
@@ -449,10 +450,22 @@ public class ParserJASM implements Parser
 	
 	// =================================================================
 	
+	private String getIncludeErrorMessage(String inc) 
+	{
+		return "  The included source file could not be found\n  \""+inc+"\"";
+	}
+	
+	private void addError(String message)
+	{
+		errors.add( new ParseError(message) );
+	}
+	
 	private void addError(SourceCode sc, String message)
 	{
-		errors.add( new ParseError(sc.getFilename(),sc.getLinenumber(),sc.getLine(),message) );
+		errors.add( new ParseError(sc,message) );
 	}
+
+	// =================================================================
 	
 	private boolean isValidLabel(String label)
 	{
@@ -489,13 +502,15 @@ public class ParserJASM implements Parser
 		return null;
 	}
 	
+	private boolean isValidFile(String fn) 
+	{
+		if (fn.endsWith(".jasm") ) return true;
+		if (fn.endsWith(".jsm") ) return true;
+		return false;
+	}
+	
 	private void out(String string)
 	{
 		if (verbose_parser) System.out.println(string);
-	}
-	
-	private void err(String string)
-	{
-		System.err.println(string);
 	}
 }

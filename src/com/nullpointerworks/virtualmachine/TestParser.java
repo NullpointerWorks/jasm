@@ -53,7 +53,7 @@ public class TestParser
 			var errors = jasmParser.getErrors();
 			for (ParseError err : errors)
 			{
-				System.out.println( err.getDescription() );
+				System.out.println( err.getDescription()+"\n" );
 			}
 			jasmParser = null;
 		}

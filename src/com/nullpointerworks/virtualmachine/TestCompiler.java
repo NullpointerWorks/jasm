@@ -45,6 +45,7 @@ public class TestCompiler extends TestPreprocessor
 			{
 				System.out.println( err.getDescription() );
 			}
+			jasmCompiler = null;
 		}
 	}
 	

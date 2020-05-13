@@ -29,11 +29,13 @@ public class TestVirtualMachine extends TestCompiler implements InterruptListene
 	
 	public TestVirtualMachine(String[] args)
 	{
-		setParserVerbose(false);
+		setParserVerbose(true);
 		setPreProcessorVerbose(false);
 		setCompilerVerbose(false);
 		
-		runCompiler(args);
+		runParser(args);
+		//runPreprocessor(args);
+		//runCompiler(args);
 		
 		/*
 		 * get parser results

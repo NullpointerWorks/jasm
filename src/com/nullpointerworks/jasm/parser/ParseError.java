@@ -1,14 +1,37 @@
 package com.nullpointerworks.jasm.parser;
 
-public class ParseError extends SourceCode
+public class ParseError
 {
+	private final SourceCode sc;
 	private final String desc;
 	
-	public ParseError(String filename, int linenumber, String line, String desc)
+	public ParseError(SourceCode sc, String desc)
 	{
-		super(filename, linenumber, line);
+		this.sc=sc;
 		this.desc=desc;
 	}
 	
-	public String getDescription() {return desc;}
+	public ParseError(String desc)
+	{
+		this.sc=null;
+		this.desc=desc;
+	}
+
+	public SourceCode getSourceCode() {return sc;}
+	
+	public String getDescription() 
+	{
+		String msg = 
+		"Parse Error:\n"+desc;
+		
+		if (sc!=null)
+		{
+			msg+=" in "+sc.getFilename()+"\n";
+			msg+="  Line: "+sc.getLinenumber()+"\n";
+			msg+="  Code: "+sc.getLine()+"\n";
+			
+		}
+		
+		return msg;
+	}
 }

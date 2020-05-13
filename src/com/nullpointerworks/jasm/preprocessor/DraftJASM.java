@@ -65,11 +65,11 @@ public class DraftJASM
 		if (instruct.equals("add")) {_add(operands); return;}
 		if (instruct.equals("sub")) {_sub(operands); return;}
 		if (instruct.equals("cmp")) {_cmp(operands); return;}
-		if (instruct.equals("sl")) {_sl(operands); return;}
-		if (instruct.equals("sr")) {_sr(operands); return;}
+		if (instruct.equals("shl")) {_shl(operands); return;}
+		if (instruct.equals("shr")) {_shr(operands); return;}
 		if (instruct.equals("inc")) {_inc(operands); return;}
 		if (instruct.equals("dec")) {_dec(operands); return;}
-		//if (instruct.equals("neg")) {_neg(operands); return;}
+		if (instruct.equals("neg")) {_neg(operands); return;}
 		
 		/*
 		 * data transfer
@@ -77,8 +77,8 @@ public class DraftJASM
 		if (instruct.equals("load")) {_load(operands); return;}
 		if (instruct.equals("push")) {_push(operands); return;}
 		if (instruct.equals("pop")) {_pop(operands); return;}
-		//if (instruct.equals("sto")) {_sto(operands); return;}
-		//if (instruct.equals("read")) {_read(operands); return;}
+		if (instruct.equals("sto")) {_sto(operands); return;}
+		if (instruct.equals("read")) {_read(operands); return;}
 		
 		/*
 		 * control flow
@@ -99,7 +99,7 @@ public class DraftJASM
 	 * 		system
 	 * 
 	 * ============================================================================= */
-	
+
 	/*
 	 * nop
 	 */
@@ -129,7 +129,7 @@ public class DraftJASM
 	 * 		arithmetic
 	 * 
 	 * ============================================================================= */
-
+	
 	/*
 	 * add <reg>,<reg>
 	 * add <reg>,<imm>
@@ -257,9 +257,9 @@ public class DraftJASM
 	}
 	
 	/*
-	 * sl <reg>
+	 * shl <reg>
 	 */
-	private void _sl(String operands)
+	private void _shl(String operands)
 	{
 		if ( isRegister(operands) )
 		{
@@ -273,9 +273,9 @@ public class DraftJASM
 	}
 
 	/*
-	 * sr <reg>
+	 * shr <reg>
 	 */
-	private void _sr(String operands)
+	private void _shr(String operands)
 	{
 		if ( isRegister(operands) )
 		{
@@ -319,6 +319,22 @@ public class DraftJASM
 			// error
 		}
 	}
+	
+	/*
+	 * neg <reg>
+	 */
+	private void _neg(String operands) 
+	{
+		if ( isRegister(operands) )
+		{
+			Select reg = getRegister(operands);
+			instruction = new Negate_S(reg);
+		}
+		else
+		{
+			// error
+		}
+	}
 
 	/* ================================================================================
 	 * 
@@ -332,11 +348,8 @@ public class DraftJASM
 	 */
 	private void _load(String operands)
 	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
-		{
-			return; // error
-		}
+		String[] tokens = split(operands);
+		if (tokens==null) return; // error
 		
 		String target = tokens[0];
 		Select reg1 = getRegister(target);
@@ -407,6 +420,98 @@ public class DraftJASM
 		}
 	}
 	
+	/*
+	 * sto @<reg>,<reg>
+	 * sto @<imm>,<reg>
+	 */
+	private void _sto(String operands)
+	{
+		String[] tokens = split(operands);
+		if (tokens==null) return; // error
+		
+		/*
+		 * check destination
+		 */
+		String source = tokens[1];
+		Select regS = getRegister(source);
+		if ( regS == null )
+		{
+			return; // if not register, error
+		}
+		
+		/*
+		 * check target location. must be an address
+		 */
+		String target = tokens[0];
+		if (!isAddress(target))
+		{
+			return; // error
+		}
+		target = target.substring(1); // remove @ sign
+		
+		if ( isRegister(target) )
+		{
+			Select regT = getRegister(target);
+			instruction = new Store_SS(regT,regS);
+		}
+		else
+		if ( isImmediate(target) )
+		{
+			int immT = getImmediate(target);
+			instruction = new Store_IS(immT,regS);
+		}
+		else
+		{
+			// error
+		}
+	}
+	
+	/*
+	 * read <reg>, @<reg>
+	 * read <reg>, @<imm>
+	 */
+	private void _read(String operands)
+	{
+		String[] tokens = split(operands);
+		if (tokens==null) return; // error
+		
+		/*
+		 * check target
+		 */
+		String target = tokens[0];
+		Select regT = getRegister(target);
+		if ( regT == null )
+		{
+			return; // if not register, error
+		}
+		
+		/*
+		 * check source location. must be an address
+		 */
+		String source = tokens[1];
+		if (!isAddress(source))
+		{
+			return; // error
+		}
+		source = source.substring(1); // remove @ sign
+		
+		if ( isRegister(source) )
+		{
+			Select regS = getRegister(source);
+			instruction = new Read_SS(regT,regS);
+		}
+		else
+		if ( isImmediate(source) )
+		{
+			int immS = getImmediate(source);
+			instruction = new Read_SI(regT,immS);
+		}
+		else
+		{
+			// error
+		}
+	}
+	
 	/* ================================================================================
 	 * 
 	 * 		control flow
@@ -464,6 +569,20 @@ public class DraftJASM
 	private void _return()
 	{
 		instruction = new Return();
+	}
+	
+	/*
+	 * ===========================================================
+	 */
+	
+	private String[] split(String operands)
+	{
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) 
+		{
+			return null; // error
+		}
+		return tokens;
 	}
 	
 	/*
@@ -530,31 +649,8 @@ public class DraftJASM
 	
 	private boolean isAddress(String addr)
 	{
-		if (addr.startsWith("&")) return true;
+		if (addr.startsWith("@")) return true;
 		return false;
 	}
 	
-	private int getAddress(String value)
-	{
-		value = value.replace("&", "");
-		
-		int val = 0;
-		
-		if (StringUtil.isHexadec(value))
-		{
-			value = value.replace("0x", "");
-			val = Integer.parseInt(value, 16);
-		}
-		else
-		if (StringUtil.isInteger(value))
-		{
-			val = Integer.parseInt(value);
-		}
-		else
-		{
-			// error
-		}
-		
-		return val;
-	}
 }

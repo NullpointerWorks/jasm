@@ -9,7 +9,7 @@
 	
  ________________________________________________
 |                                                |
-|      Pre-processor instructions                |
+|          Pre-processor instructions            |
 |________________________________________________|
 include external *.jasm file
 
@@ -27,8 +27,11 @@ define a label name to jump to
 
  ________________________________________________
 |                                                |
-|      Assembler code                            |
+|                Assembler code                  |
 |________________________________________________|
+
+		SYSTEM INSTRUCTIONS
+_________________________________________________
 no-operation 
 
 syntax:
@@ -39,7 +42,64 @@ interrupt program
 
 syntax:
 	int <imm>
+	
+_________________________________________________
 
+		ARITHMETIC INSTRUCTIONS
+_________________________________________________
+addition
+
+syntax:
+	add <reg>, <reg>
+	add <reg>, <imm>
+
+_________________________________________________
+subtraction 
+
+syntax:
+	sub <reg>, <reg>
+	sub <reg>, <imm>
+
+_________________________________________________
+compare 
+
+syntax:
+	cmp <reg>, <reg>
+	cmp <reg>, <imm>
+
+_________________________________________________
+bit-shift left
+
+syntax:
+	shl <reg>
+
+_________________________________________________
+bit-shift right
+
+syntax:
+	shr <reg>
+
+_________________________________________________
+negation 
+
+syntax:
+	neg <reg>
+
+_________________________________________________
+increment register 
+
+syntax:
+	inc <reg>
+
+_________________________________________________
+decrement register 
+
+syntax:
+	dec <reg>
+
+_________________________________________________
+
+		JUMP INSTRUCTIONS
 _________________________________________________
 jump 
 
@@ -95,56 +155,8 @@ syntax:
 	ret	
 
 _________________________________________________
-bit-shift left
 
-syntax:
-	shl <reg>
-
-_________________________________________________
-bit-shift right
-
-syntax:
-	shr <reg>
-
-_________________________________________________
-addition
-
-syntax:
-	add <reg>, <reg>
-	add <reg>, <imm>
-
-_________________________________________________
-subtraction 
-
-syntax:
-	sub <reg>, <reg>
-	sub <reg>, <imm>
-
-_________________________________________________
-compare 
-
-syntax:
-	cmp <reg>, <reg>
-	cmp <reg>, <imm>
-
-_________________________________________________
-negation 
-
-syntax:
-	neg <reg>
-
-_________________________________________________
-increment register 
-
-syntax:
-	inc <reg>
-
-_________________________________________________
-decrement register 
-
-syntax:
-	dec <reg>
-
+		DATA TRANSFER INSTRUCTIONS
 _________________________________________________
 load register
 
@@ -166,18 +178,16 @@ syntax:
 	pop <reg>
 
 _________________________________________________
-storage 
+store to ram
 
 syntax:
-	sto &[imm16],[reg8]
-	sto &[imm16],[imm8]
-	sto [reg16],[reg8]
-	sto [reg16],[imm8]
+	sto @<reg>,<reg>
+	sto @<imm>,<reg>
 	
 _________________________________________________
 read ram
 
 syntax:
-	read <reg>, &<reg>
-	read <reg>, &<imm>
-	
+	read <reg>, @<reg>
+	read <reg>, @<imm>
+

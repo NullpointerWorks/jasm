@@ -257,27 +257,24 @@ public class ParserJASM implements Parser
 			{
 				String t[] = line.split(":");
 				
-				int l = t.length - 1;
-				for (int i=0; i<l;i++)
+				/*
+				 * test for allowed label characters
+				 */
+				if (!isValidLabel(t[0]))
 				{
-					/*
-					 * test for allowed label characters
-					 */
-					if (!isValidLabel(t[i]))
-					{
-						addError(sc, "  Invalid label name");
-					}
-					
-					/*
-					 * insert the marked label into the code list
-					 */
-					processLine( new SourceCode(filename, linenumber, t[i]+":") );
+					addError(sc, "  Invalid label name");
 				}
+				
+				/*
+				 * insert the marked label into the code list
+				 */
+				processLine( new SourceCode(filename, linenumber, t[0]+":") );
+				if (t.length == 1) continue;
 				
 				/*
 				 * parse possibly code on the same line
 				 */
-				String i = t[l].trim();
+				String i = t[1].trim();
 				processLine( new SourceCode(filename, linenumber, i) );
 			}
 			else

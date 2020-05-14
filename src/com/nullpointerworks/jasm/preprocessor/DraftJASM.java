@@ -638,6 +638,8 @@ public class DraftJASM
 		case "b": return Select.REG_B;
 		case "c": return Select.REG_C;
 		case "d": return Select.REG_D;
+		case "x": return Select.REG_X;
+		case "y": return Select.REG_Y;
 		default: break;
 		}
 		return null; // error

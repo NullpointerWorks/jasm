@@ -2,8 +2,9 @@ package com.nullpointerworks.jasm.compiler;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.instruction.Instruction;
+import com.nullpointerworks.jasm.BuildError;
 import com.nullpointerworks.jasm.preprocessor.Preprocessor;
+import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
 
 /**
  * JASM 2 compiler interface
@@ -28,12 +29,17 @@ public interface Compiler
 	/**
 	 * 
 	 */
+	Compiler save(String filepath);
+	
+	/**
+	 * 
+	 */
 	boolean hasErrors();
 	
 	/**
 	 * 
 	 */
-	List<CompileError> getErrors();
+	List<BuildError> getErrors();
 	
 	/**
 	 * 

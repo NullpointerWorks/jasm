@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import com.nullpointerworks.jasm.BuildError;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
@@ -15,11 +16,11 @@ public class ParserJASM implements Parser
 	private List<String> includesAux = null; // contains file yet to be included. this list gets modified
 	private List<String> includesPath = null; // all traceable paths to look for jasm source code 
 
-	private List<EquRecord> equals = null; // contains all equ code
-	private List<EquRecord> equDups = null;
+	private List<DefineRecord> defs = null; // contains all definition code
+	private List<DefineRecord> defDups = null;
 	
 	private List<SourceCode> code = null; // contains parsed code
-	private List<ParseError> errors; // contains errors
+	private List<BuildError> errors; // contains errors
 	
 	private boolean verbose_parser = false;
 	private int strLeng = 2;
@@ -27,10 +28,10 @@ public class ParserJASM implements Parser
 	/*
 	 * lexicographic sort
 	 */
-	private Comparator<EquRecord> comp = new Comparator<EquRecord>()
+	private Comparator<DefineRecord> comp = new Comparator<DefineRecord>()
 	{
 		@Override
-		public int compare(EquRecord p1, EquRecord p2) 
+		public int compare(DefineRecord p1, DefineRecord p2) 
 		{
 			return p1.NAME.compareTo(p2.NAME);
 		}
@@ -52,15 +53,33 @@ public class ParserJASM implements Parser
 		includesAux = new ArrayList<String>();
 		
 		if (errors!=null) errors.clear();
-		errors = new ArrayList<ParseError>();
+		errors = new ArrayList<BuildError>();
 		
-		if (equals!=null) equals.clear();
-		equals = new ArrayList<EquRecord>();
+		if (defs!=null) defs.clear();
+		defs = new ArrayList<DefineRecord>();
 		
-		if (equDups!=null) equDups.clear();
-		equDups = new ArrayList<EquRecord>();
+		if (defDups!=null) defDups.clear();
+		defDups = new ArrayList<DefineRecord>();
 		
 		return this;
+	}
+
+	@Override
+	public boolean hasErrors()
+	{
+		return errors.size() > 0;
+	}
+	
+	@Override
+	public List<BuildError> getErrors()
+	{
+		return errors;
+	}
+	
+	@Override
+	public List<SourceCode> getSourceCode()
+	{
+		return code;
 	}
 	
 	@Override
@@ -96,12 +115,12 @@ public class ParserJASM implements Parser
 			
 			if (includesPath.size() > 0)
 			{
-				out("\n linker\n");
+				out("\nLinker\n");
 				for (String inc : includesPath)
-					out("   "+inc);
+					out(" "+inc);
 			}
 			
-			out("\n parsing\n");
+			out("\nParsing\n");
 		}
 		
 		/*
@@ -123,7 +142,7 @@ public class ParserJASM implements Parser
 				includesAux.remove(l);
 				
 				/*
-				 * if the file is not a jasm source file, skip
+				 * if the file is not a recognized source file, skip
 				 */
 				if (!isValidFile(inc)) continue;
 				
@@ -143,7 +162,7 @@ public class ParserJASM implements Parser
 					 */
 					if (lines!=null) 
 					{
-						out("\n include: "+inc+"\n");
+						out("\nInclude: "+inc+"\n");
 						found = true;
 						parseCode(inc, lines);
 					}
@@ -161,49 +180,58 @@ public class ParserJASM implements Parser
 		while(includesAux.size() > 0);
 		
 		/*
-		 * if verbose, show some warnings and other info
+		 * check for duplicate definitions
 		 */
-		if (verbose_parser)
+		defDups.sort(comp); 
+		if (defDups.size() > 0)
 		{
-			// notify about duplicate ".equ" declarations
-			equDups.sort(comp); 
-			if (equDups.size() > 0)
+			String msg = "Duplicate definition declaration\n";
+			for (DefineRecord entry : defDups)
 			{
-				out("\n Duplicate \"equ\" declarations\n");
-				for (EquRecord entry : equDups)
-				{
-					out(entry.NAME + " "+entry.SOURCE.getFilename()+" on line "+entry.SOURCE.getLinenumber());
-				}
+				msg += " "+entry.NAME + " "+entry.SOURCE.getFilename()+" on line "+entry.SOURCE.getLinenumber() +"\n";
 			}
-			out("\n parsing done\n");
-			out("-------------------------------");
+			addError(msg);
 		}
 		
+		/*
+		 * insert definitions if there were no errors
+		 */
+		if (!hasErrors())
+		{
+			/*
+			 * print definitions
+			 */
+			if (verbose_parser)
+			{
+				System.out.println("\nDefinitions\n");
+				for (DefineRecord d : defs)
+				{
+					System.out.println( "  "+d.NAME +" = "+d.VALUE );
+				}
+			}
+			
+			for (int i=0,l=code.size(); i<l; i++)
+			{
+				SourceCode loc = code.get(i);
+				String line = loc.getLine();
+				
+				for (DefineRecord d : defs)
+				{
+					String name = d.NAME;
+					if (line.contains(name))
+					{
+						line = line.replace(name, d.VALUE);
+						loc.setLine(line);
+						break;
+					}
+				}
+			}
+		}
+		
+		out("\nParsing Done\n");
+		out("-------------------------------");
+		
 		return this;
-	}
-
-	@Override
-	public boolean hasErrors()
-	{
-		return errors.size() > 0;
-	}
-	
-	@Override
-	public List<ParseError> getErrors()
-	{
-		return errors;
-	}
-	
-	@Override
-	public List<SourceCode> getSourceCode()
-	{
-		return code;
-	}
-	
-	@Override
-	public List<EquRecord> getDefinitions()
-	{
-		return equals;
 	}
 	
 	/* ==================================================================
@@ -315,9 +343,9 @@ public class ParserJASM implements Parser
 		/*
 		 * store EQU definitions
 		 */
-		if (line.startsWith(".equ "))
+		if (line.startsWith(".def "))
 		{
-			parseEquals(sc);
+			parseDefinition(sc);
 		}
 		
 		/*
@@ -355,17 +383,18 @@ public class ParserJASM implements Parser
 		}
 	}
 	
-	private void parseEquals(SourceCode sc) 
+	private void parseDefinition(SourceCode sc) 
 	{
 		String line = sc.getLine();
 		String equates = line.substring(5);
 		String[] tokens = equates.split(" ");
+		
 		/*
 		 * if there are more than 2 tokens, invalid equ definition
 		 */
 		if (tokens.length != 2)
 		{
-			addError(sc, "Invalid equate syntax");
+			addError(sc, "Invalid definition syntax");
 			return;
 		}
 		
@@ -390,25 +419,18 @@ public class ParserJASM implements Parser
 		}
 		
 		/*
-		 * find equ duplicates
+		 * find def duplicates
 		 */
-		var pack3 = findEqu(name,equals);
+		var pack3 = findDefine(name,defs);
 		if (pack3 == null) 
 		{
-			putEqu(name, value, sc, equals);
+			newDefine(name, value, sc, defs); // new definition
 		}
 		else
 		{
-			/*
-			 * make sure its only added once in the duplicate list when found
-			 */
-			if (findEqu(name,equDups) == null) 
-				equDups.add(pack3);
-			
-			/*
-			 * add name and source to duplicate list
-			 */
-			equDups.add( new EquRecord(name, "", sc));
+			// also add the first instance of that definition
+			if (findDefine(name,defDups) == null) defDups.add(pack3);
+			defDups.add( new DefineRecord(name, "", sc));
 		}
 	}
 	
@@ -423,7 +445,6 @@ public class ParserJASM implements Parser
 		} 
 		catch (FileNotFoundException e)
 		{
-			//err(inc+" (The system cannot find the file specified)");
 			return null;
 		}
 		if (tf == null) return null;
@@ -447,7 +468,7 @@ public class ParserJASM implements Parser
 	{
 		errors.add( new ParseError(sc,message) );
 	}
-
+	
 	// =================================================================
 	
 	private boolean isValidLabel(String label)
@@ -473,14 +494,14 @@ public class ParserJASM implements Parser
 		return concat.substring(strLeng-leng, strLeng);
 	}
 	
-	private void putEqu(String n, String v, SourceCode sc, List<EquRecord> equs) 
+	private void newDefine(String n, String v, SourceCode sc, List<DefineRecord> defs) 
 	{
-		equs.add( new EquRecord(n, v, sc) );
+		defs.add( new DefineRecord(n, v, sc) );
 	}
 	
-	private EquRecord findEqu(String name, List<EquRecord> equs) 
+	private DefineRecord findDefine(String name, List<DefineRecord> equs) 
 	{
-		for (EquRecord t : equs)
+		for (DefineRecord t : equs)
 			if (t.NAME.equals(name)) return t;
 		return null;
 	}
@@ -489,6 +510,7 @@ public class ParserJASM implements Parser
 	{
 		if (fn.endsWith(".jasm") ) return true;
 		if (fn.endsWith(".jsm") ) return true;
+		if (fn.endsWith(".asm") ) return true;
 		return false;
 	}
 	

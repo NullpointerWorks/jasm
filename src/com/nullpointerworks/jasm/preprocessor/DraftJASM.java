@@ -1,18 +1,16 @@
 package com.nullpointerworks.jasm.preprocessor;
 
-import com.nullpointerworks.jasm.instruction.Instruction;
-import com.nullpointerworks.jasm.instruction.arithmetic.*;
-import com.nullpointerworks.jasm.instruction.controlflow.*;
-import com.nullpointerworks.jasm.instruction.dataflow.*;
-import com.nullpointerworks.jasm.instruction.system.*;
-
 import com.nullpointerworks.jasm.parser.SourceCode;
 import com.nullpointerworks.jasm.virtualmachine.Select;
+import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
+import com.nullpointerworks.jasm.virtualmachine.instruction.arithmetic.*;
+import com.nullpointerworks.jasm.virtualmachine.instruction.controlflow.*;
+import com.nullpointerworks.jasm.virtualmachine.instruction.dataflow.*;
+import com.nullpointerworks.jasm.virtualmachine.instruction.system.*;
 import com.nullpointerworks.util.StringUtil;
 
-public class DraftJASM
+public class DraftJASM implements Draft<Instruction>
 {
-	private DraftError error_flag = DraftError.NO_ERROR;
 	private SourceCode loc = null;
 	
 	private Instruction instruction = null;
@@ -36,14 +34,12 @@ public class DraftJASM
 	public final boolean hasLabel() {return label.length() > 0;}
 	
 	public final String getLabel() {return label;}
-	
-	public final void setLabelAddress(int addr) {instruction.setJumpAddress(addr);}
+
+	public final void setJumpAddress(int addr) {instruction.setJumpAddress(addr);}
 	
 	public final int getCodeIndex() {return code_index;}
 	
-	public boolean hasError() {return error_flag != DraftError.NO_ERROR;}
-	
-	public DraftError getError() {return error_flag;}
+	public boolean hasError() {return false;}
 
 	/*
 	 * ===========================================================
@@ -654,5 +650,4 @@ public class DraftJASM
 		if (addr.startsWith("@")) return true;
 		return false;
 	}
-	
 }

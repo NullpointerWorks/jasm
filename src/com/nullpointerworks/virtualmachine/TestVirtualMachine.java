@@ -17,7 +17,7 @@ public class TestVirtualMachine extends TestCompiler implements InterruptListene
 		//*
 		args = new String[] 
 		{
-			"src\\playground.jasm",
+			"src\\playground.asm"
 		};
 		//*/
 		
@@ -30,7 +30,7 @@ public class TestVirtualMachine extends TestCompiler implements InterruptListene
 	public TestVirtualMachine(String[] args)
 	{
 		setParserVerbose(false);
-		setPreProcessorVerbose(false);
+		setPreProcessorVerbose(true);
 		setCompilerVerbose(false);
 		
 		//runParser(args);
@@ -53,7 +53,7 @@ public class TestVirtualMachine extends TestCompiler implements InterruptListene
 		 * run instructions
 		 */
 		jasmVM = new VirtualMachineJASM(this);
-		jasmVM.addInstructions( compiler.getInstructions() );
+		jasmVM.addInstructions(compiler.getInstructions());
 		jasmVM.setMemory(memory);
 		while(jasmVM.hasInstruction())
 		{

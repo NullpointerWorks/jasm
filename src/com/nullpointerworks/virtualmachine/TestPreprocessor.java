@@ -1,6 +1,6 @@
 package com.nullpointerworks.virtualmachine;
 
-import com.nullpointerworks.jasm.preprocessor.PreProcessorError;
+import com.nullpointerworks.jasm.BuildError;
 import com.nullpointerworks.jasm.preprocessor.Preprocessor;
 import com.nullpointerworks.jasm.preprocessor.PreprocessorJASM;
 import com.nullpointerworks.jasm.parser.Parser;
@@ -41,7 +41,7 @@ public class TestPreprocessor extends TestParser
 		if (jasmPreProc.hasErrors())
 		{
 			var errors = jasmPreProc.getErrors();
-			for (PreProcessorError err : errors)
+			for (BuildError err : errors)
 			{
 				System.out.println( err.getDescription() );
 			}

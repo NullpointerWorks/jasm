@@ -3,7 +3,7 @@ package com.nullpointerworks.virtualmachine;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nullpointerworks.jasm.parser.ParseError;
+import com.nullpointerworks.jasm.BuildError;
 import com.nullpointerworks.jasm.parser.Parser;
 import com.nullpointerworks.jasm.parser.ParserJASM;
 
@@ -51,7 +51,7 @@ public class TestParser
 		if (jasmParser.hasErrors())
 		{
 			var errors = jasmParser.getErrors();
-			for (ParseError err : errors)
+			for (BuildError err : errors)
 			{
 				System.out.println( err.getDescription()+"\n" );
 			}

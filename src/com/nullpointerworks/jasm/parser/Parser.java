@@ -2,6 +2,8 @@ package com.nullpointerworks.jasm.parser;
 
 import java.util.List;
 
+import com.nullpointerworks.jasm.BuildError;
+
 /**
  * JASM parser interface
  */
@@ -35,15 +37,10 @@ public interface Parser
 	/**
 	 * 
 	 */
-	List<ParseError> getErrors();
+	List<BuildError> getErrors();
 	
 	/**
 	 * 
 	 */
 	List<SourceCode> getSourceCode();
-	
-	/**
-	 * 
-	 */
-	List<EquRecord> getDefinitions();
 }

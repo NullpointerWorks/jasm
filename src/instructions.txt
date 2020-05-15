@@ -18,7 +18,7 @@ include external *.jasm file
 _________________________________________________
 define a name for a constant value
 
-.equ [name] [value]
+.def [name] [value]
 
 _________________________________________________
 define a label name to jump to
@@ -52,7 +52,7 @@ addition
 syntax:
 	add <reg>, <reg>
 	add <reg>, <imm>
-
+	
 _________________________________________________
 subtraction 
 

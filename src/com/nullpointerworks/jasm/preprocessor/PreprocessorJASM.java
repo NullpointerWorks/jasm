@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.nullpointerworks.jasm.parser.EquRecord;
+import com.nullpointerworks.jasm.BuildError;
 import com.nullpointerworks.jasm.parser.Parser;
 import com.nullpointerworks.jasm.parser.SourceCode;
 import com.nullpointerworks.util.Log;
@@ -15,7 +15,7 @@ public class PreprocessorJASM implements Preprocessor
 	private boolean verbose_preproc = false;
 	private int instIndex = 0; // label instruction index
 	
-	private List<PreProcessorError> errors = null;
+	private List<BuildError> errors = null;
 	private Map<String, Integer> labels = null;
 	private List<DraftJASM> draft = null;
 	private List<DraftJASM> labelled = null;
@@ -29,7 +29,7 @@ public class PreprocessorJASM implements Preprocessor
 	public Preprocessor reset() 
 	{
 		if (errors!=null) errors.clear();
-		errors = new ArrayList<PreProcessorError>();
+		errors = new ArrayList<BuildError>();
 		
 		if (labels!=null) labels.clear();
 		labels = new HashMap<String, Integer>();
@@ -54,7 +54,6 @@ public class PreprocessorJASM implements Preprocessor
 	public Preprocessor preprocess(Parser parser) 
 	{
 		List<SourceCode> code = parser.getSourceCode();
-		List<EquRecord> def = parser.getDefinitions();
 		
 		if (verbose_preproc)
 		{
@@ -62,7 +61,7 @@ public class PreprocessorJASM implements Preprocessor
 			Log.out("\n Pre-processor\n");
 		}
 		
-		process(code,def);
+		process(code);
 		
 		if (verbose_preproc)
 		{
@@ -79,7 +78,7 @@ public class PreprocessorJASM implements Preprocessor
 	}
 	
 	@Override
-	public List<PreProcessorError> getErrors() 
+	public List<BuildError> getErrors() 
 	{
 		return errors;
 	}
@@ -95,52 +94,15 @@ public class PreprocessorJASM implements Preprocessor
 	 * pre-processor
 	 * 
 	 * responsibility:
-	 * insert "equ" directives
+	 * insert "def" directives
 	 * turns labels into addresses
 	 * drafts machine instructions
 	 * inserts addresses into draft
 	 * 
 	 * ==================================================================
 	 */
-	private Preprocessor process(List<SourceCode> code, List<EquRecord> def) 
+	private Preprocessor process(List<SourceCode> code) 
 	{
-		/*
-		 * print definitions
-		 */
-		if (verbose_preproc)
-		{
-			System.out.println(" Definitions:");
-			for (EquRecord equ : def)
-			{
-				System.out.println( "  "+equ.NAME +" = "+equ.VALUE );
-			}
-		}
-		
-		/*
-		 * insert definitions
-		 */
-		for (int i=0,l=code.size(); i<l; i++)
-		{
-			SourceCode loc = code.get(i);
-			String line = loc.getLine();
-			
-			// if not a definition line
-			if (line.startsWith(".equ")) continue;
-			
-			for (EquRecord equ : def)
-			{
-				String name = equ.NAME;
-				if (line.contains(name))
-				{
-					line = line.replace(name, equ.VALUE);
-					loc.setLine(line);
-					break;
-				}
-			}
-			
-			if (hasErrors()) return this;
-		}
-		
 		/*
 		 * track directives and labels
 		 * process instructions
@@ -164,7 +126,7 @@ public class PreprocessorJASM implements Preprocessor
 				return this;
 			}
 			int addr = labels.get(label);
-			d.setLabelAddress(addr);
+			d.setJumpAddress(addr);
 		}
 		
 		return this;

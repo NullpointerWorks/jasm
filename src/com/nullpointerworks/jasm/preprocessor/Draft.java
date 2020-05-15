@@ -27,15 +27,10 @@ public interface Draft<Type>
 	/**
 	 * 
 	 */
-	void setLabelAddress(int addr);
+	void setJumpAddress(int addr);
 	
 	/**
 	 * 
 	 */
 	int getCodeIndex();
-	
-	/**
-	 * 
-	 */
-	DraftError getDraftError();
 }

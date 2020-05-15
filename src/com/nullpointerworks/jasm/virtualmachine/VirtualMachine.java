@@ -2,7 +2,7 @@ package com.nullpointerworks.jasm.virtualmachine;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.instruction.Instruction;
+import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
 
 public interface VirtualMachine 
 {

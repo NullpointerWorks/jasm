@@ -1,6 +1,8 @@
 package com.nullpointerworks.jasm.parser;
 
-public class ParseError
+import com.nullpointerworks.jasm.BuildError;
+
+public class ParseError implements BuildError
 {
 	private final SourceCode sc;
 	private final String desc;

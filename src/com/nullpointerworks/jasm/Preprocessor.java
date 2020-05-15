@@ -1,9 +1,8 @@
-package com.nullpointerworks.jasm.preprocessor;
+package com.nullpointerworks.jasm;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.BuildError;
-import com.nullpointerworks.jasm.parser.Parser;
+import com.nullpointerworks.jasm.preprocessor.DraftJASM;
 
 public interface Preprocessor 
 {

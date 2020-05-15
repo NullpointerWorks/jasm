@@ -1,8 +1,8 @@
 package com.nullpointerworks.jasm.virtualmachine.instruction.dataflow;
 
+import com.nullpointerworks.jasm.VirtualMachine;
 import com.nullpointerworks.jasm.virtualmachine.Register;
 import com.nullpointerworks.jasm.virtualmachine.Select;
-import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
 import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
 
 public class Push_S implements Instruction

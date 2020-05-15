@@ -1,5 +1,6 @@
 package com.nullpointerworks.jasm.virtualmachine.instruction.arithmetic;
 
+import com.nullpointerworks.jasm.VirtualMachine;
 import com.nullpointerworks.jasm.virtualmachine.*;
 import com.nullpointerworks.jasm.virtualmachine.instruction.*;
 

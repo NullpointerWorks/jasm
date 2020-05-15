@@ -1,6 +1,6 @@
 package com.nullpointerworks.jasm.virtualmachine.instruction;
 
-import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
+import com.nullpointerworks.jasm.VirtualMachine;
 
 public interface Instruction
 {

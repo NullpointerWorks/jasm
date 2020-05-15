@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nullpointerworks.jasm.BuildError;
+import com.nullpointerworks.jasm.Compiler;
+import com.nullpointerworks.jasm.Preprocessor;
 import com.nullpointerworks.jasm.preprocessor.DraftJASM;
-import com.nullpointerworks.jasm.preprocessor.Preprocessor;
 import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
 import com.nullpointerworks.util.Log;
 

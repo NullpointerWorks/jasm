@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.nullpointerworks.jasm.BuildError;
+import com.nullpointerworks.jasm.Parser;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;

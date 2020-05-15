@@ -1,8 +1,8 @@
-package com.nullpointerworks.jasm.parser;
+package com.nullpointerworks.jasm;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.BuildError;
+import com.nullpointerworks.jasm.parser.SourceCode;
 
 /**
  * JASM parser interface

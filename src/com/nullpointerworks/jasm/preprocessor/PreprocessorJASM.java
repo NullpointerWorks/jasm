@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.nullpointerworks.jasm.BuildError;
-import com.nullpointerworks.jasm.parser.Parser;
+import com.nullpointerworks.jasm.Parser;
+import com.nullpointerworks.jasm.Preprocessor;
 import com.nullpointerworks.jasm.parser.SourceCode;
 import com.nullpointerworks.util.Log;
 

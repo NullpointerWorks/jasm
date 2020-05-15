@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nullpointerworks.jasm.BuildError;
-import com.nullpointerworks.jasm.parser.Parser;
+import com.nullpointerworks.jasm.Parser;
 import com.nullpointerworks.jasm.parser.ParserJASM;
 
 public class TestParser 

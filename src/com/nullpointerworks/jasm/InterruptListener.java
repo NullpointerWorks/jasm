@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.virtualmachine;
+package com.nullpointerworks.jasm;
 
 public interface InterruptListener
 {

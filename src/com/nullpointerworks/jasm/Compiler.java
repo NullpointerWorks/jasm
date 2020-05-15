@@ -1,9 +1,7 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.jasm;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.BuildError;
-import com.nullpointerworks.jasm.preprocessor.Preprocessor;
 import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
 
 /**

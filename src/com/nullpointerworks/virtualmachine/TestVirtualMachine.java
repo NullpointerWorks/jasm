@@ -5,16 +5,15 @@ import java.util.List;
 
 import com.nullpointerworks.jasm.BuildError;
 import com.nullpointerworks.jasm.InterruptListener;
-import com.nullpointerworks.jasm.Parser;
-import com.nullpointerworks.jasm.Preprocessor;
-import com.nullpointerworks.jasm.Compiler;
 import com.nullpointerworks.jasm.VirtualMachine;
-import com.nullpointerworks.jasm.compiler.CompilerJASM;
+import com.nullpointerworks.jasm.Parser;
 import com.nullpointerworks.jasm.parser.ParserJASM;
-import com.nullpointerworks.jasm.preprocessor.PreprocessorJASM;
+import com.nullpointerworks.jasm.Compiler;
+import com.nullpointerworks.jasm.compiler.Draft;
 import com.nullpointerworks.jasm.virtualmachine.Register;
 import com.nullpointerworks.jasm.virtualmachine.Select;
 import com.nullpointerworks.jasm.virtualmachine.VirtualMachineJASM;
+import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
 
 public class TestVirtualMachine implements InterruptListener
 {
@@ -51,7 +50,7 @@ public class TestVirtualMachine implements InterruptListener
 		}
 		
 		/*
-		 * parse text into code
+		 * parser
 		 */
 		Parser jasmParser = new ParserJASM();
 		jasmParser.setVerbose(true);
@@ -68,35 +67,29 @@ public class TestVirtualMachine implements InterruptListener
 		}
 		
 		/*
-		 * do pre-processing
+		 * compiler
 		 */
-		Preprocessor jasmPreProc = new PreprocessorJASM();
-		jasmPreProc.setVerbose(true);
-		jasmPreProc.preprocess(jasmParser);
-		if (jasmPreProc.hasErrors())
-		{
-			var errors = jasmPreProc.getErrors();
-			for (BuildError err : errors)
-			{
-				System.out.println( err.getDescription() );
-			}
-			jasmPreProc = null;
-		}
-		
-		/*
-		 * compile
-		 */
-		Compiler jasmCompiler = new CompilerJASM();
+		Compiler<Instruction> jasmCompiler = new InstructionCompiler();
 		jasmCompiler.setVerbose(true);
-		jasmCompiler.compile(jasmPreProc);
+		jasmCompiler.preprocess(jasmParser);
 		if (jasmCompiler.hasErrors())
 		{
 			var errors = jasmCompiler.getErrors();
 			for (BuildError err : errors)
 			{
-				System.out.println( err.getDescription() );
+				System.out.println( err.getDescription()+"\n" );
 			}
 			jasmCompiler = null;
+		}
+		
+		/*
+		 * get compiler instruction draft
+		 */
+		List<Draft<Instruction>> instList = jasmCompiler.getDraft();
+		List<Instruction> instructions = new ArrayList<Instruction>();
+		for (Draft<Instruction> d : instList)
+		{
+			instructions.add(d.getInstruction());
 		}
 		
 		/*
@@ -109,7 +102,7 @@ public class TestVirtualMachine implements InterruptListener
 		 * run instructions
 		 */
 		jasmVM = new VirtualMachineJASM(this);
-		jasmVM.addInstructions(jasmCompiler.getInstructions());
+		jasmVM.addInstructions(instructions);
 		jasmVM.setMemory(memory);
 		while(jasmVM.hasInstruction())
 		{

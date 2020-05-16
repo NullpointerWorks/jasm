@@ -1,5 +1,6 @@
-package com.nullpointerworks.jasm.preprocessor;
+package com.nullpointerworks.jasm.compiler;
 
+import com.nullpointerworks.jasm.BuildError;
 import com.nullpointerworks.jasm.parser.SourceCode;
 import com.nullpointerworks.jasm.virtualmachine.Select;
 import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
@@ -40,6 +41,8 @@ public class DraftJASM implements Draft<Instruction>
 	public final int getCodeIndex() {return code_index;}
 	
 	public boolean hasError() {return false;}
+	
+	public BuildError getError() {return null;}
 
 	/*
 	 * ===========================================================

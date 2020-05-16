@@ -23,7 +23,7 @@ public class ParserJASM implements Parser
 	private List<SourceCode> code = null; // contains parsed code
 	private List<BuildError> errors; // contains errors
 	
-	private boolean verbose_parser = false;
+	private boolean verbose = false;
 	private int strLeng = 2;
 	
 	/*
@@ -84,9 +84,15 @@ public class ParserJASM implements Parser
 	}
 	
 	@Override
+	public List<DefineRecord> getDefinitions()
+	{
+		return defs;
+	}
+	
+	@Override
 	public Parser setVerbose(boolean verbose)
 	{
-		verbose_parser = verbose;
+		this.verbose = verbose;
 		return this;
 	}
 	
@@ -106,27 +112,28 @@ public class ParserJASM implements Parser
 		}
 		
 		String[] text = loadCode(filename);
+
+		out("-------------------------------\n");
+		out("Parsing\n");
 		
 		/*
 		 * if verbose, notify about parsing and what includes are used
 		 */
-		if (verbose_parser)
+		if (verbose)
 		{
-			out("-------------------------------");
-			
 			if (includesPath.size() > 0)
 			{
-				out("\nLinker\n");
+				out("Linker");
 				for (String inc : includesPath)
 					out(" "+inc);
 			}
-			
-			out("\nParsing\n");
+			out("");
 		}
 		
 		/*
 		 * parse the given text as primary source code
 		 */
+		out("Source Code");
 		parseCode(filename, text);
 		
 		/*
@@ -192,41 +199,6 @@ public class ParserJASM implements Parser
 				msg += " "+entry.NAME + " "+entry.SOURCE.getFilename()+" on line "+entry.SOURCE.getLinenumber() +"\n";
 			}
 			addError(msg);
-		}
-		
-		/*
-		 * insert definitions if there were no errors
-		 */
-		if (!hasErrors())
-		{
-			/*
-			 * print definitions
-			 */
-			if (verbose_parser)
-			{
-				System.out.println("\nDefinitions\n");
-				for (DefineRecord d : defs)
-				{
-					System.out.println( "  "+d.NAME +" = "+d.VALUE );
-				}
-			}
-			
-			for (int i=0,l=code.size(); i<l; i++)
-			{
-				SourceCode loc = code.get(i);
-				String line = loc.getLine();
-				
-				for (DefineRecord d : defs)
-				{
-					String name = d.NAME;
-					if (line.contains(name))
-					{
-						line = line.replace(name, d.VALUE);
-						loc.setLine(line);
-						break;
-					}
-				}
-			}
 		}
 		
 		out("\nParsing Done\n");
@@ -352,7 +324,7 @@ public class ParserJASM implements Parser
 		/*
 		 * if verbose, print parsed line
 		 */
-		if (verbose_parser) 
+		if (verbose) 
 		{
 			String linemarker = fillFromBack(""+linenumber," ",strLeng)+"| "+line;
 			out(linemarker);
@@ -517,6 +489,6 @@ public class ParserJASM implements Parser
 	
 	private void out(String string)
 	{
-		if (verbose_parser) System.out.println(string);
+		if (verbose) System.out.println(string);
 	}
 }

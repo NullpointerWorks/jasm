@@ -2,6 +2,7 @@ package com.nullpointerworks.jasm;
 
 import java.util.List;
 
+import com.nullpointerworks.jasm.parser.DefineRecord;
 import com.nullpointerworks.jasm.parser.SourceCode;
 
 /**
@@ -43,4 +44,9 @@ public interface Parser
 	 * 
 	 */
 	List<SourceCode> getSourceCode();
+	
+	/**
+	 * 
+	 */
+	List<DefineRecord> getDefinitions();
 }

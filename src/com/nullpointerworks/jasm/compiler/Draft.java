@@ -1,5 +1,6 @@
-package com.nullpointerworks.jasm.preprocessor;
+package com.nullpointerworks.jasm.compiler;
 
+import com.nullpointerworks.jasm.BuildError;
 import com.nullpointerworks.jasm.parser.SourceCode;
 
 public interface Draft<Type>
@@ -23,6 +24,16 @@ public interface Draft<Type>
 	 * 
 	 */
 	String getLabel();
+	
+	/**
+	 * 
+	 */
+	boolean hasError();
+	
+	/**
+	 * 
+	 */
+	BuildError getError();
 	
 	/**
 	 * 

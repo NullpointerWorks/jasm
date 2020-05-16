@@ -2,32 +2,30 @@ package com.nullpointerworks.jasm;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
+import com.nullpointerworks.jasm.compiler.Draft;
+import com.nullpointerworks.jasm.parser.SourceCode;
 
-/**
- * JASM 2 compiler interface
- */
-public interface Compiler
+public interface Compiler<T>
 {
 	/**
 	 * 
 	 */
-	Compiler reset();
+	Compiler<T> reset();
 	
 	/**
 	 * 
 	 */
-	Compiler setVerbose(boolean verbose);
+	Compiler<T> setVerbose(boolean verbose);
 	
 	/**
 	 * 
 	 */
-	Compiler compile(Preprocessor preproc);
+	Compiler<T> preprocess(Parser parser);
 	
 	/**
 	 * 
 	 */
-	Compiler save(String filepath);
+	Draft<T> compile(int index, SourceCode loc);
 	
 	/**
 	 * 
@@ -42,5 +40,5 @@ public interface Compiler
 	/**
 	 * 
 	 */
-	List<Instruction> getInstructions();
+	List<Draft<T>> getDraft();
 }

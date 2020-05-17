@@ -1,6 +1,6 @@
 package com.nullpointerworks.jasm;
 
-import com.nullpointerworks.jasm.parser.SourceCode;
+import com.nullpointerworks.jasm.compiler.SourceCode;
 
 public interface BuildError 
 {

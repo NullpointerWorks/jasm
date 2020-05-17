@@ -2,8 +2,8 @@ package com.nullpointerworks.jasm;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.parser.DefineRecord;
-import com.nullpointerworks.jasm.parser.SourceCode;
+import com.nullpointerworks.jasm.compiler.DefineRecord;
+import com.nullpointerworks.jasm.compiler.SourceCode;
 
 /**
  * JASM parser interface

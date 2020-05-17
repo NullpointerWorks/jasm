@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.parser;
+package com.nullpointerworks.jasm.compiler;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

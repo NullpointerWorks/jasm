@@ -1,9 +1,8 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.jasm;
 
-import com.nullpointerworks.jasm.BuildError;
-import com.nullpointerworks.jasm.parser.SourceCode;
+import com.nullpointerworks.jasm.compiler.SourceCode;
 
-public interface Draft<Type>
+public interface Draft<T>
 {
 	/**
 	 * 
@@ -13,7 +12,7 @@ public interface Draft<Type>
 	/**
 	 * 
 	 */
-	Type getInstruction();
+	T getInstruction();
 	
 	/**
 	 * 

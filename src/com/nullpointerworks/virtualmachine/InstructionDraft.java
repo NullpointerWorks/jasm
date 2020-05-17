@@ -1,7 +1,8 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.virtualmachine;
 
 import com.nullpointerworks.jasm.BuildError;
-import com.nullpointerworks.jasm.parser.SourceCode;
+import com.nullpointerworks.jasm.Draft;
+import com.nullpointerworks.jasm.compiler.SourceCode;
 import com.nullpointerworks.jasm.virtualmachine.Select;
 import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
 import com.nullpointerworks.jasm.virtualmachine.instruction.arithmetic.*;
@@ -10,7 +11,7 @@ import com.nullpointerworks.jasm.virtualmachine.instruction.dataflow.*;
 import com.nullpointerworks.jasm.virtualmachine.instruction.system.*;
 import com.nullpointerworks.util.StringUtil;
 
-public class DraftJASM implements Draft<Instruction>
+public class InstructionDraft implements Draft<Instruction>
 {
 	private SourceCode loc = null;
 	
@@ -18,7 +19,7 @@ public class DraftJASM implements Draft<Instruction>
 	private String label = "";
 	private int code_index = 0;
 	
-	public DraftJASM(int index, SourceCode loc)
+	public InstructionDraft(int index, SourceCode loc)
 	{
 		this.loc=loc;
 		String[] parts = loc.getLine().split(" ");

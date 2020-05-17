@@ -7,10 +7,8 @@ import java.util.Map;
 
 import com.nullpointerworks.jasm.BuildError;
 import com.nullpointerworks.jasm.Parser;
-import com.nullpointerworks.jasm.parser.DefineRecord;
-import com.nullpointerworks.jasm.parser.SourceCode;
 import com.nullpointerworks.jasm.Compiler;
-
+import com.nullpointerworks.jasm.Draft;
 import com.nullpointerworks.util.Log;
 
 public abstract class CompilerJASM<T> implements Compiler<T>
@@ -77,6 +75,7 @@ public abstract class CompilerJASM<T> implements Compiler<T>
 		return this;
 	}
 	
+	@Override
 	public abstract Draft<T> compile(int index, SourceCode loc);
 	
 	@Override
@@ -130,7 +129,7 @@ public abstract class CompilerJASM<T> implements Compiler<T>
 			String label = d.getLabel();
 			if (!labels.containsKey(label))
 			{
-				addError(d.getLineOfCode(), "Unknown label reference");
+				addPreProcError(d.getLineOfCode(), "Unknown label reference");
 				return this;
 			}
 			int addr = labels.get(label);
@@ -211,7 +210,7 @@ public abstract class CompilerJASM<T> implements Compiler<T>
 		}
 	}
 	
-	private void addError(SourceCode code, String message)
+	private void addPreProcError(SourceCode code, String message)
 	{
 		errors.add( new PreProcessorError(code, message) );
 	}

@@ -2,8 +2,7 @@ package com.nullpointerworks.jasm;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.compiler.Draft;
-import com.nullpointerworks.jasm.parser.SourceCode;
+import com.nullpointerworks.jasm.compiler.SourceCode;
 
 public interface Compiler<T>
 {

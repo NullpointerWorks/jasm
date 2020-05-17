@@ -5,11 +5,12 @@ import java.util.List;
 
 import com.nullpointerworks.jasm.BuildError;
 import com.nullpointerworks.jasm.InterruptListener;
-import com.nullpointerworks.jasm.VirtualMachine;
+
 import com.nullpointerworks.jasm.Parser;
-import com.nullpointerworks.jasm.parser.ParserJASM;
 import com.nullpointerworks.jasm.Compiler;
-import com.nullpointerworks.jasm.compiler.Draft;
+import com.nullpointerworks.jasm.Draft;
+import com.nullpointerworks.jasm.VirtualMachine;
+import com.nullpointerworks.jasm.compiler.ParserJASM;
 import com.nullpointerworks.jasm.virtualmachine.Register;
 import com.nullpointerworks.jasm.virtualmachine.Select;
 import com.nullpointerworks.jasm.virtualmachine.VirtualMachineJASM;

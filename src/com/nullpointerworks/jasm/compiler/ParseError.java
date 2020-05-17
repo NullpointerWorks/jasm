@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.parser;
+package com.nullpointerworks.jasm.compiler;
 
 import com.nullpointerworks.jasm.BuildError;
 

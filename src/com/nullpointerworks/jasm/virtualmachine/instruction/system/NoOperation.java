@@ -1,7 +1,7 @@
 package com.nullpointerworks.jasm.virtualmachine.instruction.system;
 
 import com.nullpointerworks.jasm.VirtualMachine;
-import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
+import com.nullpointerworks.jasm.virtualmachine.Instruction;
 
 public class NoOperation implements Instruction
 {

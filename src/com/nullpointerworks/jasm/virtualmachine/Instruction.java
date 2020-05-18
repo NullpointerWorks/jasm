@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.virtualmachine.instruction;
+package com.nullpointerworks.jasm.virtualmachine;
 
 import com.nullpointerworks.jasm.VirtualMachine;
 

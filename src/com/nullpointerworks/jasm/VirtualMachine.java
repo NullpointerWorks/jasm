@@ -3,9 +3,9 @@ package com.nullpointerworks.jasm;
 import java.util.List;
 
 import com.nullpointerworks.jasm.virtualmachine.Flag;
+import com.nullpointerworks.jasm.virtualmachine.Instruction;
 import com.nullpointerworks.jasm.virtualmachine.Register;
 import com.nullpointerworks.jasm.virtualmachine.Select;
-import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
 
 public interface VirtualMachine 
 {

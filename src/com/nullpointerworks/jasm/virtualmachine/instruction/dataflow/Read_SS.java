@@ -1,8 +1,8 @@
 package com.nullpointerworks.jasm.virtualmachine.instruction.dataflow;
 
 import com.nullpointerworks.jasm.VirtualMachine;
+import com.nullpointerworks.jasm.virtualmachine.Instruction;
 import com.nullpointerworks.jasm.virtualmachine.Select;
-import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
 
 public class Read_SS implements Instruction
 {

@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.nullpointerworks.jasm.InterruptListener;
 import com.nullpointerworks.jasm.VirtualMachine;
-import com.nullpointerworks.jasm.virtualmachine.instruction.Instruction;
 
 public class VirtualMachineJASM implements VirtualMachine
 {

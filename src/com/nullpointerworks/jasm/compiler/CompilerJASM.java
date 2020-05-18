@@ -9,7 +9,6 @@ import com.nullpointerworks.jasm.BuildError;
 import com.nullpointerworks.jasm.Parser;
 import com.nullpointerworks.jasm.Compiler;
 import com.nullpointerworks.jasm.Draft;
-import com.nullpointerworks.util.Log;
 
 public abstract class CompilerJASM<T> implements Compiler<T>
 {
@@ -57,21 +56,13 @@ public abstract class CompilerJASM<T> implements Compiler<T>
 		List<SourceCode> code = parser.getSourceCode();
 		List<DefineRecord> defs = parser.getDefinitions();
 		
-		if (verbose)
-		{
-			Log.out("-------------------------------");
-			Log.out("\n Compiling\n");
-		}
-		
+		out("-------------------------------");
+		out("\n Compiling\n");
 		insert(code, defs);
-		
 		process(code);
+		out("\n Done\n");
+		out("-------------------------------");
 		
-		if (verbose)
-		{
-			Log.out("\n Done\n");
-			Log.out("-------------------------------");
-		}
 		return this;
 	}
 	

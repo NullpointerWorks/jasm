@@ -11,8 +11,14 @@ public enum Select
 	REG_B, // register b
 	REG_C, // register c
 	REG_D, // register d
+	
+	REG_U, // register u
+	REG_V, // register v
+	REG_W, // register w
+	
 	REG_X, // register x
 	REG_Y, // register y
+	REG_Z, // register z
 	
 	/*
 	 * flags

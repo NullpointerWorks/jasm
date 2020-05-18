@@ -19,8 +19,12 @@ public class VirtualMachineJASM implements VirtualMachine
 	private Register rB;
 	private Register rC;
 	private Register rD;
+		private Register rU;
+		private Register rV;
+		private Register rW;
 	private Register rX;
 	private Register rY;
+	private Register rZ;
 	
 	private Flag zero;
 	private Flag sign;
@@ -33,8 +37,15 @@ public class VirtualMachineJASM implements VirtualMachine
 		rB = new Register();
 		rC = new Register();
 		rD = new Register();
+		
+		rU = new Register();
+		rV = new Register();
+		rW = new Register();
+		
 		rX = new Register();
 		rY = new Register();
+		rZ = new Register();
+		
 		rCounter = new Register();
 		rStack = new Register(-1);
 
@@ -175,8 +186,12 @@ public class VirtualMachineJASM implements VirtualMachine
 		case REG_B: return rB;
 		case REG_C: return rC;
 		case REG_D: return rD;
+		case REG_U: return rU;
+		case REG_V: return rV;
+		case REG_W: return rW;
 		case REG_X: return rX;
 		case REG_Y: return rY;
+		case REG_Z: return rZ;
 		
 		default: break; // throw error
 		}

@@ -120,7 +120,7 @@ public abstract class CompilerJASM<T> implements Compiler<T>
 			String label = d.getLabel();
 			if (!labels.containsKey(label))
 			{
-				addPreProcError(d.getLineOfCode(), "Unknown label reference");
+				addPreProcError(d.getLineOfCode(), "  Unknown label reference");
 				return this;
 			}
 			int addr = labels.get(label);
@@ -155,9 +155,11 @@ public abstract class CompilerJASM<T> implements Compiler<T>
 		
 		instIndex += 1;
 		var draft_inst = compile(instIndex, loc);
+		draft.add(draft_inst);
 		
 		if (draft_inst.hasError())
 		{
+			errors.add(draft_inst.getError());
 			return;
 		}
 		
@@ -165,8 +167,6 @@ public abstract class CompilerJASM<T> implements Compiler<T>
 		{
 			labelled.add(draft_inst);
 		}
-		
-		draft.add(draft_inst);
 	}
 	
 	private void insert(List<SourceCode> code, List<DefineRecord> defs) 

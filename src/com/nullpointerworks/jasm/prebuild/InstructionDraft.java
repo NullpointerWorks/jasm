@@ -2,6 +2,7 @@ package com.nullpointerworks.jasm.prebuild;
 
 import com.nullpointerworks.jasm.BuildError;
 import com.nullpointerworks.jasm.Draft;
+import com.nullpointerworks.jasm.compiler.CompilerError;
 import com.nullpointerworks.jasm.compiler.SourceCode;
 import com.nullpointerworks.jasm.virtualmachine.Select;
 import com.nullpointerworks.jasm.virtualmachine.Instruction;
@@ -13,7 +14,10 @@ import com.nullpointerworks.util.StringUtil;
 
 public class InstructionDraft implements Draft<Instruction>
 {
+	private final String ADDRESS_MARK = "@";
+	
 	private SourceCode loc = null;
+	private BuildError err = null;
 	
 	private Instruction instruction = null;
 	private String label = "";
@@ -41,9 +45,9 @@ public class InstructionDraft implements Draft<Instruction>
 	
 	public final int getCodeIndex() {return code_index;}
 	
-	public boolean hasError() {return false;}
+	public boolean hasError() {return err != null;}
 	
-	public BuildError getError() {return null;}
+	public BuildError getError() {return err;}
 
 	/*
 	 * ===========================================================
@@ -99,7 +103,9 @@ public class InstructionDraft implements Draft<Instruction>
 	 * 		system
 	 * 
 	 * ============================================================================= */
-
+	
+	private final String int_syntax = "\n  int <imm>";
+	
 	/*
 	 * nop
 	 */
@@ -113,6 +119,12 @@ public class InstructionDraft implements Draft<Instruction>
 	 */
 	private void _int(String operands)
 	{
+		if (operands.contains(","))
+		{
+			setError("  Syntax error: Interrupt instructions only accept one operand."+int_syntax);
+			return;
+		}
+		
 		if ( isImmediate(operands) )
 		{
 			int imm = getImmediate(operands);
@@ -120,7 +132,7 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
-			// error
+			setError("  Syntax error: Interrupts only accept immediate values."+int_syntax);
 		}
 	}
 
@@ -129,6 +141,15 @@ public class InstructionDraft implements Draft<Instruction>
 	 * 		arithmetic
 	 * 
 	 * ============================================================================= */
+
+	private final String add_syntax = "\n  add <reg>,<reg>\n  add <reg>,<imm>";
+	private final String sub_syntax = "\n  sub <reg>,<reg>\n  sub <reg>,<imm>";
+	private final String cmp_syntax = "\n  cmp <reg>,<reg>\n  cmp <reg>,<imm>";
+	private final String shl_syntax = "\n  shl <reg>";
+	private final String shr_syntax = "\n  shr <reg>";
+	private final String inc_syntax = "\n  inc <reg>";
+	private final String dec_syntax = "\n  dec <reg>";
+	private final String neg_syntax = "\n  neg <reg>";
 	
 	/*
 	 * add <reg>,<reg>
@@ -139,6 +160,7 @@ public class InstructionDraft implements Draft<Instruction>
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) 
 		{
+			setError("  Syntax error: Addition instructions use two operands."+add_syntax);
 			return; // error
 		}
 		
@@ -146,17 +168,14 @@ public class InstructionDraft implements Draft<Instruction>
 		Select reg1 = getRegister(target);
 		if ( reg1 == null )
 		{
+			setError("  Syntax error: Addition target operand must be a register."+add_syntax);
 			return; // error
 		}
 		
 		String source = tokens[1];
 		Select reg2 = getRegister(source);
-		if ( isRegister(source) )
+		if ( reg2 != null )
 		{
-			if ( reg2 == null )
-			{
-				return; // error
-			}
 			
 			instruction = new Addition_SS(reg1,reg2);
 		}
@@ -168,6 +187,7 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
+			setError("  Syntax error: Addition source operand must be either a register or an immediate value."+add_syntax);
 			// error
 		}
 	}
@@ -181,6 +201,7 @@ public class InstructionDraft implements Draft<Instruction>
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) 
 		{
+			setError("  Syntax error: Subtraction instructions use two operands."+sub_syntax);
 			return; // error
 		}
 		
@@ -188,18 +209,14 @@ public class InstructionDraft implements Draft<Instruction>
 		Select reg1 = getRegister(target);
 		if ( reg1 == null )
 		{
+			setError("  Syntax error: Subtraction target operand must be a register."+sub_syntax);
 			return; // error
 		}
 		
 		String source = tokens[1];
 		Select reg2 = getRegister(source);
-		if ( isRegister(source) )
+		if ( reg2 != null )
 		{
-			if ( reg2 == null )
-			{
-				return; // error
-			}
-			
 			instruction = new Subtract_SS(reg1,reg2);
 		}
 		else
@@ -210,10 +227,11 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
+			setError("  Syntax error: Subtraction source operand must be either a register or an immediate value."+sub_syntax);
 			// error
 		}
 	}
-
+	
 	/*
 	 * cmp <reg>,<reg>
 	 * cmp <reg>,<imm>
@@ -223,6 +241,7 @@ public class InstructionDraft implements Draft<Instruction>
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) 
 		{
+			setError("  Syntax error: Compare instructions use two operands."+cmp_syntax);
 			return; // error
 		}
 		
@@ -230,18 +249,14 @@ public class InstructionDraft implements Draft<Instruction>
 		Select reg1 = getRegister(target);
 		if ( reg1 == null )
 		{
+			setError("  Syntax error: Compare target operand must be a register."+cmp_syntax);
 			return; // error
 		}
 		
 		String source = tokens[1];
 		Select reg2 = getRegister(source);
-		if ( isRegister(source) )
+		if ( reg2 != null )
 		{
-			if ( reg2 == null )
-			{
-				return; // error
-			}
-			
 			instruction = new Compare_SS(reg1,reg2);
 		}
 		else
@@ -252,6 +267,7 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
+			setError("  Syntax error: Compare source operand must be either a register or an immediate value."+cmp_syntax);
 			// error
 		}
 	}
@@ -261,6 +277,12 @@ public class InstructionDraft implements Draft<Instruction>
 	 */
 	private void _shl(String operands)
 	{
+		if (operands.contains(","))
+		{
+			setError("  Syntax error: Bitshift instructions accept only one operand."+shl_syntax);
+			return;
+		}
+		
 		if ( isRegister(operands) )
 		{
 			Select reg = getRegister(operands);
@@ -268,6 +290,7 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
+			setError("  Syntax error: Bitshift target operand must be a register."+shl_syntax);
 			// error
 		}
 	}
@@ -277,6 +300,12 @@ public class InstructionDraft implements Draft<Instruction>
 	 */
 	private void _shr(String operands)
 	{
+		if (operands.contains(","))
+		{
+			setError("  Syntax error: Bitshift instructions accept only one operand."+shr_syntax);
+			return;
+		}
+		
 		if ( isRegister(operands) )
 		{
 			Select reg = getRegister(operands);
@@ -284,7 +313,7 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
-			// error
+			setError("  Syntax error: Bitshift target operand must be a register."+shr_syntax);
 		}
 	}
 	
@@ -293,6 +322,12 @@ public class InstructionDraft implements Draft<Instruction>
 	 */
 	private void _inc(String operands)
 	{
+		if (operands.contains(","))
+		{
+			setError("  Syntax error: Increment instructions accept only one operand."+inc_syntax);
+			return;
+		}
+		
 		if ( isRegister(operands) )
 		{
 			Select reg = getRegister(operands);
@@ -300,7 +335,7 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
-			// error
+			setError("  Syntax error: Increment target operand must be a register."+inc_syntax);
 		}
 	}
 	
@@ -309,6 +344,12 @@ public class InstructionDraft implements Draft<Instruction>
 	 */
 	private void _dec(String operands)
 	{
+		if (operands.contains(","))
+		{
+			setError("  Syntax error: Decrement instructions accept only one operand."+dec_syntax);
+			return;
+		}
+		
 		if ( isRegister(operands) )
 		{
 			Select reg = getRegister(operands);
@@ -316,7 +357,7 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
-			// error
+			setError("  Syntax error: Decrement target operand must be a register."+dec_syntax);
 		}
 	}
 	
@@ -325,6 +366,12 @@ public class InstructionDraft implements Draft<Instruction>
 	 */
 	private void _neg(String operands) 
 	{
+		if (operands.contains(","))
+		{
+			setError("  Syntax error: Negation instructions accept only one operand."+neg_syntax);
+			return;
+		}
+		
 		if ( isRegister(operands) )
 		{
 			Select reg = getRegister(operands);
@@ -332,7 +379,7 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
-			// error
+			setError("  Syntax error: Negation target operand must be a register."+neg_syntax);
 		}
 	}
 
@@ -342,31 +389,37 @@ public class InstructionDraft implements Draft<Instruction>
 	 * 
 	 * ============================================================================= */
 	
+	private final String load_syntax = "\n  load <reg>,<reg>\n  load <reg>,<imm>";
+	private final String push_syntax = "\n  push <reg>\n  push <imm>";
+	private final String pop_syntax = "\n  pop <reg>";
+	private final String sto_syntax = "\n  sto @<reg>,<reg>\n  sto @<imm>,<reg>";
+	private final String read_syntax = "\n  read <reg>,@<reg>\n  read <reg>,@<imm>";
+	
 	/*
 	 * load <reg>,<reg>
 	 * load <reg>,<imm>
 	 */
 	private void _load(String operands)
 	{
-		String[] tokens = split(operands);
-		if (tokens==null) return; // error
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) 
+		{
+			setError("  Syntax error: Load instructions use two operands."+load_syntax);
+			return; // error
+		}
 		
 		String target = tokens[0];
 		Select reg1 = getRegister(target);
 		if ( reg1 == null )
 		{
+			setError("  Syntax error: Load target operand must be a register."+load_syntax);
 			return; // error
 		}
 		
 		String source = tokens[1];
 		Select reg2 = getRegister(source);
-		if ( isRegister(source) )
+		if ( reg2 != null )
 		{
-			if ( reg2 == null )
-			{
-				return; // error
-			}
-			
 			instruction = new Load_SS(reg1,reg2);
 		}
 		else
@@ -377,6 +430,7 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
+			setError("  Syntax error: Load source operand must be either a register or an immediate value."+load_syntax);
 			// error
 		}
 	}
@@ -387,6 +441,12 @@ public class InstructionDraft implements Draft<Instruction>
 	 */
 	private void _push(String operands)
 	{
+		if (operands.contains(","))
+		{
+			setError("  Syntax error: Stack instructions accept only one operand."+push_syntax);
+			return;
+		}
+		
 		if ( isRegister(operands) )
 		{
 			Select reg = getRegister(operands);
@@ -400,7 +460,7 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
-			// error
+			setError("  Syntax error: Push operand must be either a register or an immediate value."+push_syntax);
 		}
 	}
 	
@@ -409,6 +469,12 @@ public class InstructionDraft implements Draft<Instruction>
 	 */
 	private void _pop(String operands)
 	{
+		if (operands.contains(","))
+		{
+			setError("  Syntax error: Stack instructions accept only one operand."+pop_syntax);
+			return;
+		}
+		
 		if ( isRegister(operands) )
 		{
 			Select reg = getRegister(operands);
@@ -416,7 +482,7 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
-			// error
+			setError("  Syntax error: Pop operand must be a register."+pop_syntax);
 		}
 	}
 	
@@ -426,16 +492,21 @@ public class InstructionDraft implements Draft<Instruction>
 	 */
 	private void _sto(String operands)
 	{
-		String[] tokens = split(operands);
-		if (tokens==null) return; // error
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) 
+		{
+			setError("  Syntax error: Store instructions use two operands."+sto_syntax);
+			return; // error
+		}
 		
 		/*
-		 * check destination
+		 * check source
 		 */
 		String source = tokens[1];
 		Select regS = getRegister(source);
 		if ( regS == null )
 		{
+			setError("  Syntax error: Store source operand must be a register."+sto_syntax);
 			return; // if not register, error
 		}
 		
@@ -445,13 +516,14 @@ public class InstructionDraft implements Draft<Instruction>
 		String target = tokens[0];
 		if (!isAddress(target))
 		{
+			setError("  Syntax error: Store target operand must be an address."+sto_syntax);
 			return; // error
 		}
 		target = target.substring(1); // remove @ sign
-		
-		if ( isRegister(target) )
+
+		Select regT = getRegister(target);
+		if ( regT!=null )
 		{
-			Select regT = getRegister(target);
 			instruction = new Store_SS(regT,regS);
 		}
 		else
@@ -462,18 +534,23 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
+			setError("  Syntax error: Store target operand must be either a register or an immediate value."+sto_syntax);
 			// error
 		}
 	}
 	
 	/*
-	 * read <reg>, @<reg>
-	 * read <reg>, @<imm>
+	 * read <reg>,@<reg>
+	 * read <reg>,@<imm>
 	 */
 	private void _read(String operands)
 	{
-		String[] tokens = split(operands);
-		if (tokens==null) return; // error
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) 
+		{
+			setError("  Syntax error: Read instructions use two operands."+read_syntax);
+			return; // error
+		}
 		
 		/*
 		 * check target
@@ -482,6 +559,7 @@ public class InstructionDraft implements Draft<Instruction>
 		Select regT = getRegister(target);
 		if ( regT == null )
 		{
+			setError("  Syntax error: Read target operand must be a register."+read_syntax);
 			return; // if not register, error
 		}
 		
@@ -491,13 +569,14 @@ public class InstructionDraft implements Draft<Instruction>
 		String source = tokens[1];
 		if (!isAddress(source))
 		{
+			setError("  Syntax error: Read source operand must be an address."+read_syntax);
 			return; // error
 		}
 		source = source.substring(1); // remove @ sign
 		
-		if ( isRegister(source) )
+		Select regS = getRegister(source);
+		if ( regS != null )
 		{
-			Select regS = getRegister(source);
 			instruction = new Read_SS(regT,regS);
 		}
 		else
@@ -508,6 +587,7 @@ public class InstructionDraft implements Draft<Instruction>
 		}
 		else
 		{
+			setError("  Syntax error: Read source operand must be either a register or an immediate value."+read_syntax);
 			// error
 		}
 	}
@@ -575,20 +655,6 @@ public class InstructionDraft implements Draft<Instruction>
 	 * ===========================================================
 	 */
 	
-	private String[] split(String operands)
-	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
-		{
-			return null; // error
-		}
-		return tokens;
-	}
-	
-	/*
-	 * ===========================================================
-	 */
-	
 	private boolean isImmediate(String imm)
 	{
 		if (StringUtil.isInteger(imm)) return true;
@@ -634,12 +700,19 @@ public class InstructionDraft implements Draft<Instruction>
 		{
 		case "ip": return Select.IP;
 		case "sp": return Select.SP;
+		
 		case "a": return Select.REG_A;
 		case "b": return Select.REG_B;
 		case "c": return Select.REG_C;
 		case "d": return Select.REG_D;
+		
+		case "u": return Select.REG_U;
+		case "v": return Select.REG_V;
+		case "w": return Select.REG_W;
+		
 		case "x": return Select.REG_X;
 		case "y": return Select.REG_Y;
+		case "z": return Select.REG_Z;
 		default: break;
 		}
 		return null; // error
@@ -649,9 +722,14 @@ public class InstructionDraft implements Draft<Instruction>
 	 * ===========================================================
 	 */
 	
+	private void setError(String str) 
+	{
+		if (err == null) err = new CompilerError(loc,str);
+	}
+
 	private boolean isAddress(String addr)
 	{
-		if (addr.startsWith("@")) return true;
+		if (addr.startsWith(ADDRESS_MARK)) return true;
 		return false;
 	}
 }

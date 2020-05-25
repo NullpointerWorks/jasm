@@ -264,9 +264,13 @@ public class ParserJASM implements Parser
 				/*
 				 * test for allowed label characters
 				 */
+				if (isValidNumber(t[0]))
+				{
+					addError(sc, "  Bad label name. It might be mistaken for a number.");
+				}
 				if (!isValidLabel(t[0]))
 				{
-					addError(sc, "  Invalid label characters used. Allowed characters are: a-z, A-Z, 0-9 and _");
+					addError(sc, "  Invalid label characters used. Allowed characters are: _(underscore), a-z, A-Z and 0-9.");
 				}
 				
 				/*
@@ -370,7 +374,7 @@ public class ParserJASM implements Parser
 		 */
 		if (tokens.length != 2)
 		{
-			addError(sc, "  Bad definition syntax");
+			addError(sc, "  Bad definition syntax.");
 			return;
 		}
 		
@@ -378,9 +382,14 @@ public class ParserJASM implements Parser
 		 * if the first token is a bad name, error
 		 */
 		String name = tokens[0];
+		if ( isValidNumber(name) )
+		{
+			addError(sc, "  Bad label name. It might be mistaken for a number.");
+			return;
+		}
 		if (!isValidLabel(name))
 		{
-			addError(sc, "  Invalid label characters used");
+			addError(sc, "  Invalid label characters used. Allowed characters are: _(underscore), a-z, A-Z and 0-9.");
 			return;
 		}
 		
@@ -393,7 +402,7 @@ public class ParserJASM implements Parser
 		{
 			if (!isValidAddress(value))
 			{
-				addError(sc, "  Invalid address syntax");
+				addError(sc, "  Invalid address syntax.");
 				return;
 			}
 		}
@@ -401,7 +410,7 @@ public class ParserJASM implements Parser
 		{
 			if (!isValidNumber(value))
 			{
-				addError(sc, "  Invalid number syntax");
+				addError(sc, "  Invalid number syntax.");
 				return;
 			}
 		}
@@ -449,7 +458,7 @@ public class ParserJASM implements Parser
 	
 	private void addError(String message)
 	{
-		errors.add( new ParseError(message) );
+		errors.add( new ParseError(null,message) );
 	}
 	
 	private void addError(SourceCode sc, String message)
@@ -461,6 +470,7 @@ public class ParserJASM implements Parser
 	
 	private boolean isValidLabel(String label)
 	{
+		if ( isValidNumber(label) ) return false;
 		if ( label.matches("\\D[a-zA-Z0-9\\_]+") ) return true;
 		return false;
 	}

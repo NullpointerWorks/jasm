@@ -1,20 +1,9 @@
 package com.nullpointerworks.jasm.compiler;
 
-import com.nullpointerworks.jasm.BuildError;
-
-public class CompilerError implements BuildError 
+public class CompilerError extends GenericError
 {
-	private final SourceCode code;
-	private final String desc;
-	
-	public CompilerError(SourceCode code, String desc)
+	public CompilerError(SourceCode code, String desc) 
 	{
-		this.code=code;
-		this.desc=desc;
+		super(code, desc, "Compiler Error");
 	}
-
-	public SourceCode getSourceCode() {return code;}
-	
-	public String getDescription() {return desc;}
-
 }

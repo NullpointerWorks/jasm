@@ -5,7 +5,7 @@
       \___//_/   \______/|_|  |_|
 	
     Java Assembler Virtual Machine
-    JASM Version 1.0.0
+    JASM Version 1.0.0b
 	
  ________________________________________________
 |                                                |

@@ -13,6 +13,9 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
 
 public class ParserJASM implements Parser
 {
+	private final String ADDRESS_MARK = "@";
+	private final String LABEL_MARK = ":";
+	
 	private List<String> includes = null; // keeps a list of all included files. this list is leading
 	private List<String> includesAux = null; // contains file yet to be included. this list gets modified
 	private List<String> includesPath = null; // all traceable paths to look for jasm source code 
@@ -254,22 +257,22 @@ public class ParserJASM implements Parser
 			/*
 			 * if the line of code contains a label mark, extract the label
 			 */
-			if (line.contains(":"))
+			if (line.contains(LABEL_MARK))
 			{
-				String t[] = line.split(":");
+				String t[] = line.split(LABEL_MARK);
 				
 				/*
 				 * test for allowed label characters
 				 */
 				if (!isValidLabel(t[0]))
 				{
-					addError(sc, "  Invalid label name");
+					addError(sc, "  Invalid label characters used. Allowed characters are: a-z, A-Z, 0-9 and _");
 				}
 				
 				/*
 				 * insert the marked label into the code list
 				 */
-				processLine( new SourceCode(filename, linenumber, t[0]+":") );
+				processLine( new SourceCode(filename, linenumber, t[0]+LABEL_MARK) );
 				if (t.length == 1) continue;
 				
 				/*
@@ -352,7 +355,7 @@ public class ParserJASM implements Parser
 		}
 		else
 		{
-			addError(sc, "Bad include syntax");
+			addError(sc, "  Bad include syntax");
 		}
 	}
 	
@@ -367,7 +370,7 @@ public class ParserJASM implements Parser
 		 */
 		if (tokens.length != 2)
 		{
-			addError(sc, "Invalid definition syntax");
+			addError(sc, "  Bad definition syntax");
 			return;
 		}
 		
@@ -377,17 +380,24 @@ public class ParserJASM implements Parser
 		String name = tokens[0];
 		if (!isValidLabel(name))
 		{
-			addError(sc, "Invalid label characters used");
+			addError(sc, "  Invalid label characters used");
 			return;
 		}
 		
 		/*
 		 * if the second name is a bad number, error
+		 * allow for numbers and addresses
 		 */
 		String value = tokens[1];
+		if (!isValidAddress(value))
+		{
+			addError(sc, "  Invalid address syntax");
+			return;
+		}
+		else
 		if (!isValidNumber(value))
 		{
-			addError(sc, "Invalid number syntax");
+			addError(sc, "  Invalid number syntax");
 			return;
 		}
 		
@@ -452,9 +462,25 @@ public class ParserJASM implements Parser
 	
 	private boolean isValidNumber(String number)
 	{
-		if (number.startsWith("&")) number = number.substring(1);
 		if (StringUtil.isInteger(number)) return true;
 		if (StringUtil.isHexadec(number)) return true;
+		return false;
+	}
+	
+	private boolean isValidAddress(String number)
+	{
+		if (!number.startsWith(ADDRESS_MARK)) return false;
+		number = number.substring(1);
+		if (StringUtil.isInteger(number)) return true;
+		if (StringUtil.isHexadec(number)) return true;
+		return false;
+	}
+	
+	private boolean isValidFile(String fn) 
+	{
+		if (fn.endsWith(".jasm") ) return true;
+		if (fn.endsWith(".jsm") ) return true;
+		if (fn.endsWith(".asm") ) return true;
 		return false;
 	}
 	
@@ -477,14 +503,6 @@ public class ParserJASM implements Parser
 		for (DefineRecord t : equs)
 			if (t.NAME.equals(name)) return t;
 		return null;
-	}
-	
-	private boolean isValidFile(String fn) 
-	{
-		if (fn.endsWith(".jasm") ) return true;
-		if (fn.endsWith(".jsm") ) return true;
-		if (fn.endsWith(".asm") ) return true;
-		return false;
 	}
 	
 	private void out(String string)

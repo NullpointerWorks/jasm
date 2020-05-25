@@ -191,3 +191,9 @@ syntax:
 	read <reg>, @<reg>
 	read <reg>, @<imm>
 
+_________________________________________________
+
+		OTHER INFORMATION
+_________________________________________________
+
+A style highlighting is available for Notepad++.

@@ -389,16 +389,21 @@ public class ParserJASM implements Parser
 		 * allow for numbers and addresses
 		 */
 		String value = tokens[1];
-		if (!isValidAddress(value))
+		if (isAddress(value)) 
 		{
-			addError(sc, "  Invalid address syntax");
-			return;
+			if (!isValidAddress(value))
+			{
+				addError(sc, "  Invalid address syntax");
+				return;
+			}
 		}
 		else
-		if (!isValidNumber(value))
 		{
-			addError(sc, "  Invalid number syntax");
-			return;
+			if (!isValidNumber(value))
+			{
+				addError(sc, "  Invalid number syntax");
+				return;
+			}
 		}
 		
 		/*
@@ -460,17 +465,20 @@ public class ParserJASM implements Parser
 		return false;
 	}
 	
-	private boolean isValidNumber(String number)
+	private boolean isAddress(String str)
 	{
-		if (StringUtil.isInteger(number)) return true;
-		if (StringUtil.isHexadec(number)) return true;
-		return false;
+		return str.startsWith(ADDRESS_MARK);
 	}
 	
 	private boolean isValidAddress(String number)
 	{
-		if (!number.startsWith(ADDRESS_MARK)) return false;
+		if (!isAddress(ADDRESS_MARK)) return false;
 		number = number.substring(1);
+		return isValidNumber(number);
+	}
+	
+	private boolean isValidNumber(String number)
+	{
 		if (StringUtil.isInteger(number)) return true;
 		if (StringUtil.isHexadec(number)) return true;
 		return false;

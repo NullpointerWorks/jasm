@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.nullpointerworks.jasm.compiler.errors.BuildError;
 
-public interface Compiler<T>
+public interface ICompiler<T>
 {
 	/**
 	 * 
@@ -14,13 +14,13 @@ public interface Compiler<T>
 	/**
 	 * 
 	 */
-	void preprocess(Parser parser);
+	void preprocess(IParser parser);
 	
 	/**
 	 * 
 	 */
 	List<Draft<T>> getDraft();
-
+	
 	/**
 	 * 
 	 */

@@ -12,22 +12,7 @@ public interface Draft<T>
 	/**
 	 * 
 	 */
-	T getInstruction();
-	
-	/**
-	 * 
-	 */
-	boolean hasLabel();
-	
-	/**
-	 * 
-	 */
 	String getLabel();
-	
-	/**
-	 * 
-	 */
-	boolean hasError();
 	
 	/**
 	 * 
@@ -37,10 +22,25 @@ public interface Draft<T>
 	/**
 	 * 
 	 */
+	int getCodeIndex();
+	
+	/**
+	 * 
+	 */
+	T getInstruction();
+	
+	/**
+	 * 
+	 */
 	void setJumpAddress(int addr);
 	
 	/**
 	 * 
 	 */
-	int getCodeIndex();
+	boolean hasLabel();
+	
+	/**
+	 * 
+	 */
+	boolean hasError();
 }

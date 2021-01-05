@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.prebuild;
+package com.nullpointerworks.jasm.compiler.prebuild;
 
 import com.nullpointerworks.jasm.compiler.Draft;
 import com.nullpointerworks.jasm.compiler.SourceCode;
@@ -15,14 +15,18 @@ import com.nullpointerworks.jasm.virtualmachine.instruction.system.*;
 
 import com.nullpointerworks.util.StringUtil;
 
-public class InstructionDraft implements Draft<Instruction>
+/**
+ * 
+ * @author Michiel Drost - Nullpointer Works
+ */
+class InstructionDraft implements Draft<Instruction>
 {
 	private final String ADDRESS_MARK = "@";
 	
 	private SourceCode loc;
 	private BuildError err = null;
 	
-	private Register address;
+	private Register address; // reference to set a jump address after parsing
 	private Instruction instruction = null;
 	private String label = "";
 	private int code_index = 0;
@@ -56,7 +60,6 @@ public class InstructionDraft implements Draft<Instruction>
 	/*
 	 * ===========================================================
 	 */
-	
 	private void draft(int index, String instruct, String operands)
 	{
 		code_index = index;

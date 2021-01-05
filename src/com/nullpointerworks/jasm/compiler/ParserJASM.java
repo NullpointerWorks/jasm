@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.nullpointerworks.jasm.BuildError;
-import com.nullpointerworks.jasm.Parser;
+import com.nullpointerworks.jasm.compiler.errors.BuildError;
+import com.nullpointerworks.jasm.compiler.errors.ParseError;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
@@ -20,8 +20,8 @@ public class ParserJASM implements Parser
 	private List<String> includesAux = null; // contains file yet to be included. this list gets modified
 	private List<String> includesPath = null; // all traceable paths to look for jasm source code 
 
-	private List<DefineRecord> defs = null; // contains all definition code
-	private List<DefineRecord> defDups = null;
+	private List<Definition> defs = null; // contains all definition code
+	private List<Definition> defDups = null;
 	
 	private List<SourceCode> code = null; // contains parsed code
 	private List<BuildError> errors; // contains errors
@@ -32,18 +32,16 @@ public class ParserJASM implements Parser
 	/*
 	 * lexicographic sort
 	 */
-	private Comparator<DefineRecord> comp = new Comparator<DefineRecord>()
+	private Comparator<Definition> comp = new Comparator<Definition>()
 	{
 		@Override
-		public int compare(DefineRecord p1, DefineRecord p2) 
+		public int compare(Definition p1, Definition p2) 
 		{
 			return p1.NAME.compareTo(p2.NAME);
 		}
 	};
-	public ParserJASM() {reset();}
 	
-	@Override
-	public Parser reset()
+	public ParserJASM() 
 	{
 		strLeng = 2;
 		
@@ -60,12 +58,10 @@ public class ParserJASM implements Parser
 		errors = new ArrayList<BuildError>();
 		
 		if (defs!=null) defs.clear();
-		defs = new ArrayList<DefineRecord>();
+		defs = new ArrayList<Definition>();
 		
 		if (defDups!=null) defDups.clear();
-		defDups = new ArrayList<DefineRecord>();
-		
-		return this;
+		defDups = new ArrayList<Definition>();
 	}
 
 	@Override
@@ -87,31 +83,29 @@ public class ParserJASM implements Parser
 	}
 	
 	@Override
-	public List<DefineRecord> getDefinitions()
+	public List<Definition> getDefinitions()
 	{
 		return defs;
 	}
 	
 	@Override
-	public Parser setVerbose(boolean verbose)
+	public void setVerbose(boolean verbose)
 	{
 		this.verbose = verbose;
-		return this;
 	}
 	
 	@Override
-	public Parser setIncludesPath(List<String> paths)
+	public void setIncludesPath(List<String> paths)
 	{
 		includesPath = new ArrayList<String>(paths);
-		return this;
 	}
 	
 	@Override
-	public Parser parse(String filename)
+	public void parse(String filename)
 	{
 		if (!isValidFile(filename))
 		{
-			return null; // fatal error
+			return; // fatal error
 		}
 		
 		String[] text = loadCode(filename);
@@ -197,7 +191,7 @@ public class ParserJASM implements Parser
 		if (defDups.size() > 0)
 		{
 			String msg = "Duplicate definition declaration\n";
-			for (DefineRecord entry : defDups)
+			for (Definition entry : defDups)
 			{
 				msg += " "+entry.NAME + " "+entry.SOURCE.getFilename()+" on line "+entry.SOURCE.getLinenumber() +"\n";
 			}
@@ -206,8 +200,6 @@ public class ParserJASM implements Parser
 		
 		out("\nParsing Done\n");
 		out("-------------------------------");
-		
-		return this;
 	}
 	
 	/* ==================================================================
@@ -427,7 +419,7 @@ public class ParserJASM implements Parser
 		{
 			// also add the first instance of that definition
 			if (findDefine(name,defDups) == null) defDups.add(pack3);
-			defDups.add( new DefineRecord(name, "", sc));
+			defDups.add( new Definition(name, "", sc));
 		}
 	}
 	
@@ -511,14 +503,14 @@ public class ParserJASM implements Parser
 		return concat.substring(strLeng-leng, strLeng);
 	}
 	
-	private void newDefine(String n, String v, SourceCode sc, List<DefineRecord> defs) 
+	private void newDefine(String n, String v, SourceCode sc, List<Definition> defs) 
 	{
-		defs.add( new DefineRecord(n, v, sc) );
+		defs.add( new Definition(n, v, sc) );
 	}
 	
-	private DefineRecord findDefine(String name, List<DefineRecord> equs) 
+	private Definition findDefine(String name, List<Definition> equs) 
 	{
-		for (DefineRecord t : equs)
+		for (Definition t : equs)
 			if (t.NAME.equals(name)) return t;
 		return null;
 	}

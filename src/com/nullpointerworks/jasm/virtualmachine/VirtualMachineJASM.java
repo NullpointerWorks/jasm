@@ -3,9 +3,6 @@ package com.nullpointerworks.jasm.virtualmachine;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nullpointerworks.jasm.InterruptListener;
-import com.nullpointerworks.jasm.VirtualMachine;
-
 public class VirtualMachineJASM implements VirtualMachine
 {
 	private InterruptListener interrupt;

@@ -5,29 +5,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.nullpointerworks.jasm.BuildError;
-import com.nullpointerworks.jasm.Parser;
-import com.nullpointerworks.jasm.Compiler;
-import com.nullpointerworks.jasm.Draft;
+import com.nullpointerworks.jasm.compiler.errors.BuildError;
+import com.nullpointerworks.jasm.compiler.errors.PreProcessorError;
 
-public abstract class CompilerJASM<T> implements Compiler<T>
+public abstract class AbstractCompiler<T> implements Compiler<T>
 {
-	private boolean verbose = false;
 	private int instIndex = 0; // label instruction index
+	private boolean verbose;
 	
-	private List<BuildError> errors = null;
-	private Map<String, Integer> labels = null;
-	private List<Draft<T>> draft = null;
-	private List<Draft<T>> labelled = null;
+	private List<BuildError> errors;
+	private Map<String, Integer> labels;
+	private List<Draft<T>> draft;
+	private List<Draft<T>> labelled;
 	
-	public CompilerJASM() 
+	public AbstractCompiler() 
 	{
-		reset();
-	}
-	
-	@Override
-	public Compiler<T> reset() 
-	{
+		verbose = false;
+		
 		if (errors!=null) errors.clear();
 		errors = new ArrayList<BuildError>();
 		
@@ -39,22 +33,19 @@ public abstract class CompilerJASM<T> implements Compiler<T>
 		
 		if (labelled!=null) labelled.clear();
 		labelled = new ArrayList<Draft<T>>();
-		
-		return this;
 	}
 
 	@Override
-	public Compiler<T> setVerbose(boolean verbose) 
+	public void setVerbose(boolean verbose) 
 	{
 		this.verbose = verbose;
-		return this;
 	}
 	
 	@Override
-	public Compiler<T> preprocess(Parser parser) 
+	public void preprocess(Parser parser) 
 	{
 		List<SourceCode> code = parser.getSourceCode();
-		List<DefineRecord> defs = parser.getDefinitions();
+		List<Definition> defs = parser.getDefinitions();
 		
 		out("-------------------------------");
 		out("\n Compiling\n");
@@ -62,12 +53,10 @@ public abstract class CompilerJASM<T> implements Compiler<T>
 		process(code);
 		out("\n Done\n");
 		out("-------------------------------");
-		
-		return this;
 	}
 	
-	@Override
-	public abstract Draft<T> compile(int index, SourceCode loc);
+	//@Override
+	//public abstract Draft<T> compile(int index, SourceCode loc);
 	
 	@Override
 	public boolean hasErrors() 
@@ -169,7 +158,7 @@ public abstract class CompilerJASM<T> implements Compiler<T>
 		}
 	}
 	
-	private void insert(List<SourceCode> code, List<DefineRecord> defs) 
+	private void insert(List<SourceCode> code, List<Definition> defs) 
 	{
 		/*
 		 * print definitions
@@ -177,7 +166,7 @@ public abstract class CompilerJASM<T> implements Compiler<T>
 		if (verbose)
 		{
 			out("Definitions");
-			for (DefineRecord d : defs)
+			for (Definition d : defs)
 			{
 				out( "  "+d.NAME +" = "+d.VALUE );
 			}
@@ -188,7 +177,7 @@ public abstract class CompilerJASM<T> implements Compiler<T>
 			SourceCode loc = code.get(i);
 			String line = loc.getLine();
 			
-			for (DefineRecord d : defs)
+			for (Definition d : defs)
 			{
 				String name = d.NAME;
 				if (line.contains(name))

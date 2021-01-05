@@ -1,6 +1,5 @@
 package com.nullpointerworks.jasm.virtualmachine.instruction.arithmetic;
 
-import com.nullpointerworks.jasm.VirtualMachine;
 import com.nullpointerworks.jasm.virtualmachine.*;
 
 public class Subtract_SI implements Instruction

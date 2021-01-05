@@ -1,11 +1,12 @@
 package com.nullpointerworks.jasm.virtualmachine.instruction.controlflow;
 
-import com.nullpointerworks.jasm.VirtualMachine;
+import com.nullpointerworks.jasm.virtualmachine.Register;
 import com.nullpointerworks.jasm.virtualmachine.Select;
+import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
 
 public class JumpNotEqual extends Jump
 {
-	public JumpNotEqual(int a)
+	public JumpNotEqual(Register a)
 	{
 		super(a);
 	}

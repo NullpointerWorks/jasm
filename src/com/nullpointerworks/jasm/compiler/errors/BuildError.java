@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm;
+package com.nullpointerworks.jasm.compiler.errors;
 
 import com.nullpointerworks.jasm.compiler.SourceCode;
 

@@ -1,11 +1,6 @@
-package com.nullpointerworks.jasm;
+package com.nullpointerworks.jasm.virtualmachine;
 
 import java.util.List;
-
-import com.nullpointerworks.jasm.virtualmachine.Flag;
-import com.nullpointerworks.jasm.virtualmachine.Instruction;
-import com.nullpointerworks.jasm.virtualmachine.Register;
-import com.nullpointerworks.jasm.virtualmachine.Select;
 
 public interface VirtualMachine 
 {
@@ -27,6 +22,6 @@ public interface VirtualMachine
 	Register getRegister(Select sa);
 	
 	void resetFlags();
-	void setFlag(Select zero, boolean b);
+	void setFlag(Select s, boolean b);
 	Flag getFlag(Select s);
 }

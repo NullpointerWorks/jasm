@@ -1,24 +1,28 @@
 package com.nullpointerworks.jasm.prebuild;
 
-import com.nullpointerworks.jasm.BuildError;
-import com.nullpointerworks.jasm.Draft;
-import com.nullpointerworks.jasm.compiler.CompilerError;
+import com.nullpointerworks.jasm.compiler.Draft;
 import com.nullpointerworks.jasm.compiler.SourceCode;
+import com.nullpointerworks.jasm.compiler.errors.BuildError;
+import com.nullpointerworks.jasm.compiler.errors.CompilerError;
+
 import com.nullpointerworks.jasm.virtualmachine.Select;
 import com.nullpointerworks.jasm.virtualmachine.Instruction;
+import com.nullpointerworks.jasm.virtualmachine.Register;
 import com.nullpointerworks.jasm.virtualmachine.instruction.arithmetic.*;
 import com.nullpointerworks.jasm.virtualmachine.instruction.controlflow.*;
 import com.nullpointerworks.jasm.virtualmachine.instruction.dataflow.*;
 import com.nullpointerworks.jasm.virtualmachine.instruction.system.*;
+
 import com.nullpointerworks.util.StringUtil;
 
 public class InstructionDraft implements Draft<Instruction>
 {
 	private final String ADDRESS_MARK = "@";
 	
-	private SourceCode loc = null;
+	private SourceCode loc;
 	private BuildError err = null;
 	
+	private Register address;
 	private Instruction instruction = null;
 	private String label = "";
 	private int code_index = 0;
@@ -40,8 +44,8 @@ public class InstructionDraft implements Draft<Instruction>
 	public final boolean hasLabel() {return label.length() > 0;}
 	
 	public final String getLabel() {return label;}
-
-	public final void setJumpAddress(int addr) {instruction.setJumpAddress(addr);}
+	
+	public final void setJumpAddress(int addr) {address.setValue(addr);}
 	
 	public final int getCodeIndex() {return code_index;}
 	
@@ -601,49 +605,49 @@ public class InstructionDraft implements Draft<Instruction>
 	private void _call(String operands)
 	{
 		label = operands;
-		instruction = new Call(0);
+		instruction = new Call(address);
 	}
 	
 	private void _jump(String operands)
 	{
 		label = operands;
-		instruction = new Jump(0);
+		instruction = new Jump(address);
 	}
 	
 	private void _jequal(String operands)
 	{
 		label = operands;
-		instruction = new JumpEqual(0);
+		instruction = new JumpEqual(address);
 	}
 	
 	private void _jnotequal(String operands)
 	{
 		label = operands;
-		instruction = new JumpNotEqual(0);
+		instruction = new JumpNotEqual(address);
 	}
 	
 	private void _jless(String operands)
 	{
 		label = operands;
-		instruction = new JumpLess(0);
+		instruction = new JumpLess(address);
 	}
 	
 	private void _jlessequal(String operands)
 	{
 		label = operands;
-		instruction = new JumpLessEqual(0);
+		instruction = new JumpLessEqual(address);
 	}
 	
 	private void _jgreater(String operands)
 	{
 		label = operands;
-		instruction = new JumpGreater(0);
+		instruction = new JumpGreater(address);
 	}
 	
 	private void _jgreaterequal(String operands)
 	{
 		label = operands;
-		instruction = new JumpGreaterEqual(0);
+		instruction = new JumpGreaterEqual(address);
 	}
 	
 	private void _return()

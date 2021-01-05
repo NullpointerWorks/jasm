@@ -1,6 +1,6 @@
-package com.nullpointerworks.jasm;
+package com.nullpointerworks.jasm.compiler;
 
-import com.nullpointerworks.jasm.compiler.SourceCode;
+import com.nullpointerworks.jasm.compiler.errors.BuildError;
 
 public interface Draft<T>
 {

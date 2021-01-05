@@ -1,5 +1,10 @@
 package com.nullpointerworks.jasm.compiler;
 
+/**
+ * Represents a single line of code. This data object contains a line of code, line number and file name.
+ * 
+ * @author Michiel Drost - Nullpointer Works
+ */
 public class SourceCode
 {
 	private final String filename;

@@ -1,26 +1,26 @@
-package com.nullpointerworks.jasm;
+package com.nullpointerworks.jasm.compiler;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.compiler.SourceCode;
+import com.nullpointerworks.jasm.compiler.errors.BuildError;
 
 public interface Compiler<T>
 {
 	/**
 	 * 
 	 */
-	Compiler<T> reset();
+	void setVerbose(boolean verbose);
 	
 	/**
 	 * 
 	 */
-	Compiler<T> setVerbose(boolean verbose);
+	void preprocess(Parser parser);
 	
 	/**
 	 * 
 	 */
-	Compiler<T> preprocess(Parser parser);
-	
+	List<Draft<T>> getDraft();
+
 	/**
 	 * 
 	 */
@@ -35,9 +35,4 @@ public interface Compiler<T>
 	 * 
 	 */
 	List<BuildError> getErrors();
-	
-	/**
-	 * 
-	 */
-	List<Draft<T>> getDraft();
 }

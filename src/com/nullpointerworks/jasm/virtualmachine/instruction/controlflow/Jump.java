@@ -1,33 +1,27 @@
 package com.nullpointerworks.jasm.virtualmachine.instruction.controlflow;
 
-import com.nullpointerworks.jasm.VirtualMachine;
 import com.nullpointerworks.jasm.virtualmachine.Instruction;
+import com.nullpointerworks.jasm.virtualmachine.Register;
 import com.nullpointerworks.jasm.virtualmachine.Select;
+import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
 
 public class Jump implements Instruction
 {
-	private int addr = 0;
+	private Register address;
 	
-	public Jump(int a)
+	public Jump(Register a)
 	{
-		setJumpAddress(a);
-	}
-
-	@Override
-	public void setJumpAddress(int a)
-	{
-		addr = a;
+		address = a;
 	}
 	
 	@Override
 	public void execute(VirtualMachine prog)
 	{
-		execute(prog, addr);
+		execute(prog, address.getValue());
 	}
 	
 	public void execute(VirtualMachine prog, int address)
 	{
 		prog.setRegister(Select.IP, address);
 	}
-	
 }

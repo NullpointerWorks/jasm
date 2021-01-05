@@ -8,7 +8,7 @@ import java.util.Map;
 import com.nullpointerworks.jasm.compiler.errors.BuildError;
 import com.nullpointerworks.jasm.compiler.errors.PreProcessorError;
 
-public abstract class AbstractCompiler<T> implements ICompiler<T>
+public abstract class AbstractCompiler<T> implements Compiler<T>
 {
 	private int instIndex = 0; // label instruction index
 	private boolean verbose;
@@ -42,7 +42,7 @@ public abstract class AbstractCompiler<T> implements ICompiler<T>
 	}
 	
 	@Override
-	public void preprocess(IParser parser) 
+	public void preprocess(Parser parser) 
 	{
 		List<SourceCode> code = parser.getSourceCode();
 		List<Definition> defs = parser.getDefinitions();
@@ -85,7 +85,7 @@ public abstract class AbstractCompiler<T> implements ICompiler<T>
 	 * 
 	 * ==================================================================
 	 */
-	private ICompiler<T> process(List<SourceCode> code) 
+	private Compiler<T> process(List<SourceCode> code) 
 	{
 		/*
 		 * track directives and labels

@@ -12,6 +12,10 @@ public enum Select
 	REG_C, // register c
 	REG_D, // register d
 	
+	REG_I, // register i
+	REG_J, // register j
+	REG_K, // register k
+	
 	REG_U, // register u
 	REG_V, // register v
 	REG_W, // register w

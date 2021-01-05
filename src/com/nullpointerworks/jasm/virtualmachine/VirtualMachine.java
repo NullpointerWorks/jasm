@@ -10,10 +10,12 @@ public interface VirtualMachine
 	void addInstructions(List<Instruction> instructions);
 	boolean hasInstruction();
 	void nextInstruction();
-	
-	void setMemory(List<Integer> mem);
+
+	void setMemorySize(int size);
+	List<Integer> getMemory();
 	void storeMemory(int index, int value);
 	int readMemory(int index);
+	
 	void pushStack(int x);
 	int popStack();
 	

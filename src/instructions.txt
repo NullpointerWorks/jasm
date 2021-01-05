@@ -5,7 +5,7 @@
       \___//_/   \______/|_|  |_|
 	
     Java Assembler Virtual Machine
-    JASM Version 1.0.0b
+    JASM Version 1.0.0
 	
  ________________________________________________
 |                                                |
@@ -196,4 +196,5 @@ _________________________________________________
 		OTHER INFORMATION
 _________________________________________________
 
-A style highlighting is available for Notepad++.
+A style highlighting is available for Notepad++ 
+called "npp_jasm_style.xml".

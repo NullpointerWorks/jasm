@@ -15,23 +15,15 @@ public abstract class AbstractCompiler<T> implements Compiler<T>
 	
 	private List<BuildError> errors;
 	private Map<String, Integer> labels;
-	private List< Draft<T> > draft;
+	private List<T> instructions;
 	private List< Draft<T> > labelled;
 	
 	public AbstractCompiler() 
 	{
 		verbose = false;
-		
-		if (errors!=null) errors.clear();
 		errors = new ArrayList<BuildError>();
-		
-		if (labels!=null) labels.clear();
 		labels = new HashMap<String, Integer>();
-
-		if (draft!=null) draft.clear();
-		draft = new ArrayList<Draft<T>>();
-		
-		if (labelled!=null) labelled.clear();
+		instructions = new ArrayList<T>();
 		labelled = new ArrayList<Draft<T>>();
 	}
 
@@ -68,9 +60,9 @@ public abstract class AbstractCompiler<T> implements Compiler<T>
 	}
 	
 	@Override
-	public List<Draft<T>> getDraft() 
+	public List<T> getInstructions()
 	{
-		return draft;
+		return instructions;
 	}
 	
 	/* ==================================================================
@@ -141,7 +133,7 @@ public abstract class AbstractCompiler<T> implements Compiler<T>
 		
 		instIndex += 1;
 		var draft_inst = compile(instIndex, loc);
-		draft.add(draft_inst);
+		instructions.add( draft_inst.getInstruction() );
 		
 		if (draft_inst.hasError())
 		{

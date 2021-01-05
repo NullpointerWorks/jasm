@@ -11,7 +11,7 @@ import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 
-public class SourceParser implements Parser
+public class SourceFileParser implements Parser
 {
 	private final String ADDRESS_MARK = "@";
 	private final String LABEL_MARK = ":";
@@ -41,7 +41,7 @@ public class SourceParser implements Parser
 		}
 	};
 	
-	public SourceParser() 
+	public SourceFileParser() 
 	{
 		strLeng = 2;
 		

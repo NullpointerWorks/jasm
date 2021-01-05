@@ -24,16 +24,17 @@ class InstructionDraft implements Draft<Instruction>
 	private final String ADDRESS_MARK = "@";
 	
 	private SourceCode loc;
-	private BuildError err = null;
+	private BuildError err;
 	
 	private Register address; // reference to set a jump address after parsing
-	private Instruction instruction = null;
+	private Instruction instruction;
 	private String label = "";
 	private int code_index = 0;
 	
 	public InstructionDraft(int index, SourceCode loc)
 	{
 		this.loc=loc;
+		address = new Register(0);
 		String[] parts = loc.getLine().split(" ");
 		String instruct = parts[0].toLowerCase();
 		String operands = "";

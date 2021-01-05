@@ -16,12 +16,15 @@ public class VirtualMachineJASM implements VirtualMachine
 	private Register rB;
 	private Register rC;
 	private Register rD;
-		private Register rU;
-		private Register rV;
-		private Register rW;
-	private Register rX;
-	private Register rY;
-	private Register rZ;
+		private Register rI;
+		private Register rJ;
+		private Register rK;
+	private Register rU;
+	private Register rV;
+	private Register rW;
+		private Register rX;
+		private Register rY;
+		private Register rZ;
 	
 	private Flag zero;
 	private Flag sign;
@@ -34,6 +37,10 @@ public class VirtualMachineJASM implements VirtualMachine
 		rB = new Register();
 		rC = new Register();
 		rD = new Register();
+		
+		rI = new Register();
+		rJ = new Register();
+		rK = new Register();
 		
 		rU = new Register();
 		rV = new Register();
@@ -62,9 +69,16 @@ public class VirtualMachineJASM implements VirtualMachine
 	// =======================================================
 	
 	@Override
-	public void setMemory(List<Integer> mem)
+	public void setMemorySize(int size)
 	{
-		memref = mem;
+		memref = new ArrayList<Integer>(size);
+		for (int l=size; l>0;l--) memref.add(0);
+	}
+	
+	@Override
+	public List<Integer> getMemory()
+	{
+		return memref;
 	}
 	
 	@Override
@@ -183,9 +197,15 @@ public class VirtualMachineJASM implements VirtualMachine
 		case REG_B: return rB;
 		case REG_C: return rC;
 		case REG_D: return rD;
+		
+		case REG_I: return rI;
+		case REG_J: return rJ;
+		case REG_K: return rK;
+		
 		case REG_U: return rU;
 		case REG_V: return rV;
 		case REG_W: return rW;
+		
 		case REG_X: return rX;
 		case REG_Y: return rY;
 		case REG_Z: return rZ;

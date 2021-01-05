@@ -19,7 +19,7 @@ public interface Compiler<T>
 	/**
 	 * 
 	 */
-	List<Draft<T>> getDraft();
+	List<T> getInstructions();
 	
 	/**
 	 * 

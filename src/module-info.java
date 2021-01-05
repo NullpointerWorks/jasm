@@ -2,7 +2,7 @@
  * Creative Commons - Attribution, Share Alike 4.0<br>
  * Nullpointer Works (2019)<br>
  * Use of this library is subject to license terms.<br>
- * @version 2.0.0 beta
+ * @version 2.1.0 beta
  * @author Michiel Drost - Nullpointer Works
  */
 module libnpw.jasm

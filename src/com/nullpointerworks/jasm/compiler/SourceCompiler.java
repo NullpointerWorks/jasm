@@ -13,6 +13,9 @@ public class SourceCompiler implements Compiler
 	private int instIndex = 0; // label instruction index
 	private boolean verbose;
 	
+	private List<SourceCode> code;
+	private List<Definition> defs;
+	private final DraftBuilder builder;
 	private List<BuildError> errors;
 	private Map<String, Integer> labels;
 	private List<Draft> draft;
@@ -20,31 +23,45 @@ public class SourceCompiler implements Compiler
 	
 	public SourceCompiler()
 	{
+		builder = new DraftBuilder();
 		verbose = false;
 		errors = new ArrayList<BuildError>();
+		code = new ArrayList<SourceCode>();
+		defs = new ArrayList<Definition>();
 		labels = new HashMap<String, Integer>();
 		draft = new ArrayList<Draft>();
 		labelled = new ArrayList<Draft>();
 	}
 	
 	@Override
-	public void compile(Parser parser)
+	public void setSourceCode(List<SourceCode> sc)
 	{
-		List<SourceCode> code = parser.getSourceCode();
-		List<Definition> defs = parser.getDefinitions();
-		
-		out("-------------------------------");
-		out("\n Compiling\n");
-		insertDefinition(code, defs);
-		processCode(code);
-		out("\n Done\n");
-		out("-------------------------------");
+		code.clear();
+		code = sc;
+	}
+	
+	@Override
+	public void setDefinitions(List<Definition> df)
+	{
+		defs.clear();
+		defs = df;
 	}
 
 	@Override
 	public void setVerbose(boolean verbose) 
 	{
 		this.verbose = verbose;
+	}
+	
+	@Override
+	public void compile()
+	{
+		out("-------------------------------");
+		out("\n Compiling\n");
+		insertDefinition(code, defs);
+		processCode(code);
+		out("\n Done\n");
+		out("-------------------------------");
 	}
 	
 	@Override
@@ -131,7 +148,7 @@ public class SourceCompiler implements Compiler
 			String label = d.getLabel();
 			if (!labels.containsKey(label))
 			{
-				addPreProcError(d.getLineOfCode(), "  Unknown label reference");
+				addPreProcError(d.getSourceCode(), "  Unknown label reference");
 				return;
 			}
 			int addr = labels.get(label);
@@ -164,7 +181,7 @@ public class SourceCompiler implements Compiler
 		}
 		
 		instIndex += 1;
-		var draft_inst = new Draft(loc);
+		var draft_inst = builder.getDraft(loc);
 		
 		draft.add( draft_inst );
 		

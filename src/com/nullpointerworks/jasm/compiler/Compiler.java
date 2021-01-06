@@ -9,17 +9,27 @@ public interface Compiler
 	/**
 	 * 
 	 */
-	void compile(Parser parser);
+	void setSourceCode(List<SourceCode> sc);
 	
 	/**
 	 * 
 	 */
-	List<Draft> getDraft();
+	void setDefinitions(List<Definition> df);
 	
 	/**
 	 * 
 	 */
 	void setVerbose(boolean verbose);
+	
+	/**
+	 * 
+	 */
+	void compile();
+	
+	/**
+	 * 
+	 */
+	List<Draft> getDraft();
 	
 	/**
 	 * 

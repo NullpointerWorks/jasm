@@ -7,11 +7,12 @@ import java.util.List;
 
 import com.nullpointerworks.jasm.compiler.errors.BuildError;
 import com.nullpointerworks.jasm.compiler.errors.ParseError;
+
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 
-public class SourceFileParser implements Parser
+public class SourceParser implements Parser
 {
 	private final String ADDRESS_MARK = "@";
 	private final String LABEL_MARK = ":";
@@ -41,7 +42,7 @@ public class SourceFileParser implements Parser
 		}
 	};
 	
-	public SourceFileParser() 
+	public SourceParser() 
 	{
 		strLeng = 2;
 		

@@ -1,8 +1,8 @@
 /**
  * Creative Commons - Attribution, Share Alike 4.0<br>
- * Nullpointer Works (2019)<br>
+ * Nullpointer Works (2021)<br>
  * Use of this library is subject to license terms.<br>
- * @version 2.1.0 beta
+ * @version 3.0.0 beta
  * @author Michiel Drost - Nullpointer Works
  */
 module libnpw.jasm
@@ -14,7 +14,6 @@ module libnpw.jasm
 	 */
 	exports com.nullpointerworks.jasm.compiler;
 	exports com.nullpointerworks.jasm.compiler.errors;
-	exports com.nullpointerworks.jasm.compiler.prebuild;
 	
 	/*
 	 * virtual machine code

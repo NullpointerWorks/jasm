@@ -179,7 +179,6 @@ public class Draft
 		Select reg2 = getRegister(source);
 		if ( reg2 != null )
 		{
-			
 			instruction = new Addition_SS(reg1,reg2);
 		}
 		else

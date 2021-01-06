@@ -29,6 +29,11 @@ public interface Compiler<T>
 	/**
 	 * 
 	 */
+	Draft<T> draft(SourceCode loc, Operation op, String operands);
+	
+	/**
+	 * 
+	 */
 	boolean hasErrors();
 	
 	/**

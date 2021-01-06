@@ -33,13 +33,19 @@ class InstructionDraft implements Draft<Instruction>
 	
 	public InstructionDraft(int index, SourceCode loc)
 	{
-		this.loc=loc;
 		address = new Register(0);
+		code_index = index;
+		this.loc=loc;
 		String[] parts = loc.getLine().split(" ");
 		String instruct = parts[0].toLowerCase();
 		String operands = "";
 		if (parts.length > 1) operands = parts[1].toLowerCase();
 		draft(index,instruct,operands);
+	}
+	
+	public InstructionDraft(int index, SourceCode loc, Instruction instruction)
+	{
+		
 	}
 	
 	public SourceCode getLineOfCode() {return loc;}
@@ -61,15 +67,15 @@ class InstructionDraft implements Draft<Instruction>
 	/*
 	 * ===========================================================
 	 */
-	private void draft(int index, String instruct, String operands)
+	private Instruction draft(int index, String instruct, String operands)
 	{
 		code_index = index;
 		
 		/*
 		 * system
 		 */
-		if (instruct.equals("nop")) {_nop(); return;}
-		if (instruct.equals("int")) {_int(operands); return;}
+		if (instruct.equals("nop")) {return _nop();}
+		if (instruct.equals("int")) {return _int(operands);}
 		
 		/*
 		 * arithmetic
@@ -117,31 +123,33 @@ class InstructionDraft implements Draft<Instruction>
 	/*
 	 * nop
 	 */
-	private void _nop()
+	private Instruction _nop()
 	{
-		instruction = new NoOperation();
+		return new NoOperation();
 	}
 	
 	/*
 	 * int <imm>
 	 */
-	private void _int(String operands)
+	private Instruction _int(String operands)
 	{
 		if (operands.contains(","))
 		{
 			setError("  Syntax error: Interrupt instructions only accept one operand."+int_syntax);
-			return;
+			return null;
 		}
 		
 		if ( isImmediate(operands) )
 		{
 			int imm = getImmediate(operands);
-			instruction = new Interrupt(imm);
+			return new Interrupt(imm);
 		}
 		else
 		{
 			setError("  Syntax error: Interrupts only accept immediate values."+int_syntax);
 		}
+		
+		return null;
 	}
 
 	/* ================================================================================

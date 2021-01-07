@@ -8,7 +8,7 @@ import java.util.Map;
 import com.nullpointerworks.jasm.compiler.errors.BuildError;
 import com.nullpointerworks.jasm.compiler.errors.PreProcessorError;
 
-public class SourceCompiler implements Compiler
+public class DraftCompiler implements Compiler
 {
 	private int instIndex = 0; // label instruction index
 	private boolean verbose;
@@ -21,7 +21,7 @@ public class SourceCompiler implements Compiler
 	private List<Draft> draft;
 	private List<Draft> labelled;
 	
-	public SourceCompiler()
+	public DraftCompiler()
 	{
 		builder = new DraftBuilder();
 		verbose = false;

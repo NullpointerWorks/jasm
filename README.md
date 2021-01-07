@@ -3,8 +3,8 @@ An assembly-like execution environment for the JASM language.
 
 # module
 * requires libnpw.util
-* exports com.nullpointerworks.jasm
 * exports com.nullpointerworks.jasm.compiler
+* exports com.nullpointerworks.jasm.compiler.errors
 * exports com.nullpointerworks.jasm.virtualmachine
 * exports com.nullpointerworks.jasm.virtualmachine.instruction.arithmetic
 * exports com.nullpointerworks.jasm.virtualmachine.instruction.controlflow

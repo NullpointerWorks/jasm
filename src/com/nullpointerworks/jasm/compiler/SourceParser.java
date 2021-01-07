@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.nullpointerworks.jasm.compiler.errors.BuildError;
 import com.nullpointerworks.jasm.compiler.errors.ParseError;
-
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;

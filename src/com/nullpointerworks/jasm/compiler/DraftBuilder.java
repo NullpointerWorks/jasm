@@ -22,11 +22,10 @@ public class DraftBuilder
 	private SourceCode source;
 	private BuildError err;
 	private Register address; // reference to set a jump address after parsing
-	private Instruction instruction;
-	private String label = "";
 	
 	public Draft getDraft(SourceCode loc)
 	{
+		err = null;
 		address = new Register(0);
 		source = loc;
 		String[] parts = loc.getLine().split(" ");
@@ -37,44 +36,113 @@ public class DraftBuilder
 		/*
 		 * system
 		 */
-		if (instruct.equals("nop")) {_nop(); return;}
-		if (instruct.equals("int")) {_int(operands); return;}
+		if (instruct.equals("nop")) {return _nop();}
+		if (instruct.equals("int")) {return _int(operands);}
 		
 		/*
 		 * arithmetic
 		 */
-		if (instruct.equals("add")) {_add(operands); return;}
-		if (instruct.equals("sub")) {_sub(operands); return;}
-		if (instruct.equals("cmp")) {_cmp(operands); return;}
-		if (instruct.equals("shl")) {_shl(operands); return;}
-		if (instruct.equals("shr")) {_shr(operands); return;}
-		if (instruct.equals("inc")) {_inc(operands); return;}
-		if (instruct.equals("dec")) {_dec(operands); return;}
-		if (instruct.equals("neg")) {_neg(operands); return;}
+		if (instruct.equals("add")) {return _add(operands);}
+		if (instruct.equals("sub")) {return _sub(operands);}
+		if (instruct.equals("cmp")) {return _cmp(operands);}
+		if (instruct.equals("shl")) {return _shl(operands);}
+		if (instruct.equals("shr")) {return _shr(operands);}
+		if (instruct.equals("inc")) {return _inc(operands);}
+		if (instruct.equals("dec")) {return _dec(operands);}
+		if (instruct.equals("neg")) {return _neg(operands);}
 		
 		/*
 		 * data transfer
 		 */
-		if (instruct.equals("load")) {_load(operands); return;}
-		if (instruct.equals("push")) {_push(operands); return;}
-		if (instruct.equals("pop")) {_pop(operands); return;}
-		if (instruct.equals("sto")) {_sto(operands); return;}
-		if (instruct.equals("read")) {_read(operands); return;}
+		if (instruct.equals("load")) {return _load(operands);}
+		if (instruct.equals("push")) {return _push(operands);}
+		if (instruct.equals("pop")) {return _pop(operands);}
+		if (instruct.equals("sto")) {return _sto(operands);}
+		if (instruct.equals("read")) {return _read(operands);}
 		
 		/*
 		 * control flow
 		 */
-		if (instruct.equals("call")) {_call(operands); return;}
-		if (instruct.equals("jmp")) {_jump(operands); return;}
-		if (instruct.equals("je")) {_jequal(operands); return;}
-		if (instruct.equals("jne")) {_jnotequal(operands); return;}
-		if (instruct.equals("jl")) {_jless(operands); return;}
-		if (instruct.equals("jle")) {_jlessequal(operands); return;}
-		if (instruct.equals("jg")) {_jgreater(operands); return;}
-		if (instruct.equals("jge")) {_jgreaterequal(operands); return;}
-		if (instruct.equals("ret")) {_return(); return;}
+		if (instruct.equals("call")) {return _call(operands);}
+		if (instruct.equals("jmp")) {return _jump(operands);}
+		if (instruct.equals("je")) {return _jequal(operands);}
+		if (instruct.equals("jne")) {return _jnotequal(operands);}
+		if (instruct.equals("jl")) {return _jless(operands);}
+		if (instruct.equals("jle")) {return _jlessequal(operands);}
+		if (instruct.equals("jg")) {return _jgreater(operands);}
+		if (instruct.equals("jge")) {return _jgreaterequal(operands);}
+		if (instruct.equals("ret")) {return _return();}
 		
 		setError("  Unrecognized instruction or parameters");
+		return _nop();
+	}
+
+	/* ================================================================================
+	 * 
+	 * 		generic builder methods
+	 * 
+	 * ============================================================================= */
+	
+	/*
+	 * gen <reg>,<reg>
+	 * gen <reg>,<imm>
+	 */
+	private Draft _generic_instruction(Operation op, String operands, String oper, String syntax)
+	{
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) 
+		{
+			setError("  Syntax error: "+oper+" instructions use two operands."+syntax);
+			return null; // error
+		}
+		
+		Operand op1 = new Operand(tokens[0]);
+		if (!op1.isRegister())
+		{
+			setError("  Syntax error: "+oper+" target operand must be a register."+syntax);
+			return null; // error
+		}
+		
+		Draft d = new Draft(source, op);
+		d.addOperand(op1);
+		
+		Operand op2 = new Operand(tokens[1]);
+		if (!op2.hasError())
+		{
+			d.addOperand(op2);
+		}
+		else
+		{
+			setError("  Syntax error: "+oper+" source operand must be either a register or an immediate value."+syntax);
+			// error
+		}
+		
+		return d;
+	}
+	
+	/*
+	 * gen <reg>
+	 */
+	private Draft _generic_register(Operation op, String operands, String oper, String syntax)
+	{
+		if (operands.contains(","))
+		{
+			setError("  Syntax error: "+oper+" instructions accept only one operand."+syntax);
+			return null;
+		}
+		
+		Draft d = new Draft(source, op);
+		Operand op1 = new Operand(operands);
+		if (op1.isRegister())
+		{
+			d.addOperand(op1);
+		}
+		else
+		{
+			setError("  Syntax error: "+oper+" target operand must be a register."+syntax);
+		}
+		
+		return d;
 	}
 	
 	/* ================================================================================
@@ -88,31 +156,35 @@ public class DraftBuilder
 	/*
 	 * nop
 	 */
-	private void _nop()
+	private Draft _nop()
 	{
-		instruction = new NoOperation();
+		Draft d = new Draft(source, Operation.NOP);
+		return d;
 	}
 	
 	/*
 	 * int <imm>
 	 */
-	private void _int(String operands)
+	private Draft _int(String operands)
 	{
 		if (operands.contains(","))
 		{
 			setError("  Syntax error: Interrupt instructions only accept one operand."+int_syntax);
-			return;
+			return null;
 		}
 		
-		if ( isImmediate(operands) )
+		Draft d = new Draft(source, Operation.INT);
+		Operand op = new Operand(operands);
+		if (op.isImmediate())
 		{
-			int imm = getImmediate(operands);
-			instruction = new Interrupt(imm);
+			d.addOperand(op);
 		}
 		else
 		{
 			setError("  Syntax error: Interrupts only accept immediate values."+int_syntax);
 		}
+		
+		return d;
 	}
 
 	/* ================================================================================
@@ -120,372 +192,159 @@ public class DraftBuilder
 	 * 		arithmetic
 	 * 
 	 * ============================================================================= */
-
-	private final String add_syntax = "\n  add <reg>,<reg>\n  add <reg>,<imm>";
-	private final String sub_syntax = "\n  sub <reg>,<reg>\n  sub <reg>,<imm>";
-	private final String cmp_syntax = "\n  cmp <reg>,<reg>\n  cmp <reg>,<imm>";
-	private final String shl_syntax = "\n  shl <reg>";
-	private final String shr_syntax = "\n  shr <reg>";
-	private final String inc_syntax = "\n  inc <reg>";
-	private final String dec_syntax = "\n  dec <reg>";
-	private final String neg_syntax = "\n  neg <reg>";
 	
 	/*
 	 * add <reg>,<reg>
 	 * add <reg>,<imm>
 	 */
-	private void _add(String operands)
+	private final String add_syntax = "\n  add <reg>,<reg>\n  add <reg>,<imm>";
+	private Draft _add(String operands)
 	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
-		{
-			setError("  Syntax error: Addition instructions use two operands."+add_syntax);
-			return; // error
-		}
-		
-		String target = tokens[0];
-		Select reg1 = getRegister(target);
-		if ( reg1 == null )
-		{
-			setError("  Syntax error: Addition target operand must be a register."+add_syntax);
-			return; // error
-		}
-		
-		String source = tokens[1];
-		Select reg2 = getRegister(source);
-		if ( reg2 != null )
-		{
-			instruction = new Addition_SS(reg1,reg2);
-		}
-		else
-		if ( isImmediate(source) )
-		{
-			int imm = getImmediate(source);
-			instruction = new Addition_SI(reg1,imm);
-		}
-		else
-		{
-			setError("  Syntax error: Addition source operand must be either a register or an immediate value."+add_syntax);
-			// error
-		}
+		return _generic_instruction(Operation.ADD, operands, "Addition", add_syntax);
 	}
 	
 	/*
 	 * sub <reg>,<reg>
 	 * sub <reg>,<imm>
 	 */
-	private void _sub(String operands)
+	private final String sub_syntax = "\n  sub <reg>,<reg>\n  sub <reg>,<imm>";
+	private Draft _sub(String operands)
 	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
-		{
-			setError("  Syntax error: Subtraction instructions use two operands."+sub_syntax);
-			return; // error
-		}
-		
-		String target = tokens[0];
-		Select reg1 = getRegister(target);
-		if ( reg1 == null )
-		{
-			setError("  Syntax error: Subtraction target operand must be a register."+sub_syntax);
-			return; // error
-		}
-		
-		String source = tokens[1];
-		Select reg2 = getRegister(source);
-		if ( reg2 != null )
-		{
-			instruction = new Subtract_SS(reg1,reg2);
-		}
-		else
-		if ( isImmediate(source) )
-		{
-			int imm = getImmediate(source);
-			instruction = new Subtract_SI(reg1,imm);
-		}
-		else
-		{
-			setError("  Syntax error: Subtraction source operand must be either a register or an immediate value."+sub_syntax);
-			// error
-		}
+		return _generic_instruction(Operation.SUB, operands, "Subtraction", sub_syntax);
 	}
 	
 	/*
 	 * cmp <reg>,<reg>
 	 * cmp <reg>,<imm>
 	 */
-	private void _cmp(String operands)
+	private final String cmp_syntax = "\n  cmp <reg>,<reg>\n  cmp <reg>,<imm>";
+	private Draft _cmp(String operands)
 	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
-		{
-			setError("  Syntax error: Compare instructions use two operands."+cmp_syntax);
-			return; // error
-		}
-		
-		String target = tokens[0];
-		Select reg1 = getRegister(target);
-		if ( reg1 == null )
-		{
-			setError("  Syntax error: Compare target operand must be a register."+cmp_syntax);
-			return; // error
-		}
-		
-		String source = tokens[1];
-		Select reg2 = getRegister(source);
-		if ( reg2 != null )
-		{
-			instruction = new Compare_SS(reg1,reg2);
-		}
-		else
-		if ( isImmediate(source) )
-		{
-			int imm = getImmediate(source);
-			instruction = new Compare_SI(reg1,imm);
-		}
-		else
-		{
-			setError("  Syntax error: Compare source operand must be either a register or an immediate value."+cmp_syntax);
-			// error
-		}
+		return _generic_instruction(Operation.CMP, operands, "Compare", cmp_syntax);
 	}
 	
 	/*
 	 * shl <reg>
 	 */
-	private void _shl(String operands)
+	private final String shl_syntax = "\n  shl <reg>";
+	private Draft _shl(String operands)
 	{
-		if (operands.contains(","))
-		{
-			setError("  Syntax error: Bitshift instructions accept only one operand."+shl_syntax);
-			return;
-		}
-		
-		if ( isRegister(operands) )
-		{
-			Select reg = getRegister(operands);
-			instruction = new ShiftLeft_S(reg);
-		}
-		else
-		{
-			setError("  Syntax error: Bitshift target operand must be a register."+shl_syntax);
-			// error
-		}
+		return _generic_register(Operation.SHL, operands, "Bitshift", shl_syntax);
 	}
 
 	/*
 	 * shr <reg>
 	 */
-	private void _shr(String operands)
+	private final String shr_syntax = "\n  shr <reg>";
+	private Draft _shr(String operands)
 	{
-		if (operands.contains(","))
-		{
-			setError("  Syntax error: Bitshift instructions accept only one operand."+shr_syntax);
-			return;
-		}
-		
-		if ( isRegister(operands) )
-		{
-			Select reg = getRegister(operands);
-			instruction = new ShiftRight_S(reg);
-		}
-		else
-		{
-			setError("  Syntax error: Bitshift target operand must be a register."+shr_syntax);
-		}
+		return _generic_register(Operation.SHR, operands, "Bitshift", shr_syntax);
 	}
 	
 	/*
 	 * inc <reg>
 	 */
-	private void _inc(String operands)
+	private final String inc_syntax = "\n  inc <reg>";
+	private Draft _inc(String operands)
 	{
-		if (operands.contains(","))
-		{
-			setError("  Syntax error: Increment instructions accept only one operand."+inc_syntax);
-			return;
-		}
-		
-		if ( isRegister(operands) )
-		{
-			Select reg = getRegister(operands);
-			instruction = new Increment_S(reg);
-		}
-		else
-		{
-			setError("  Syntax error: Increment target operand must be a register."+inc_syntax);
-		}
+		return _generic_register(Operation.INC, operands, "Increment", inc_syntax);
 	}
 	
 	/*
 	 * dec <reg>
 	 */
-	private void _dec(String operands)
+	private final String dec_syntax = "\n  dec <reg>";
+	private Draft _dec(String operands)
 	{
-		if (operands.contains(","))
-		{
-			setError("  Syntax error: Decrement instructions accept only one operand."+dec_syntax);
-			return;
-		}
-		
-		if ( isRegister(operands) )
-		{
-			Select reg = getRegister(operands);
-			instruction = new Decrement_S(reg);
-		}
-		else
-		{
-			setError("  Syntax error: Decrement target operand must be a register."+dec_syntax);
-		}
+		return _generic_register(Operation.DEC, operands, "Decrement", dec_syntax);
 	}
 	
 	/*
 	 * neg <reg>
 	 */
-	private void _neg(String operands) 
+	private final String neg_syntax = "\n  neg <reg>";
+	private Draft _neg(String operands) 
 	{
-		if (operands.contains(","))
-		{
-			setError("  Syntax error: Negation instructions accept only one operand."+neg_syntax);
-			return;
-		}
-		
-		if ( isRegister(operands) )
-		{
-			Select reg = getRegister(operands);
-			instruction = new Negate_S(reg);
-		}
-		else
-		{
-			setError("  Syntax error: Negation target operand must be a register."+neg_syntax);
-		}
+		return _generic_register(Operation.NEG, operands, "Negate", neg_syntax);
 	}
-
+	
 	/* ================================================================================
 	 * 
 	 * 		data transfer
 	 * 
 	 * ============================================================================= */
 	
-	private final String load_syntax = "\n  load <reg>,<reg>\n  load <reg>,<imm>";
-	private final String push_syntax = "\n  push <reg>\n  push <imm>";
-	private final String pop_syntax = "\n  pop <reg>";
-	private final String sto_syntax = "\n  sto @<reg>,<reg>\n  sto @<imm>,<reg>";
-	private final String read_syntax = "\n  read <reg>,@<reg>\n  read <reg>,@<imm>";
 	
 	/*
 	 * load <reg>,<reg>
 	 * load <reg>,<imm>
 	 */
-	private void _load(String operands)
+	private final String load_syntax = "\n  load <reg>,<reg>\n  load <reg>,<imm>";
+	private Draft _load(String operands)
 	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
-		{
-			setError("  Syntax error: Load instructions use two operands."+load_syntax);
-			return; // error
-		}
-		
-		String target = tokens[0];
-		Select reg1 = getRegister(target);
-		if ( reg1 == null )
-		{
-			setError("  Syntax error: Load target operand must be a register."+load_syntax);
-			return; // error
-		}
-		
-		String source = tokens[1];
-		Select reg2 = getRegister(source);
-		if ( reg2 != null )
-		{
-			instruction = new Load_SS(reg1,reg2);
-		}
-		else
-		if ( isImmediate(source) )
-		{
-			int imm = getImmediate(source);
-			instruction = new Load_SI(reg1,imm);
-		}
-		else
-		{
-			setError("  Syntax error: Load source operand must be either a register or an immediate value."+load_syntax);
-			// error
-		}
+		return _generic_instruction(Operation.LOAD, operands, "Load", load_syntax);
 	}
 	
 	/*
 	 * push <reg>
 	 * push <imm>
 	 */
-	private void _push(String operands)
+	private final String push_syntax = "\n  push <reg>\n  push <imm>";
+	private Draft _push(String operands)
 	{
 		if (operands.contains(","))
 		{
 			setError("  Syntax error: Stack instructions accept only one operand."+push_syntax);
-			return;
+			return null;
 		}
 		
-		if ( isRegister(operands) )
+		Draft d = new Draft(source, Operation.PUSH);
+		Operand op1 = new Operand(operands);
+		if (!op1.hasError())
 		{
-			Select reg = getRegister(operands);
-			instruction = new Push_S(reg);
-		}
-		else
-		if ( isImmediate(operands) )
-		{
-			int imm = getImmediate(operands);
-			instruction = new Push_I(imm);
+			d.addOperand(op1);
 		}
 		else
 		{
-			setError("  Syntax error: Push operand must be either a register or an immediate value."+push_syntax);
+			setError("  Syntax error: Stack target operand must be a register."+push_syntax);
 		}
+		
+		return d;
 	}
 	
 	/*
 	 * pop <reg>
 	 */
-	private void _pop(String operands)
+	private final String pop_syntax = "\n  pop <reg>";
+	private Draft _pop(String operands)
 	{
-		if (operands.contains(","))
-		{
-			setError("  Syntax error: Stack instructions accept only one operand."+pop_syntax);
-			return;
-		}
-		
-		if ( isRegister(operands) )
-		{
-			Select reg = getRegister(operands);
-			instruction = new Pop_S(reg);
-		}
-		else
-		{
-			setError("  Syntax error: Pop operand must be a register."+pop_syntax);
-		}
+		return _generic_register(Operation.POP, operands, "Pop", pop_syntax);
 	}
 	
 	/*
 	 * sto @<reg>,<reg>
 	 * sto @<imm>,<reg>
 	 */
-	private void _sto(String operands)
+	private final String sto_syntax = "\n  sto @<reg>,<reg>\n  sto @<imm>,<reg>";
+	private Draft _sto(String operands)
 	{
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) 
 		{
 			setError("  Syntax error: Store instructions use two operands."+sto_syntax);
-			return; // error
+			return null;
 		}
+		
+		Draft d = new Draft(source, Operation.STO);
 		
 		/*
 		 * check source
 		 */
-		String source = tokens[1];
-		Select regS = getRegister(source);
-		if ( regS == null )
+		Operand op2 = new Operand(tokens[1]);
+		if (!op2.isRegister())
 		{
 			setError("  Syntax error: Store source operand must be a register."+sto_syntax);
-			return; // if not register, error
+			return null;
 		}
 		
 		/*
@@ -495,39 +354,36 @@ public class DraftBuilder
 		if (!isAddress(target))
 		{
 			setError("  Syntax error: Store target operand must be an address."+sto_syntax);
-			return; // error
+			return null;
 		}
 		target = target.substring(1); // remove @ sign
-
-		Select regT = getRegister(target);
-		if ( regT!=null )
+		
+		Operand op1 = new Operand(target);
+		if (!op1.hasError())
 		{
-			instruction = new Store_SS(regT,regS);
-		}
-		else
-		if ( isImmediate(target) )
-		{
-			int immT = getImmediate(target);
-			instruction = new Store_IS(immT,regS);
+			d.addOperand(op1);
+			d.addOperand(op2);
 		}
 		else
 		{
 			setError("  Syntax error: Store target operand must be either a register or an immediate value."+sto_syntax);
-			// error
 		}
+		
+		return d;
 	}
 	
 	/*
 	 * read <reg>,@<reg>
 	 * read <reg>,@<imm>
 	 */
-	private void _read(String operands)
+	private final String read_syntax = "\n  read <reg>,@<reg>\n  read <reg>,@<imm>";
+	private Draft _read(String operands)
 	{
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) 
 		{
 			setError("  Syntax error: Read instructions use two operands."+read_syntax);
-			return; // error
+			return null;
 		}
 		
 		/*
@@ -576,128 +432,57 @@ public class DraftBuilder
 	 * 
 	 * ============================================================================= */
 
-	private void _call(String operands)
+	private Draft _call(String operands)
 	{
 		label = operands;
 		instruction = new Call(address);
 	}
 	
-	private void _jump(String operands)
+	private Draft _jump(String operands)
 	{
 		label = operands;
 		instruction = new Jump(address);
 	}
 	
-	private void _jequal(String operands)
+	private Draft _jequal(String operands)
 	{
 		label = operands;
 		instruction = new JumpEqual(address);
 	}
 	
-	private void _jnotequal(String operands)
+	private Draft _jnotequal(String operands)
 	{
 		label = operands;
 		instruction = new JumpNotEqual(address);
 	}
 	
-	private void _jless(String operands)
+	private Draft _jless(String operands)
 	{
 		label = operands;
 		instruction = new JumpLess(address);
 	}
 	
-	private void _jlessequal(String operands)
+	private Draft _jlessequal(String operands)
 	{
 		label = operands;
 		instruction = new JumpLessEqual(address);
 	}
 	
-	private void _jgreater(String operands)
+	private Draft _jgreater(String operands)
 	{
 		label = operands;
 		instruction = new JumpGreater(address);
 	}
 	
-	private void _jgreaterequal(String operands)
+	private Draft _jgreaterequal(String operands)
 	{
 		label = operands;
 		instruction = new JumpGreaterEqual(address);
 	}
 	
-	private void _return()
+	private Draft _return()
 	{
 		instruction = new Return();
-	}
-	
-	/*
-	 * ===========================================================
-	 */
-	
-	private boolean isImmediate(String imm)
-	{
-		if (StringUtil.isInteger(imm)) return true;
-		if (StringUtil.isHexadec(imm)) return true;
-		return false;
-	}
-	
-	private int getImmediate(String value)
-	{
-		int val = 0;
-		
-		if (StringUtil.isHexadec(value))
-		{
-			value = value.replace("0x", "");
-			val = Integer.parseInt(value, 16);
-		}
-		else
-		if (StringUtil.isInteger(value))
-		{
-			val = Integer.parseInt(value);
-		}
-		else
-		{
-			// error
-		}
-		
-		return val;
-	}
-	
-	/*
-	 * ===========================================================
-	 */
-	
-	private boolean isRegister(String reg)
-	{
-		return getRegister(reg) != null;
-	}
-	
-	private Select getRegister(String reg)
-	{
-		String r = reg.toLowerCase();
-		switch(r)
-		{
-		case "ip": return Select.IP;
-		case "sp": return Select.SP;
-		
-		case "a": return Select.REG_A;
-		case "b": return Select.REG_B;
-		case "c": return Select.REG_C;
-		case "d": return Select.REG_D;
-		
-		case "i": return Select.REG_I;
-		case "j": return Select.REG_J;
-		case "k": return Select.REG_K;
-		
-		case "u": return Select.REG_U;
-		case "v": return Select.REG_V;
-		case "w": return Select.REG_W;
-		
-		case "x": return Select.REG_X;
-		case "y": return Select.REG_Y;
-		case "z": return Select.REG_Z;
-		default: break;
-		}
-		return null; // error
 	}
 	
 	/*

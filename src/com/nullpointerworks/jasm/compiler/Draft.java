@@ -1,17 +1,9 @@
 package com.nullpointerworks.jasm.compiler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.nullpointerworks.jasm.compiler.errors.BuildError;
-import com.nullpointerworks.jasm.compiler.errors.CompilerError;
-
-import com.nullpointerworks.jasm.virtualmachine.Select;
-import com.nullpointerworks.jasm.virtualmachine.Instruction;
-import com.nullpointerworks.jasm.virtualmachine.Register;
-import com.nullpointerworks.jasm.virtualmachine.instruction.arithmetic.*;
-import com.nullpointerworks.jasm.virtualmachine.instruction.controlflow.*;
-import com.nullpointerworks.jasm.virtualmachine.instruction.dataflow.*;
-import com.nullpointerworks.jasm.virtualmachine.instruction.system.*;
-
-import com.nullpointerworks.util.StringUtil;
 
 /**
  * 
@@ -19,36 +11,57 @@ import com.nullpointerworks.util.StringUtil;
  */
 public class Draft
 {
-	private final SourceCode source;
+	/*
+	 * parse data
+	 */
+	private SourceCode source;
+	private String label;
+	private int address;
+	private BuildError error;
 	
-	public Draft(SourceCode sc)
+	/*
+	 * instruction data
+	 */
+	private Operation operation;
+	private List<Operand> operands;
+	
+	public Draft(SourceCode sc, Operation op)
 	{
 		source = sc;
-		
-		
-		
-		
-		
+		operation = op;
+		operands = new ArrayList<Operand>();
+		label = "";
+		error = null;
+		address = 0;
 	}
-
-	public SourceCode getSourceCode() 
-	{
-		return source;
-	}
+	
+	public SourceCode getSourceCode() {return source;}
+	public void setJumpAddress(int addr) {address = addr;}
+	public int getJumpAddress() {return address;}
+	
+	/*
+	 * 
+	 */
+	public Operation getOperation() {return operation;}
+	public void addOperand(String operand) {operands.add(new Operand(operand));}
+	public void addOperand(Operand oper) {operands.add(oper);}
+	public List<Operand> getOperands() {return operands;}
+	
 	
 	/*
 	 * labels
 	 */
-	public final boolean hasLabel() {return label.length() > 0;}
-	
-	public final String getLabel() {return label;}
-	
-	public final void setJumpAddress(int addr) {address.setValue(addr);}
+	public void setLabel(String l) {label = l;}
+	public String getLabel() {return label;}
+	public boolean hasLabel() {return label.length() > 0;}
 	
 	/*
 	 * errors
 	 */
-	public boolean hasError() {return err != null;}
-	
-	public BuildError getError() {return err;}
+	public boolean hasError() 
+	{
+		return error != null;
+	}
+	public void setError(BuildError e) {error = e;}
+	public BuildError getError() {return error;}
 }

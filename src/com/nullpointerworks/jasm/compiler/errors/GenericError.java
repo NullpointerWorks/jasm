@@ -24,10 +24,10 @@ public class GenericError implements BuildError
 	@Override
 	public String getDescription() 
 	{
-		String msg = type+"\n"+desc;
+		String msg = type+"\n"+desc+"\n";
 		if (code!=null)
 		{
-			msg+=" in "+code.getFilename()+"\n";
+			msg+="  File: "+code.getFilename()+"\n";
 			msg+="  Line: "+code.getLinenumber()+"\n";
 			msg+="  Code: "+code.getLine()+"\n";
 		}

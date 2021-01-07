@@ -10,11 +10,15 @@ import com.nullpointerworks.jasm.compiler.errors.CompilerError;
 public class DraftBuilder
 {	
 	private SourceCode source;
-	private BuildError err;
+	private BuildError error;
+	
+	public boolean hasError() {return error != null;}
+	public void setError(BuildError e) {error = e;}
+	public BuildError getError() {return error;}
 	
 	public Draft getDraft(SourceCode loc)
 	{
-		err = null;
+		error = null;
 		source = loc;
 		String[] parts = loc.getLine().split(" ");
 		String instruct = parts[0].toLowerCase();
@@ -136,9 +140,11 @@ public class DraftBuilder
 	/*
 	 * gen
 	 */
-	private Draft _generic_jump(Operation op)
+	private Draft _generic_jump(Operation op, String operand)
 	{
-		return new Draft(source, op);
+		var d = new Draft(source, op);
+		d.setLabel(operand);
+		return d;
 	}
 	
 	/* ================================================================================
@@ -426,47 +432,47 @@ public class DraftBuilder
 	
 	private Draft _call(String operands)
 	{
-		return _generic_jump(Operation.CALL);
+		return _generic_jump(Operation.CALL, operands);
 	}
 	
 	private Draft _jump(String operands)
 	{
-		return _generic_jump(Operation.JMP);
+		return _generic_jump(Operation.JMP, operands);
 	}
 	
 	private Draft _jequal(String operands)
 	{
-		return _generic_jump(Operation.JE);
+		return _generic_jump(Operation.JE, operands);
 	}
 	
 	private Draft _jnotequal(String operands)
 	{
-		return _generic_jump(Operation.JNE);
+		return _generic_jump(Operation.JNE, operands);
 	}
 	
 	private Draft _jless(String operands)
 	{
-		return _generic_jump(Operation.JL);
+		return _generic_jump(Operation.JL, operands);
 	}
 	
 	private Draft _jlessequal(String operands)
 	{
-		return _generic_jump(Operation.JLE);
+		return _generic_jump(Operation.JLE, operands);
 	}
 	
 	private Draft _jgreater(String operands)
 	{
-		return _generic_jump(Operation.JG);
+		return _generic_jump(Operation.JG, operands);
 	}
 	
 	private Draft _jgreaterequal(String operands)
 	{
-		return _generic_jump(Operation.JGE);
+		return _generic_jump(Operation.JGE, operands);
 	}
 	
 	private Draft _return()
 	{
-		return _generic_jump(Operation.RET);
+		return new Draft(source, Operation.RET);
 	}
 	
 	/*
@@ -475,7 +481,7 @@ public class DraftBuilder
 	
 	private void setError(String str) 
 	{
-		if (err == null) err = new CompilerError(source, str);
+		if (error == null) error = new CompilerError(source, str);
 	}
 	
 	private boolean isAddress(String addr)

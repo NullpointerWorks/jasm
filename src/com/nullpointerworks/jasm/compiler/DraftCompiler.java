@@ -183,13 +183,18 @@ public class DraftCompiler implements Compiler
 		instIndex += 1;
 		var draft_inst = builder.getDraft(loc);
 		
-		draft.add( draft_inst );
+		if (builder.hasError())
+		{
+			errors.add(builder.getError());
+			return;
+		}
 		
 		if (draft_inst.hasError())
 		{
 			errors.add(draft_inst.getError());
 			return;
 		}
+		draft.add( draft_inst );
 		
 		if (draft_inst.hasLabel())
 		{

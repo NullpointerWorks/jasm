@@ -6,7 +6,7 @@ import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
 
 public class Call extends Jump
 {
-	public Call(Register a) 
+	public Call(int a) 
 	{
 		super(a);
 	}

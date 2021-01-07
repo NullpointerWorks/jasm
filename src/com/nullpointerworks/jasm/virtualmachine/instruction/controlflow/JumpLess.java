@@ -1,12 +1,11 @@
 package com.nullpointerworks.jasm.virtualmachine.instruction.controlflow;
 
-import com.nullpointerworks.jasm.virtualmachine.Register;
 import com.nullpointerworks.jasm.virtualmachine.Select;
 import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
 
 public class JumpLess extends Jump
 {
-	public JumpLess(Register a)
+	public JumpLess(int a)
 	{
 		super(a);
 	}

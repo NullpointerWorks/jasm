@@ -3,16 +3,6 @@ package com.nullpointerworks.jasm.compiler;
 import com.nullpointerworks.jasm.compiler.errors.BuildError;
 import com.nullpointerworks.jasm.compiler.errors.CompilerError;
 
-import com.nullpointerworks.jasm.virtualmachine.Select;
-import com.nullpointerworks.jasm.virtualmachine.Instruction;
-import com.nullpointerworks.jasm.virtualmachine.Register;
-import com.nullpointerworks.jasm.virtualmachine.instruction.arithmetic.*;
-import com.nullpointerworks.jasm.virtualmachine.instruction.controlflow.*;
-import com.nullpointerworks.jasm.virtualmachine.instruction.dataflow.*;
-import com.nullpointerworks.jasm.virtualmachine.instruction.system.*;
-
-import com.nullpointerworks.util.StringUtil;
-
 /**
  * 
  * @author Michiel Drost - Nullpointer Works
@@ -21,12 +11,10 @@ public class DraftBuilder
 {	
 	private SourceCode source;
 	private BuildError err;
-	private Register address; // reference to set a jump address after parsing
 	
 	public Draft getDraft(SourceCode loc)
 	{
 		err = null;
-		address = new Register(0);
 		source = loc;
 		String[] parts = loc.getLine().split(" ");
 		String instruct = parts[0].toLowerCase();
@@ -143,6 +131,14 @@ public class DraftBuilder
 		}
 		
 		return d;
+	}
+	
+	/*
+	 * gen
+	 */
+	private Draft _generic_jump(Operation op)
+	{
+		return new Draft(source, op);
 	}
 	
 	/* ================================================================================
@@ -386,16 +382,18 @@ public class DraftBuilder
 			return null;
 		}
 		
+		Draft d = new Draft(source, Operation.READ);
+		
 		/*
 		 * check target
 		 */
-		String target = tokens[0];
-		Select regT = getRegister(target);
-		if ( regT == null )
+		Operand op1 = new Operand(tokens[0]);
+		if (!op1.isRegister())
 		{
 			setError("  Syntax error: Read target operand must be a register."+read_syntax);
-			return; // if not register, error
+			return null;
 		}
+		d.addOperand(op1);
 		
 		/*
 		 * check source location. must be an address
@@ -404,26 +402,20 @@ public class DraftBuilder
 		if (!isAddress(source))
 		{
 			setError("  Syntax error: Read source operand must be an address."+read_syntax);
-			return; // error
+			return null; // error
 		}
 		source = source.substring(1); // remove @ sign
 		
-		Select regS = getRegister(source);
-		if ( regS != null )
+		Operand op2 = new Operand(source);
+		if (!op2.hasError())
 		{
-			instruction = new Read_SS(regT,regS);
-		}
-		else
-		if ( isImmediate(source) )
-		{
-			int immS = getImmediate(source);
-			instruction = new Read_SI(regT,immS);
+			d.addOperand(op2);
 		}
 		else
 		{
 			setError("  Syntax error: Read source operand must be either a register or an immediate value."+read_syntax);
-			// error
 		}
+		return d;
 	}
 	
 	/* ================================================================================
@@ -431,58 +423,50 @@ public class DraftBuilder
 	 * 		control flow
 	 * 
 	 * ============================================================================= */
-
+	
 	private Draft _call(String operands)
 	{
-		label = operands;
-		instruction = new Call(address);
+		return _generic_jump(Operation.CALL);
 	}
 	
 	private Draft _jump(String operands)
 	{
-		label = operands;
-		instruction = new Jump(address);
+		return _generic_jump(Operation.JMP);
 	}
 	
 	private Draft _jequal(String operands)
 	{
-		label = operands;
-		instruction = new JumpEqual(address);
+		return _generic_jump(Operation.JE);
 	}
 	
 	private Draft _jnotequal(String operands)
 	{
-		label = operands;
-		instruction = new JumpNotEqual(address);
+		return _generic_jump(Operation.JNE);
 	}
 	
 	private Draft _jless(String operands)
 	{
-		label = operands;
-		instruction = new JumpLess(address);
+		return _generic_jump(Operation.JL);
 	}
 	
 	private Draft _jlessequal(String operands)
 	{
-		label = operands;
-		instruction = new JumpLessEqual(address);
+		return _generic_jump(Operation.JLE);
 	}
 	
 	private Draft _jgreater(String operands)
 	{
-		label = operands;
-		instruction = new JumpGreater(address);
+		return _generic_jump(Operation.JG);
 	}
 	
 	private Draft _jgreaterequal(String operands)
 	{
-		label = operands;
-		instruction = new JumpGreaterEqual(address);
+		return _generic_jump(Operation.JGE);
 	}
 	
 	private Draft _return()
 	{
-		instruction = new Return();
+		return _generic_jump(Operation.RET);
 	}
 	
 	/*

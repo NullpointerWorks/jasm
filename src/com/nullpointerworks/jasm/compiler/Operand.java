@@ -20,6 +20,41 @@ public class Operand
 		return hasError;
 	}
 	
+	public String getBytecode()
+	{
+		if (isImmediate())
+		{
+			int imm = getImmediate();
+			
+			// MSB first
+			int byte1 = (imm>>24)&0xff;
+			int byte2 = (imm>>16)&0xff;
+			int byte3 = (imm>>8)&0xff;
+			int byte4 = (imm)&0xff;
+
+			String hex1 = Integer.toHexString(byte1);
+			String hex2 = Integer.toHexString(byte2);
+			String hex3 = Integer.toHexString(byte3);
+			String hex4 = Integer.toHexString(byte4);
+			
+			hex1 = ("00" + hex1).substring(hex1.length());
+			hex2 = ("00" + hex2).substring(hex2.length());
+			hex3 = ("00" + hex3).substring(hex3.length());
+			hex4 = ("00" + hex4).substring(hex4.length());
+			
+			return (hex1+" "+hex2+" "+hex3+" "+hex4).toUpperCase();
+		}
+		
+		if (isRegister())
+		{
+			int reg = getRegister().ordinal();
+			String hex = Integer.toHexString(reg);
+			return hex.toUpperCase();
+		}
+		
+		return "00";
+	}
+	
 	public boolean isImmediate()
 	{
 		if (StringUtil.isInteger(op)) return true;

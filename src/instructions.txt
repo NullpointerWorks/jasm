@@ -11,7 +11,11 @@
 	
 A style highlighting is available for Notepad++ 
 called "npp_jasm_style.xml".
-
+	
+The VM has 15 registers to select from
+A = first register
+B = second register
+	
  ________________________________________________
 |                                                |
 |          Pre-processor instructions            |
@@ -46,8 +50,7 @@ _________________________________________________
 interrupt program
 
 syntax:		int <imm>
-bytecode:	0x0? [0x00,]
-? = number of following bytes
+bytecode:	0x01 [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 
@@ -56,70 +59,58 @@ _________________________________________________
 addition
 
 syntax:		add <reg>, <reg>
-bytecode:	0x10 0x01 0x02
+bytecode:	0x10 0xAB
 	
 syntax:		add <reg>, <imm>
-bytecode:	0x1? 0x01 [0x00,]
-? = number of following bytes
+bytecode:	0x11 0x0A [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 subtraction 
 
 syntax:		sub <reg>, <reg>
-bytecode:	0x20 0x01 0x02
+bytecode:	0x12 0xAB
 
 syntax:		sub <reg>, <imm>
-bytecode:	0x2? 0x01 [0x00,]
-? = number of following bytes
+bytecode:	0x13 0x0A [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 compare 
 
 syntax:		cmp <reg>, <reg>
-bytecode:	
+bytecode:	0x14 0xAB
 
 syntax:		cmp <reg>, <imm>	
-bytecode:	
+bytecode:	0x15 0x0A [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 bit-shift left
 
-syntax:
-	shl <reg>
-	
-bytecode:
+syntax:		shl <reg>
+bytecode:	0x20 0x0A
 
 _________________________________________________
 bit-shift right
 
-syntax:
-	shr <reg>
-	
-bytecode:
+syntax:		shr <reg>
+bytecode:	0x21 0x0A
 
 _________________________________________________
 negation 
 
-syntax:
-	neg <reg>
-	
-bytecode:
+syntax:		neg <reg>
+bytecode:	0x22 0x0A
 
 _________________________________________________
 increment register 
 
-syntax:
-	inc <reg>
-	
-bytecode:
+syntax:		inc <reg>
+bytecode:	0x23 0x0A
 
 _________________________________________________
 decrement register 
 
-syntax:
-	dec <reg>
-	
-bytecode:
+syntax:		dec <reg>
+bytecode:	0x24 0x0A
 
 _________________________________________________
 
@@ -127,74 +118,56 @@ _________________________________________________
 _________________________________________________
 unconditional jump 
 
-syntax:
-	jmp <label>
-	
-bytecode:
+syntax:		jmp <label>
+bytecode:	0x30 [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 jump if equal, or jump if zero
 
-syntax:
-	je <label>
-	
-bytecode:
+syntax:		je <label>
+bytecode:	0x31 [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 jump if not equal, or jump if not zero
 
-syntax:
-	jne <label>
-	
-bytecode:
+syntax:		jne <label>
+bytecode:	0x32 [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 jump if greater 
 
-syntax:
-	jg <label>
-	
-bytecode:
+syntax:		jg <label>
+bytecode:	0x33 [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 jump if greater or equal 
 
-syntax:
-	jge <label>
-	
-bytecode:
+syntax:		jge <label>
+bytecode:	0x34 [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 jump if less 
 
-syntax:
-	jl <label>
-	
-bytecode:
+syntax:		jl <label>
+bytecode:	0x35 [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 jump if less or equal 
 
-syntax:
-	jle <label>
-	
-bytecode:
+syntax:		jle <label>
+bytecode:	0x36 [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 call label 
 
-syntax:
-	call <label>
-	
-bytecode:
+syntax:		call <label>
+bytecode:	0x37 [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 return to previous call 
 
-syntax:
-	ret	
-	
-bytecode:
+syntax:		ret	
+bytecode:	0x38
 
 _________________________________________________
 
@@ -202,44 +175,42 @@ _________________________________________________
 _________________________________________________
 load register
 
-syntax:
-	load <reg>, <reg>
-	load <reg>, <imm>
-	
-bytecode:
+syntax:		load <reg>, <reg>
+bytecode:	0x40 0xAB
+
+syntax:		load <reg>, <imm>
+bytecode:	0x41 0x0A [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 push to stack
 
-syntax:
-	push <reg>
-	push <imm>
-	
-bytecode:
+syntax:		push <reg>
+bytecode:	0x42 0x0A
+
+syntax:		push <imm>
+bytecode:	0x43 [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 pop from stack 
 
-syntax:
-	pop <reg>
-	
-bytecode:
+syntax:		pop <reg>
+bytecode:	0x44 0x0A
 
 _________________________________________________
 store to ram
 
-syntax:
-	sto @<reg>,<reg>
-	sto @<imm>,<reg>
-	
-bytecode:
+syntax:		sto @<reg>,<reg>
+bytecode:	0x45 0xAB
+
+syntax:		sto @<imm>,<reg>
+bytecode:	0x46 0x0A [0x00 0x00 0x00 0x00]
 	
 _________________________________________________
 read ram
 
-syntax:
-	read <reg>, @<reg>
-	read <reg>, @<imm>
-	
-bytecode:
+syntax:		read <reg>, @<reg>
+bytecode:	0x47 0xAB
+
+syntax:		read <reg>, @<imm>
+bytecode:	0x48 0x0A [0x00 0x00 0x00 0x00]
 	

@@ -9,7 +9,7 @@ import com.nullpointerworks.jasm.virtualmachine.instruction.controlflow.*;
 import com.nullpointerworks.jasm.virtualmachine.instruction.dataflow.*;
 import com.nullpointerworks.jasm.virtualmachine.instruction.system.*;
 
-public class InstructionBuilder
+public final class InstructionBuilder
 {
 	private List<Draft> draft;
 	private List<Instruction> instructions;

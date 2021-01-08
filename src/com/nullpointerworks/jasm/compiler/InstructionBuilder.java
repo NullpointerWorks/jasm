@@ -161,12 +161,12 @@ public final class InstructionBuilder
 		Operand op1 = ops.get(0);
 		Operand op2 = ops.get(1);
 		
-		if (op2.isRegister())
+		if (op1.isRegister())
 		{
 			instructions.add( new Store_SS( op1.getRegister(), op2.getRegister() ) );
 		}
 		else
-		if (op2.isImmediate())
+		if (op1.isImmediate())
 		{
 			instructions.add( new Store_IS( op1.getImmediate(), op2.getRegister() ) );
 		}

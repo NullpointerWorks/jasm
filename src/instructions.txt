@@ -214,3 +214,26 @@ bytecode:	0x47 0xAB
 syntax:		read <reg>, @<imm>
 bytecode:	0x48 0x0A [0x00 0x00 0x00 0x00]
 	
+_________________________________________________
+
+		LOGIC INSTRUCTIONS
+_________________________________________________
+logical AND
+
+syntax:		and <reg>, <imm>
+bytecode:	0x50 0x0A [0x00 0x00 0x00 0x00]
+
+_________________________________________________
+logical OR
+
+syntax:		or <reg>, <imm>
+bytecode:	0x51 0x0A [0x00 0x00 0x00 0x00]
+
+_________________________________________________
+logical XOR
+
+syntax:		xor <reg>, <imm>
+bytecode:	0x52 0x0A [0x00 0x00 0x00 0x00]
+
+
+

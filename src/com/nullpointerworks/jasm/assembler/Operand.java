@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.jasm.assembler;
 
 import com.nullpointerworks.jasm.virtualmachine.Select;
 import com.nullpointerworks.util.StringUtil;

@@ -1,12 +1,12 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.jasm.assembler;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.nullpointerworks.jasm.compiler.errors.BuildError;
-import com.nullpointerworks.jasm.compiler.errors.ParseError;
+import com.nullpointerworks.jasm.assembler.errors.BuildError;
+import com.nullpointerworks.jasm.assembler.errors.ParseError;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;

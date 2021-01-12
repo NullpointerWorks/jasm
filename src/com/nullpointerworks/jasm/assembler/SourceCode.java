@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.jasm.assembler;
 
 /**
  * Represents a single line of code. This data object contains a line of code, line number and file name.

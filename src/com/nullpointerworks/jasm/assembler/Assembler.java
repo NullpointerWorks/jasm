@@ -1,10 +1,10 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.jasm.assembler;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.compiler.errors.BuildError;
+import com.nullpointerworks.jasm.assembler.errors.BuildError;
 
-public interface Compiler
+public interface Assembler
 {
 	/**
 	 * 
@@ -24,7 +24,7 @@ public interface Compiler
 	/**
 	 * 
 	 */
-	void compile();
+	void assemble();
 	
 	/**
 	 * 

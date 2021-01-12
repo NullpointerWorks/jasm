@@ -1,14 +1,14 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.jasm.assembler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.nullpointerworks.jasm.compiler.errors.BuildError;
-import com.nullpointerworks.jasm.compiler.errors.PreProcessorError;
+import com.nullpointerworks.jasm.assembler.errors.BuildError;
+import com.nullpointerworks.jasm.assembler.errors.PreProcessorError;
 
-public class DraftCompiler implements Compiler
+public class DraftAssembler implements Assembler
 {
 	private int instIndex = 0; // label instruction index
 	private boolean verbose;
@@ -21,7 +21,7 @@ public class DraftCompiler implements Compiler
 	private List<Draft> draft;
 	private List<Draft> labelled;
 	
-	public DraftCompiler()
+	public DraftAssembler()
 	{
 		builder = new DraftBuilder();
 		verbose = false;
@@ -54,10 +54,10 @@ public class DraftCompiler implements Compiler
 	}
 	
 	@Override
-	public void compile()
+	public void assemble()
 	{
 		out("-------------------------------");
-		out("\n Compiling\n");
+		out("\n Assembling\n");
 		insertDefinition(code, defs);
 		processCode(code);
 		out("\n Done\n");

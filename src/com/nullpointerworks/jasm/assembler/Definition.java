@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.jasm.assembler;
 
 /**
  * A tuple class to represent a definition declared in a source file.

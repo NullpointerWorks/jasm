@@ -1,6 +1,6 @@
-package com.nullpointerworks.jasm.compiler.errors;
+package com.nullpointerworks.jasm.assembler.errors;
 
-import com.nullpointerworks.jasm.compiler.SourceCode;
+import com.nullpointerworks.jasm.assembler.SourceCode;
 
 public class PreProcessorError extends GenericError
 {

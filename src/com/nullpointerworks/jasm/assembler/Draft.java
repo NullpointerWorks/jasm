@@ -1,9 +1,9 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.jasm.assembler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nullpointerworks.jasm.compiler.errors.BuildError;
+import com.nullpointerworks.jasm.assembler.errors.BuildError;
 
 /**
  * 

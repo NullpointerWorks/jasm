@@ -1,7 +1,7 @@
-package com.nullpointerworks.jasm.compiler;
+package com.nullpointerworks.jasm.assembler;
 
-import com.nullpointerworks.jasm.compiler.errors.BuildError;
-import com.nullpointerworks.jasm.compiler.errors.CompilerError;
+import com.nullpointerworks.jasm.assembler.errors.BuildError;
+import com.nullpointerworks.jasm.assembler.errors.AssemblerError;
 
 /**
  * 
@@ -481,7 +481,7 @@ public class DraftBuilder
 	
 	private void setError(String str) 
 	{
-		if (error == null) error = new CompilerError(source, str);
+		if (error == null) error = new AssemblerError(source, str);
 	}
 	
 	private boolean isAddress(String addr)

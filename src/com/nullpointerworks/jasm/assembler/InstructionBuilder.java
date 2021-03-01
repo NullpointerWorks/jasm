@@ -9,7 +9,7 @@ import com.nullpointerworks.jasm.virtualmachine.instruction.controlflow.*;
 import com.nullpointerworks.jasm.virtualmachine.instruction.dataflow.*;
 import com.nullpointerworks.jasm.virtualmachine.instruction.system.*;
 
-public final class InstructionBuilder
+public final class InstructionBuilder implements Builder<Instruction>
 {
 	private List<Draft> draft;
 	private List<Instruction> instructions;
@@ -19,17 +19,20 @@ public final class InstructionBuilder
 		instructions = new ArrayList<Instruction>();
 	}
 	
+	@Override
 	public void setDraft(List<Draft> draft)
 	{
 		this.draft = draft;
 	}
-	
+
+	@Override
 	public List<Instruction> getInstructions()
 	{
 		return instructions;
 	}
-	
-	public void convert()
+
+	@Override
+	public void build()
 	{
 		instructions.clear();
 		for (Draft d : draft)

@@ -2,15 +2,11 @@ package com.nullpointerworks.jasm.virtualmachine;
 
 import java.util.List;
 
-public interface VirtualMachine 
+public interface VirtualMachine
 {
+	void setInterruptListener(InterruptListener il);
 	void throwInterrupt(int intcode);
 	
-	void addInstruction(Instruction inst);
-	void addInstructions(List<Instruction> instructions);
-	boolean hasInstruction();
-	void nextInstruction();
-
 	void setMemorySize(int size);
 	List<Integer> getMemory();
 	void storeMemory(int index, int value);

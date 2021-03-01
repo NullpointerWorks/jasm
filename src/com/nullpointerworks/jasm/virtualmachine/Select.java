@@ -3,10 +3,14 @@ package com.nullpointerworks.jasm.virtualmachine;
 public enum Select
 {
 	/*
-	 * registers
+	 * special registers
 	 */
 	IP, // instruction pointer
 	SP, // stack pointer
+	
+	/*
+	 * general purpose registers
+	 */
 	REG_A, // register a
 	REG_B, // register b
 	REG_C, // register c
@@ -25,7 +29,7 @@ public enum Select
 	REG_Z, // register z
 	
 	/*
-	 * flags
+	 * status flags
 	 */
 	ZERO,
 	SIGN

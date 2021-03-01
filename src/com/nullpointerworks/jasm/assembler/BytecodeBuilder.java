@@ -3,7 +3,7 @@ package com.nullpointerworks.jasm.assembler;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class BytecodeBuilder
+public final class BytecodeBuilder implements Builder<Bytecode>
 {
 	private List<Draft> draft;
 	private List<Bytecode> instructions;
@@ -12,18 +12,21 @@ public final class BytecodeBuilder
 	{
 		instructions = new ArrayList<Bytecode>();
 	}
-	
+
+	@Override
 	public void setDraft(List<Draft> draft)
 	{
 		this.draft = draft;
 	}
-	
-	public List<Bytecode> getBytecode()
+
+	@Override
+	public List<Bytecode> getInstructions() 
 	{
 		return instructions;
 	}
-	
-	public void convert()
+
+	@Override
+	public void build() 
 	{
 		instructions.clear();
 		for (Draft d : draft)

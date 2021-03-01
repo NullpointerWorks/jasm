@@ -3,10 +3,9 @@ package com.nullpointerworks.jasm.virtualmachine;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VirtualMachineJASM implements VirtualMachine
+class AbstractVirtualMachine implements VirtualMachine
 {
 	private InterruptListener interrupt;
-	private List<Instruction> instructions;
 	private List<Integer> memref;
 	
 	private Register rCounter; // instruction pointer
@@ -28,9 +27,10 @@ public class VirtualMachineJASM implements VirtualMachine
 	private Flag zero;
 	private Flag sign;
 	
-	public VirtualMachineJASM(InterruptListener il)
+	public AbstractVirtualMachine()
 	{
-		interrupt = il;
+		interrupt = (vm,c)->{};
+		memref = new ArrayList<Integer>();
 		
 		rA = new Register();
 		rB = new Register();
@@ -50,11 +50,15 @@ public class VirtualMachineJASM implements VirtualMachine
 		rZ = new Register();
 		
 		rCounter = new Register();
-
+		
 		zero = new Flag();
 		sign = new Flag();
-		
-		instructions = new ArrayList<Instruction>();
+	}
+	
+	@Override
+	public void setInterruptListener(InterruptListener il)
+	{
+		interrupt = il;
 	}
 	
 	@Override
@@ -69,7 +73,7 @@ public class VirtualMachineJASM implements VirtualMachine
 	public void setMemorySize(int size)
 	{
 		rStack = new Register(size);
-		memref = new ArrayList<Integer>(size);
+		memref.clear();
 		for (int l=size; l>0;l--) memref.add(0);
 	}
 	
@@ -94,7 +98,8 @@ public class VirtualMachineJASM implements VirtualMachine
 	@Override
 	public void pushStack(int x)
 	{
-		rStack.setValue( rStack.getValue()-1 );
+		int sp = rStack.getValue();
+		rStack.setValue( sp-1 );
 		storeMemory(rStack.getValue(), x);
 	}
 	
@@ -105,37 +110,6 @@ public class VirtualMachineJASM implements VirtualMachine
 		int x = memref.get(sp);
 		rStack.setValue(sp+1);
 		return x;
-	}
-	
-	// =======================================================
-	
-	@Override
-	public void addInstructions(List<Instruction> instructions)
-	{
-		for (Instruction i : instructions)
-		{
-			addInstruction(i);
-		}
-	}
-	
-	@Override
-	public void addInstruction(Instruction inst)
-	{
-		instructions.add(inst);
-	}
-	
-	@Override
-	public boolean hasInstruction()
-	{
-		return !(rCounter.getValue() >= instructions.size());
-	}
-	
-	@Override
-	public void nextInstruction()
-	{
-		var instruct = instructions.get(rCounter.getValue());
-		rCounter.setValue( rCounter.getValue() + 1 ); // set to next instruction
-		instruct.execute(this);
 	}
 	
 	// =======================================================

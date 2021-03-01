@@ -9,13 +9,13 @@ public class Operand
 	private boolean isImmediate = false;
 	private boolean isRegister = false;
 	private boolean isAddress = false;
-	private String op;
+	private final String op;
 	
 	public Operand(String operand)
 	{
-		op = operand;
-		isAddress = checkAddress(op);
-		if (isAddress) op = op.substring(1);
+		isAddress = checkAddress(operand);
+		if (isAddress) op = operand.substring(1);
+		else op = operand;
 		
 		isImmediate = checkImmediate(op);
 		isRegister = checkRegister();
@@ -136,7 +136,7 @@ public class Operand
 	
 	private boolean checkAddress(String op)
 	{
-		if (op.startsWith("@")) return true;
+		if (op.startsWith( AssemblerConstants.ADDRESS )) return true;
 		return false;
 	}
 	

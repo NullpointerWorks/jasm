@@ -49,8 +49,6 @@ public class DraftBuilder
 		if (instruct.equals("load")) {return _load(operands);}
 		if (instruct.equals("push")) {return _push(operands);}
 		if (instruct.equals("pop")) {return _pop(operands);}
-		//if (instruct.equals("sto")) {return _sto(operands);}
-		//if (instruct.equals("read")) {return _read(operands);}
 		
 		/*
 		 * control flow
@@ -276,7 +274,6 @@ public class DraftBuilder
 	 * 
 	 * ============================================================================= */
 	
-	
 	/*
 	 * load <reg>,<reg>
 	 * load <reg>,<imm>
@@ -306,12 +303,12 @@ public class DraftBuilder
 		
 		if (op1.isAddress() && !op2.isAddress())
 		{
-			return _load_sto(operands);
+			return _load_sto(op1, op2);
 		}
 		
 		if (op2.isAddress() && !op1.isAddress())
 		{
-			return _load_read(operands);
+			return _load_read(op1, op2);
 		}
 		
 		setError("  Syntax error: "+Operation.LOAD+" instructions operands not recognized."+load_syntax);
@@ -319,25 +316,18 @@ public class DraftBuilder
 	}
 	
 	/*
-	 * load @<reg>,<reg>
-	 * load @<imm>,<reg>
+	 * load &<reg>,<reg>
+	 * load &<imm>,<reg>
 	 */
-	private final String sto_syntax = "\n  sto @<reg>,<reg>\n  sto @<imm>,<reg>";
-	private Draft _load_sto(String operands)
+	private final String sto_syntax = "\n  load "+AssemblerConstants.ADDRESS+"<reg>,<reg>"
+									+ "\n  load "+AssemblerConstants.ADDRESS+"<imm>,<reg>";
+	private Draft _load_sto(Operand op1, Operand op2)
 	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
-		{
-			setError("  Syntax error: Store instructions use two operands."+sto_syntax);
-			return null;
-		}
-		
 		Draft d = new Draft(source, Operation.LOAD);
 		
 		/*
 		 * check source
 		 */
-		Operand op2 = new Operand(tokens[1]);
 		if (!op2.isRegister())
 		{
 			setError("  Syntax error: Store source operand must be a register."+sto_syntax);
@@ -347,15 +337,12 @@ public class DraftBuilder
 		/*
 		 * check target location. must be an address
 		 */
-		String target = tokens[0];
-		if (!isAddress(target))
+		if (!op1.isAddress())
 		{
 			setError("  Syntax error: Store target operand must be an address."+sto_syntax);
 			return null;
 		}
-		target = target.substring(1); // remove @ sign
 		
-		Operand op1 = new Operand(target);
 		if (!op1.hasError())
 		{
 			d.addOperand(op1);
@@ -370,25 +357,18 @@ public class DraftBuilder
 	}
 	
 	/*
-	 * load <reg>,@<reg>
-	 * load <reg>,@<imm>
+	 * load <reg>,&<reg>
+	 * load <reg>,&<imm>
 	 */
-	private final String read_syntax = "\n  read <reg>,@<reg>\n  read <reg>,@<imm>";
-	private Draft _load_read(String operands)
+	private final String read_syntax = "\n  load <reg>,"+AssemblerConstants.ADDRESS+"<reg>"
+									+ "\n  load <reg>,"+AssemblerConstants.ADDRESS+"<imm>";
+	private Draft _load_read(Operand op1, Operand op2)
 	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
-		{
-			setError("  Syntax error: Read instructions use two operands."+read_syntax);
-			return null;
-		}
-		
 		Draft d = new Draft(source, Operation.LOAD);
 		
 		/*
 		 * check target
 		 */
-		Operand op1 = new Operand(tokens[0]);
 		if (!op1.isRegister())
 		{
 			setError("  Syntax error: Read target operand must be a register."+read_syntax);
@@ -399,15 +379,12 @@ public class DraftBuilder
 		/*
 		 * check source location. must be an address
 		 */
-		String source = tokens[1];
-		if (!isAddress(source))
+		if (!op2.isAddress())
 		{
 			setError("  Syntax error: Read source operand must be an address."+read_syntax);
 			return null; // error
 		}
-		source = source.substring(1); // remove @ sign
 		
-		Operand op2 = new Operand(source);
 		if (!op2.hasError())
 		{
 			d.addOperand(op2);
@@ -418,14 +395,6 @@ public class DraftBuilder
 		}
 		return d;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/*
 	 * push <reg>
@@ -521,11 +490,5 @@ public class DraftBuilder
 	private void setError(String str) 
 	{
 		if (error == null) error = new AssemblerError(source, str);
-	}
-	
-	private boolean isAddress(String addr)
-	{
-		if (addr.startsWith("@")) return true;
-		return false;
 	}
 }

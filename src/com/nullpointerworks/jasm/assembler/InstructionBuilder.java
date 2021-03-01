@@ -197,6 +197,7 @@ public final class InstructionBuilder implements Builder<Instruction>
 		List<Operand> ops = d.getOperands();
 		Operand op1 = ops.get(0);
 		Operand op2 = ops.get(1);
+		
 		boolean memory = op1.isAddress() || op2.isAddress();
 		if (!memory)
 		{
@@ -218,7 +219,7 @@ public final class InstructionBuilder implements Builder<Instruction>
 			return;
 		}
 		
-		if (op2.isAddress() && !op1.isAddress())
+		if (!op1.isAddress() && op2.isAddress())
 		{
 			_read(d);
 			return;

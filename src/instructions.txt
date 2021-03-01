@@ -181,16 +181,16 @@ bytecode:	0x40 0xAB
 syntax:		load <reg>, <imm>
 bytecode:	0x41 0x0A [0x00 0x00 0x00 0x00]
 
-syntax:		load @<reg>, <reg>
+syntax:		load &<reg>, <reg>
 bytecode:	0x42 0xAB
 
-syntax:		load @<imm>, <reg>
+syntax:		load &<imm>, <reg>
 bytecode:	0x43 0x0A [0x00 0x00 0x00 0x00]
 	
-syntax:		load <reg>, @<reg>
+syntax:		load <reg>, &<reg>
 bytecode:	0x44 0xAB
 
-syntax:		load <reg>, @<imm>
+syntax:		load <reg>, &<imm>
 bytecode:	0x45 0x0A [0x00 0x00 0x00 0x00]
 
 _________________________________________________

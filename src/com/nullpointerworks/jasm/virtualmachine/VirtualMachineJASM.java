@@ -7,7 +7,6 @@ public class VirtualMachineJASM implements VirtualMachine
 {
 	private InterruptListener interrupt;
 	private List<Instruction> instructions;
-	private List<Integer> stack;
 	private List<Integer> memref;
 	
 	private Register rCounter; // instruction pointer
@@ -51,13 +50,11 @@ public class VirtualMachineJASM implements VirtualMachine
 		rZ = new Register();
 		
 		rCounter = new Register();
-		rStack = new Register(-1);
 
 		zero = new Flag();
 		sign = new Flag();
 		
 		instructions = new ArrayList<Instruction>();
-		stack = new ArrayList<Integer>();
 	}
 	
 	@Override
@@ -71,6 +68,7 @@ public class VirtualMachineJASM implements VirtualMachine
 	@Override
 	public void setMemorySize(int size)
 	{
+		rStack = new Register(size);
 		memref = new ArrayList<Integer>(size);
 		for (int l=size; l>0;l--) memref.add(0);
 	}
@@ -84,7 +82,7 @@ public class VirtualMachineJASM implements VirtualMachine
 	@Override
 	public void storeMemory(int index, int value)
 	{
-		memref.add(index, value);
+		memref.set(index, value);
 	}
 	
 	@Override
@@ -96,17 +94,16 @@ public class VirtualMachineJASM implements VirtualMachine
 	@Override
 	public void pushStack(int x)
 	{
-		rStack.setValue( rStack.getValue()+1 );
-		stack.add(rStack.getValue(), x);
+		rStack.setValue( rStack.getValue()-1 );
+		storeMemory(rStack.getValue(), x);
 	}
 	
 	@Override
 	public int popStack()
 	{
 		int sp = rStack.getValue();
-		int x = stack.get(sp);
-		stack.remove(sp);
-		rStack.setValue(sp-1);
+		int x = memref.get(sp);
+		rStack.setValue(sp+1);
 		return x;
 	}
 	

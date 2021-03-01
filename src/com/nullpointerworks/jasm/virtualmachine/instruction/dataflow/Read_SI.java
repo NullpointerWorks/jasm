@@ -4,6 +4,9 @@ import com.nullpointerworks.jasm.virtualmachine.Instruction;
 import com.nullpointerworks.jasm.virtualmachine.Select;
 import com.nullpointerworks.jasm.virtualmachine.VirtualMachine;
 
+/**
+ * legacy instruction. READ is now defined under LOAD
+ */
 public class Read_SI implements Instruction
 {
 	private Select sT;

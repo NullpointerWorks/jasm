@@ -49,8 +49,8 @@ public class DraftBuilder
 		if (instruct.equals("load")) {return _load(operands);}
 		if (instruct.equals("push")) {return _push(operands);}
 		if (instruct.equals("pop")) {return _pop(operands);}
-		if (instruct.equals("sto")) {return _sto(operands);}
-		if (instruct.equals("read")) {return _read(operands);}
+		//if (instruct.equals("sto")) {return _sto(operands);}
+		//if (instruct.equals("read")) {return _read(operands);}
 		
 		/*
 		 * control flow
@@ -281,54 +281,49 @@ public class DraftBuilder
 	 * load <reg>,<reg>
 	 * load <reg>,<imm>
 	 */
-	private final String load_syntax = "\n  load <reg>,<reg>\n  load <reg>,<imm>";
+	private final String load_syntax = 
+						"\n  load <reg>,<reg>" + 
+						"\n  load <reg>,<imm>";
+	
 	private Draft _load(String operands)
 	{
-		return _generic_instruction(Operation.LOAD, operands, "Load", load_syntax);
-	}
-	
-	/*
-	 * push <reg>
-	 * push <imm>
-	 */
-	private final String push_syntax = "\n  push <reg>\n  push <imm>";
-	private Draft _push(String operands)
-	{
-		if (operands.contains(","))
+		String[] tokens = operands.split(",");
+		if (tokens.length != 2) 
 		{
-			setError("  Syntax error: Stack instructions accept only one operand."+push_syntax);
-			return null;
+			setError("  Syntax error: "+Operation.LOAD+" instructions use two operands."+load_syntax);
+			return null; // error
 		}
 		
-		Draft d = new Draft(source, Operation.PUSH);
-		Operand op1 = new Operand(operands);
-		if (!op1.hasError())
+		Operand op1 = new Operand(tokens[0]);
+		Operand op2 = new Operand(tokens[1]);
+		boolean memory = op1.isAddress() || op2.isAddress();
+		
+		// if no memory manipulation is used, draft a "normal" load instruction
+		if (!memory)
 		{
-			d.addOperand(op1);
-		}
-		else
-		{
-			setError("  Syntax error: Stack target operand must be a register."+push_syntax);
+			return _generic_instruction(Operation.LOAD, operands, "Load", sub_syntax);
 		}
 		
-		return d;
+		if (op1.isAddress() && !op2.isAddress())
+		{
+			return _load_sto(operands);
+		}
+		
+		if (op2.isAddress() && !op1.isAddress())
+		{
+			return _load_read(operands);
+		}
+		
+		setError("  Syntax error: "+Operation.LOAD+" instructions operands not recognized."+load_syntax);
+		return null; // error
 	}
 	
 	/*
-	 * pop <reg>
-	 */
-	private final String pop_syntax = "\n  pop <reg>";
-	private Draft _pop(String operands)
-	{
-		return _generic_register(Operation.POP, operands, "Pop", pop_syntax);
-	}
-	
-	/*
-	 * sto @<reg>,<reg>
-	 * sto @<imm>,<reg>
+	 * load @<reg>,<reg>
+	 * load @<imm>,<reg>
 	 */
 	private final String sto_syntax = "\n  sto @<reg>,<reg>\n  sto @<imm>,<reg>";
-	private Draft _sto(String operands)
+	private Draft _load_sto(String operands)
 	{
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) 
@@ -337,7 +332,7 @@ public class DraftBuilder
 			return null;
 		}
 		
-		Draft d = new Draft(source, Operation.STO);
+		Draft d = new Draft(source, Operation.LOAD);
 		
 		/*
 		 * check source
@@ -375,11 +370,11 @@ public class DraftBuilder
 	}
 	
 	/*
-	 * read <reg>,@<reg>
-	 * read <reg>,@<imm>
+	 * load <reg>,@<reg>
+	 * load <reg>,@<imm>
 	 */
 	private final String read_syntax = "\n  read <reg>,@<reg>\n  read <reg>,@<imm>";
-	private Draft _read(String operands)
+	private Draft _load_read(String operands)
 	{
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) 
@@ -388,7 +383,7 @@ public class DraftBuilder
 			return null;
 		}
 		
-		Draft d = new Draft(source, Operation.READ);
+		Draft d = new Draft(source, Operation.LOAD);
 		
 		/*
 		 * check target
@@ -422,6 +417,50 @@ public class DraftBuilder
 			setError("  Syntax error: Read source operand must be either a register or an immediate value."+read_syntax);
 		}
 		return d;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
+	 * push <reg>
+	 * push <imm>
+	 */
+	private final String push_syntax = "\n  push <reg>\n  push <imm>";
+	private Draft _push(String operands)
+	{
+		if (operands.contains(","))
+		{
+			setError("  Syntax error: Stack instructions accept only one operand."+push_syntax);
+			return null;
+		}
+		
+		Draft d = new Draft(source, Operation.PUSH);
+		Operand op1 = new Operand(operands);
+		if (!op1.hasError())
+		{
+			d.addOperand(op1);
+		}
+		else
+		{
+			setError("  Syntax error: Stack target operand must be a register."+push_syntax);
+		}
+		
+		return d;
+	}
+	
+	/*
+	 * pop <reg>
+	 */
+	private final String pop_syntax = "\n  pop <reg>";
+	private Draft _pop(String operands)
+	{
+		return _generic_register(Operation.POP, operands, "Pop", pop_syntax);
 	}
 	
 	/* ================================================================================

@@ -17,8 +17,6 @@ public enum Operation
 	LOAD,
 	PUSH,
 	POP,
-	STO,
-	READ,
 	
 	CALL,
 	JMP,

@@ -44,12 +44,6 @@ public final class InstructionBuilder implements Builder<Instruction>
 			case LOAD:
 				_load(d);
 				break;
-			case READ:
-				_read(d);
-				break;
-			case STO:
-				_store(d);
-				break;
 			case PUSH:
 				_push(d);
 				break;
@@ -157,7 +151,10 @@ public final class InstructionBuilder implements Builder<Instruction>
 			instructions.add( new Push_I( op.getImmediate() ) );
 		}
 	}
-
+	
+	/*
+	 * store register value into memory
+	 */
 	private void _store(Draft d)
 	{
 		List<Operand> ops = d.getOperands();
@@ -174,7 +171,10 @@ public final class InstructionBuilder implements Builder<Instruction>
 			instructions.add( new Store_IS( op1.getImmediate(), op2.getRegister() ) );
 		}
 	}
-
+	
+	/*
+	 * load memory into register
+	 */
 	private void _read(Draft d)
 	{
 		List<Operand> ops = d.getOperands();
@@ -197,15 +197,31 @@ public final class InstructionBuilder implements Builder<Instruction>
 		List<Operand> ops = d.getOperands();
 		Operand op1 = ops.get(0);
 		Operand op2 = ops.get(1);
-		
-		if (op2.isRegister())
+		boolean memory = op1.isAddress() || op2.isAddress();
+		if (!memory)
 		{
-			instructions.add( new Load_SS( op1.getRegister(), op2.getRegister() ) );
+			if (op2.isRegister())
+			{
+				instructions.add( new Load_SS( op1.getRegister(), op2.getRegister() ) );
+			}
+			else
+			if (op2.isImmediate())
+			{
+				instructions.add( new Load_SI( op1.getRegister(), op2.getImmediate() ) );
+			}
+			return;
 		}
-		else
-		if (op2.isImmediate())
+		
+		if (op1.isAddress() && !op2.isAddress())
 		{
-			instructions.add( new Load_SI( op1.getRegister(), op2.getImmediate() ) );
+			_store(d);
+			return;
+		}
+		
+		if (op2.isAddress() && !op1.isAddress())
+		{
+			_read(d);
+			return;
 		}
 	}
 

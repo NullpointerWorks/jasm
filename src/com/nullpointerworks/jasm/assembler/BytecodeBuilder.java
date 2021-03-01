@@ -38,12 +38,6 @@ public final class BytecodeBuilder implements Builder<Bytecode>
 			case LOAD:
 				_load(d);
 				break;
-			case READ:
-				_read(d);
-				break;
-			case STO:
-				_store(d);
-				break;
 			case PUSH:
 				_push(d);
 				break;
@@ -153,6 +147,76 @@ public final class BytecodeBuilder implements Builder<Bytecode>
 		instructions.add( new Bytecode(opcode+" "+bc) );
 	}
 	
+	private void _pop(Draft d)
+	{
+		List<Operand> ops = d.getOperands();
+		Operand op = ops.get(0);
+		
+		if (op.isRegister())
+		{
+			String bc = op.getBytecode();
+			bc = ("00" + bc).substring(bc.length());
+			instructions.add( new Bytecode("48 "+bc ) );
+		}
+	}
+	
+	private void _push(Draft d)
+	{
+		List<Operand> ops = d.getOperands();
+		Operand op = ops.get(0);
+		
+		if (op.isRegister())
+		{
+			String bc = op.getBytecode();
+			bc = ("00" + bc).substring(bc.length());
+			instructions.add( new Bytecode("46 "+bc ) );
+		}
+		else
+		if (op.isImmediate())
+		{
+			String bc = op.getBytecode();
+			instructions.add( new Bytecode("47 "+bc ) );
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	private void _load(Draft d)
+	{
+		List<Operand> ops = d.getOperands();
+		Operand op1 = ops.get(0);
+		Operand op2 = ops.get(1);
+		
+		
+		
+		
+		if (op2.isRegister())
+		{
+			String bc1 = op1.getBytecode();
+			String bc2 = op2.getBytecode();
+			instructions.add( new Bytecode("40 "+bc1+bc2 ) );
+		}
+		else
+		if (op2.isImmediate())
+		{
+			String bc1 = op1.getBytecode();
+			bc1 = ("00" + bc1).substring(bc1.length());
+			String bc2 = op2.getBytecode();
+			instructions.add( new Bytecode("41 "+bc1+" "+bc2 ) );
+		}
+		
+		
+		
+		
+		
+	}
+	
+
 	private void _read(Draft d)
 	{
 		List<Operand> ops = d.getOperands();
@@ -197,59 +261,17 @@ public final class BytecodeBuilder implements Builder<Bytecode>
 		}
 	}
 	
-	private void _pop(Draft d)
-	{
-		List<Operand> ops = d.getOperands();
-		Operand op = ops.get(0);
-		
-		if (op.isRegister())
-		{
-			String bc = op.getBytecode();
-			bc = ("00" + bc).substring(bc.length());
-			instructions.add( new Bytecode("44 "+bc ) );
-		}
-	}
 	
-	private void _push(Draft d)
-	{
-		List<Operand> ops = d.getOperands();
-		Operand op = ops.get(0);
-		
-		if (op.isRegister())
-		{
-			String bc = op.getBytecode();
-			bc = ("00" + bc).substring(bc.length());
-			instructions.add( new Bytecode("42 "+bc ) );
-		}
-		else
-		if (op.isImmediate())
-		{
-			String bc = op.getBytecode();
-			instructions.add( new Bytecode("43 "+bc ) );
-		}
-	}
-
-	private void _load(Draft d)
-	{
-		List<Operand> ops = d.getOperands();
-		Operand op1 = ops.get(0);
-		Operand op2 = ops.get(1);
-		
-		if (op2.isRegister())
-		{
-			String bc1 = op1.getBytecode();
-			String bc2 = op2.getBytecode();
-			instructions.add( new Bytecode("40 "+bc1+bc2 ) );
-		}
-		else
-		if (op2.isImmediate())
-		{
-			String bc1 = op1.getBytecode();
-			bc1 = ("00" + bc1).substring(bc1.length());
-			String bc2 = op2.getBytecode();
-			instructions.add( new Bytecode("41 "+bc1+" "+bc2 ) );
-		}
-	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	private void _decrement(Draft d)
 	{

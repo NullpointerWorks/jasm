@@ -181,39 +181,33 @@ bytecode:	0x40 0xAB
 syntax:		load <reg>, <imm>
 bytecode:	0x41 0x0A [0x00 0x00 0x00 0x00]
 
+syntax:		load @<reg>, <reg>
+bytecode:	0x42 0xAB
+
+syntax:		load @<imm>, <reg>
+bytecode:	0x43 0x0A [0x00 0x00 0x00 0x00]
+	
+syntax:		load <reg>, @<reg>
+bytecode:	0x44 0xAB
+
+syntax:		load <reg>, @<imm>
+bytecode:	0x45 0x0A [0x00 0x00 0x00 0x00]
+
 _________________________________________________
 push to stack
 
 syntax:		push <reg>
-bytecode:	0x42 0x0A
+bytecode:	0x46 0x0A
 
 syntax:		push <imm>
-bytecode:	0x43 [0x00 0x00 0x00 0x00]
+bytecode:	0x47 [0x00 0x00 0x00 0x00]
 
 _________________________________________________
 pop from stack 
 
 syntax:		pop <reg>
-bytecode:	0x44 0x0A
+bytecode:	0x48 0x0A
 
-_________________________________________________
-store to ram
-
-syntax:		sto @<reg>,<reg>
-bytecode:	0x45 0xAB
-
-syntax:		sto @<imm>,<reg>
-bytecode:	0x46 0x0A [0x00 0x00 0x00 0x00]
-	
-_________________________________________________
-read ram
-
-syntax:		read <reg>, @<reg>
-bytecode:	0x47 0xAB
-
-syntax:		read <reg>, @<imm>
-bytecode:	0x48 0x0A [0x00 0x00 0x00 0x00]
-	
 _________________________________________________
 
 		LOGIC INSTRUCTIONS

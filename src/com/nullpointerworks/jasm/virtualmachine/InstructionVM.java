@@ -13,8 +13,9 @@ public class InstructionVM extends AbstractVirtualMachine implements Instruction
 	}
 	
 	@Override
-	public void addInstructions(List<Instruction> instructions)
+	public void setInstructions(List<Instruction> instructions)
 	{
+		this.instructions.clear();
 		for (Instruction i : instructions)
 		{
 			addInstruction(i);

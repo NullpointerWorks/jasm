@@ -24,7 +24,7 @@ public class BytecodeVM extends AbstractVirtualMachine implements BytecodeVirtua
 	}
 	
 	@Override
-	public void addInstructions(int offset, List<int[]> instructions) 
+	public void setInstructions(int offset, List<int[]> instructions) 
 	{
 		for (int[] i : instructions)
 		{

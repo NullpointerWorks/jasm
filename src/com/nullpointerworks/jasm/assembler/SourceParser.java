@@ -11,6 +11,10 @@ import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
 
+/**
+ * Turns source code text files into SourceCode objects which present lines of code.
+ * @author Michiel Drost - Nullpointer Works
+ */
 public class SourceParser implements Parser
 {
 	private final String ADDRESS_MARK = "@";

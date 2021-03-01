@@ -180,25 +180,33 @@ public class DraftAssembler implements Assembler
 			return;
 		}
 		
+		/*
+		 * build a draft from the source code
+		 */
 		instIndex += 1;
-		var draft_inst = builder.getDraft(loc);
-		
+		Draft[] draft_inst = builder.getDraft(loc);
 		if (builder.hasError())
 		{
 			errors.add(builder.getError());
 			return;
 		}
 		
-		if (draft_inst.hasError())
+		/*
+		 * add new draft objects
+		 */
+		for (Draft d : draft_inst)
 		{
-			errors.add(draft_inst.getError());
-			return;
-		}
-		draft.add( draft_inst );
-		
-		if (draft_inst.hasLabel())
-		{
-			labelled.add(draft_inst);
+			if (d.hasError())
+			{
+				errors.add(d.getError());
+				return;
+			}
+			draft.add( d );
+			
+			if (d.hasLabel())
+			{
+				labelled.add(d);
+			}
 		}
 	}
 	

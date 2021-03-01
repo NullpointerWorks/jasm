@@ -9,6 +9,10 @@ import com.nullpointerworks.jasm.virtualmachine.instruction.controlflow.*;
 import com.nullpointerworks.jasm.virtualmachine.instruction.dataflow.*;
 import com.nullpointerworks.jasm.virtualmachine.instruction.system.*;
 
+/**
+ * Creates Instruction objects from operands in the Draft objects
+ * @author Michiel Drost - Nullpointer Works
+ */
 public final class InstructionBuilder implements Builder<Instruction>
 {
 	private List<Draft> draft;

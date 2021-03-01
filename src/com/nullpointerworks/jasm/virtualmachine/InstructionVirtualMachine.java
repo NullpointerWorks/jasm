@@ -6,7 +6,7 @@ public interface InstructionVirtualMachine extends VirtualMachine
 {
 	void throwInterrupt(int intcode);
 	void addInstruction(Instruction inst);
-	void addInstructions(List<Instruction> instructions);
+	void setInstructions(List<Instruction> instructions);
 	boolean hasInstruction();
 	void nextInstruction();
 }

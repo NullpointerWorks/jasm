@@ -2,7 +2,7 @@
 ; dot product
 ; 
 ; Performs the dot product of two 2D vectors. This 
-; function uses the memory map defined in the "defmath"
+; function uses the memory map defined in the "def_m2d"
 ; file. Function argument can be placed by loading 
 ; values at the defined memory locations. The result is
 ; places in register a.
@@ -24,7 +24,7 @@
 ; V2_Y
 ; 
 ; using:
-; defmath.jasm
+; def_m2d.jasm
 ; m_multiply.jasm
 ; 
 ; author: 
@@ -35,7 +35,7 @@
 ; 
 ; ======================================================
 
-.inc "defmath.jasm"
+.inc "def_m2d.jasm"
 .inc "m_multiply.jasm"
 
 m2d_dot:

@@ -1,0 +1,49 @@
+; ======================================================
+; divide
+; 
+; Performs a division on the values in register x and y. 
+; 
+; This function subtracts from register x until its 
+; value is less than register y. Then returns the result
+; in register a. 
+; 
+; a = x / y
+; b = remainder
+; y = denominator
+; 
+; labels:
+; m_divide
+; _m_div_loop
+; _m_div_done
+; _m_div_return
+; 
+; author: 
+; Michiel Drost - Nullpointer Works
+; 
+; updated: 
+; 02-03-2021
+; 
+; ======================================================
+m_divide:
+	push x
+	load a,0			; init division count
+	
+	cmp y,0				; if y == 0, error
+	je _m_div_return
+	
+	cmp x,0				; if x == 0, return 0
+	je _m_div_return
+	
+_m_div_loop:
+	cmp x,y
+	jl _m_div_done		; if x >= y, subtract for next iteration
+	sub x,y
+	inc a
+	jmp _m_div_loop
+_m_div_done:
+	load b,x
+	
+_m_div_return:
+	pop x
+	ret
+	

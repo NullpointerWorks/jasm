@@ -6,6 +6,6 @@ public class CompileError extends GenericError
 {
 	public CompileError(SourceCode code, String desc) 
 	{
-		super(code, desc, "Pre-Processor Error");
+		super(code, desc, "Compiler Error");
 	}
 }

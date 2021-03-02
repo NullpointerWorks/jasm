@@ -1,32 +1,38 @@
-; ===========================
+; ======================================================
+; 2D mathematics memory definition
+; 
+; This definition file contains memory locations for 
+; vector and matrix calculation results.
+; 
+; author: 
+; Michiel Drost - Nullpointer Works
+; 
+; updated: 
+; 02-03-2021
+; 
+; ======================================================
 ; vector definition
-; ===========================
 .def V1_X &0
 .def V1_Y &1
-.def V1_Z &2
 
-.def V2_X &3
-.def V2_Y &4
-.def V2_Z &5
+.def V2_X &2
+.def V2_Y &3
 
-.def V3_X &6
-.def V3_Y &7
-.def V3_Z &8
+.def V3_X &4
+.def V3_Y &5
 
-; ===========================
 ; matrix definition
-; ===========================
-.def M2_A1 &9
-.def M2_B1 &10
-.def M2_C1 &11
-.def M2_D1 &12
+.def M2_A1 &6
+.def M2_B1 &7
+.def M2_C1 &8
+.def M2_D1 &9
 
-.def M2_A2 &13
-.def M2_B2 &14
-.def M2_C2 &15
-.def M2_D2 &16
+.def M2_A2 &10
+.def M2_B2 &11
+.def M2_C2 &12
+.def M2_D2 &13
 
-.def M2_A3 &17
-.def M2_B3 &18
-.def M2_C3 &19
-.def M2_D3 &20
+.def M2_A3 &14
+.def M2_B3 &15
+.def M2_C3 &16
+.def M2_D3 &17

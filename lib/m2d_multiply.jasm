@@ -1,0 +1,103 @@
+; ======================================================
+; multiply two 2x2 matrices
+; 
+; Performs a multiplication of two 2D matrixes. This 
+; function uses the memory map defined in the "def_m2d" 
+; file. The result can fetched by loading from the 
+; specified memory location.
+; 
+; |A1 B1|   |A2 B2|   |A3 B3|
+; |C1 D1| * |C2 D2| = |C3 D3|
+; 
+; A3 = (A1, B1) dot (A2, C2)
+; B3 = (A1, B1) dot (B2, D2)
+; C3 = (C1, D1) dot (A2, C2)
+; D3 = (C1, D1) dot (B2, D2)
+; 
+; labels:
+; m2d_multiply
+; _m2d_multiply_sub
+; 
+; definitions:
+; M2_A1
+; M2_B1
+; M2_C1
+; M2_D1
+;  M2_A2
+;  M2_B2
+;  M2_C2
+;  M2_D2
+; M2_A3
+; M2_B3
+; M2_C3
+; M2_D3
+; 
+; using:
+; def_m2d.jasm
+; m_multiply.jasm
+; 
+; author: 
+; Michiel Drost - Nullpointer Works
+; 
+; updated: 
+; 02-03-2021
+; 
+; ======================================================
+
+.inc "def_m2d.jasm"
+.inc "m_multiply.jasm"
+
+m2d_multiply:
+	push a
+	push b
+	push c
+	push d
+	push x
+	
+	; calc A3
+	load a,M2_A1
+	load b,M2_A2
+	load c,M2_B1
+	load d,M2_C2
+	call _m2d_multiply_sub
+	load M2_A3,x
+	
+	; calc B3
+	load a,M2_A1
+	load b,M2_B2
+	load c,M2_B1
+	load d,M2_D2
+	call _m2d_multiply_sub
+	load M2_B3,x
+	
+	; calc C3
+	load a,M2_C1
+	load b,M2_A2
+	load c,M2_D1
+	load d,M2_C2
+	call _m2d_multiply_sub
+	load M2_C3,x
+	
+	; calc D3
+	load a,M2_C1
+	load b,M2_B2
+	load c,M2_D1
+	load d,M2_D2
+	call _m2d_multiply_sub
+	load M2_D3,x
+	
+	pop x
+	pop d
+	pop c
+	pop b
+	pop a
+	ret
+	
+_m2d_multiply_sub:
+	call m_multiply
+	load x,a
+	load a,c
+	load b,d
+	call m_multiply
+	add x,a
+	ret

@@ -20,8 +20,8 @@ public class SystemCallBuilder extends AbstractDraftBuilder
 	
 	public Draft[] getDraft(SourceCode loc)
 	{
-		setError(source, null);
 		source = loc;
+		setError(null);
 		String[] parts = loc.getLine().split(" ");
 		String instruct = parts[0].toLowerCase();
 		String operands = "";
@@ -39,7 +39,7 @@ public class SystemCallBuilder extends AbstractDraftBuilder
 		if (instruct.equals("nop")) {return _nop();}
 		if (instruct.equals("int")) {return _int(operands);}
 		
-		setError("  Unrecognized instruction or parameters");
+		throwError("  Unrecognized instruction or parameters");
 		return null;
 	}
 	
@@ -67,7 +67,7 @@ public class SystemCallBuilder extends AbstractDraftBuilder
 	{
 		if (operands.contains(","))
 		{
-			setError("  Syntax error: Interrupt instructions only accept one operand."+int_syntax);
+			throwError("  Syntax error: Interrupt instructions only accept one operand."+int_syntax);
 			return null;
 		}
 		
@@ -79,7 +79,7 @@ public class SystemCallBuilder extends AbstractDraftBuilder
 		}
 		else
 		{
-			setError("  Syntax error: Interrupts only accept immediate values."+int_syntax);
+			throwError("  Syntax error: Interrupts only accept immediate values."+int_syntax);
 		}
 		
 		return d;
@@ -89,7 +89,7 @@ public class SystemCallBuilder extends AbstractDraftBuilder
 	 * ===========================================================
 	 */
 	
-	private void setError(String str) 
+	private void throwError(String str) 
 	{
 		super.setError(source, str);
 	}

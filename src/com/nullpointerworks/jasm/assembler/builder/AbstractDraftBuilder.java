@@ -7,13 +7,26 @@ import com.nullpointerworks.jasm.assembler.SourceCode;
 import com.nullpointerworks.jasm.assembler.errors.AssemblerError;
 import com.nullpointerworks.jasm.assembler.errors.BuildError;
 
-public abstract class AbstractDraftBuilder 
+abstract class AbstractDraftBuilder 
 {
 	private BuildError error;
 
-	protected void setError(BuildError e) {error = e;}
 	public boolean hasError() {return error != null;}
 	public BuildError getError() {return error;}
+	
+	protected void setError(BuildError e) 
+	{
+		error = e;
+	}
+	
+	protected void setError(SourceCode source, String str) 
+	{
+		if (error == null) error = new AssemblerError(source, str);
+	}
+	
+	/*
+	 * ===========================================================
+	 */
 	
 	/*
 	 * gen <reg>,<reg>
@@ -75,14 +88,5 @@ public abstract class AbstractDraftBuilder
 		}
 		
 		return d;
-	}
-	
-	/*
-	 * ===========================================================
-	 */
-	
-	protected void setError(SourceCode source, String str) 
-	{
-		if (error == null) error = new AssemblerError(source, str);
 	}
 }

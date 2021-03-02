@@ -3,17 +3,12 @@ package com.nullpointerworks.jasm.assembler.builder;
 import com.nullpointerworks.jasm.assembler.Draft;
 import com.nullpointerworks.jasm.assembler.Operation;
 import com.nullpointerworks.jasm.assembler.SourceCode;
-import com.nullpointerworks.jasm.assembler.errors.AssemblerError;
-import com.nullpointerworks.jasm.assembler.errors.BuildError;
 
-public class ControlFlowBuilder
+public class ControlFlowBuilder extends AbstractDraftBuilder
 {
 	private SourceCode source;
-	private BuildError error;
 	
 	public ControlFlowBuilder() {}
-	public boolean hasError() {return error != null;}
-	public BuildError getError() {return error;}
 	
 	public boolean isControlFlow(String instruct) 
 	{
@@ -31,7 +26,7 @@ public class ControlFlowBuilder
 	
 	public Draft[] getDraft(SourceCode loc)
 	{
-		error = null;
+		setError(null);
 		source = loc;
 		String[] parts = loc.getLine().split(" ");
 		String instruct = parts[0].toLowerCase();
@@ -57,7 +52,7 @@ public class ControlFlowBuilder
 		if (instruct.equals("jge")) {return _jgreaterequal(operands);}
 		if (instruct.equals("ret")) {return _return();}
 		
-		setError("  Unrecognized instruction or parameters");
+		throwError("  Unrecognized instruction or parameters");
 		return null;
 	}
 	
@@ -66,11 +61,6 @@ public class ControlFlowBuilder
 		var d = new Draft(source, op);
 		d.setLabel(operand);
 		return d;
-	}
-	
-	private void setError(String str) 
-	{
-		if (error == null) error = new AssemblerError(source, str);
 	}
 	
 	/* ================================================================================
@@ -122,5 +112,14 @@ public class ControlFlowBuilder
 	private Draft _return()
 	{
 		return new Draft(source, Operation.RET);
+	}
+	
+	/*
+	 * ===========================================================
+	 */
+	
+	private void throwError(String str) 
+	{
+		super.setError(source, str);
 	}
 }

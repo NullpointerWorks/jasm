@@ -5,8 +5,6 @@ import com.nullpointerworks.jasm.assembler.Draft;
 import com.nullpointerworks.jasm.assembler.Operand;
 import com.nullpointerworks.jasm.assembler.Operation;
 import com.nullpointerworks.jasm.assembler.SourceCode;
-import com.nullpointerworks.jasm.assembler.errors.AssemblerError;
-import com.nullpointerworks.jasm.assembler.errors.BuildError;
 
 /*
 	
@@ -31,16 +29,11 @@ import com.nullpointerworks.jasm.assembler.errors.BuildError;
 
 */
 
-
-
-public class DataFlowBuilder
+public class DataFlowBuilder extends AbstractDraftBuilder
 {
 	private SourceCode source;
-	private BuildError error;
 	
 	public DataFlowBuilder() {}
-	public boolean hasError() {return error != null;}
-	public BuildError getError() {return error;}
 	
 	public boolean isDataFlow(String instruct) 
 	{
@@ -52,7 +45,7 @@ public class DataFlowBuilder
 	
 	public Draft[] getDraft(SourceCode loc)
 	{
-		error = null;
+		setError(null);
 		source = loc;
 		String[] parts = loc.getLine().split(" ");
 		String instruct = parts[0].toLowerCase();
@@ -79,7 +72,7 @@ public class DataFlowBuilder
 			
 		}
 		
-		setError("  Unrecognized instruction or parameters");
+		throwError("  Unrecognized instruction or parameters");
 		return new Draft[] {null};
 	}
 	
@@ -92,70 +85,8 @@ public class DataFlowBuilder
 		if (instruct.equals("push")) {return _push(operands);}
 		if (instruct.equals("pop")) {return _pop(operands);}
 		
-		setError("  Unrecognized instruction or parameters");
+		throwError("  Unrecognized instruction or parameters");
 		return null;
-	}
-
-	/*
-	 * gen <reg>,<reg>
-	 * gen <reg>,<imm>
-	 */
-	private Draft _generic_instruction(Operation op, String operands, String oper, String syntax)
-	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
-		{
-			setError("  Syntax error: "+oper+" instructions use two operands."+syntax);
-			return null; // error
-		}
-		
-		Operand op1 = new Operand(tokens[0]);
-		if (!op1.isRegister())
-		{
-			setError("  Syntax error: "+oper+" target operand must be a register."+syntax);
-			return null; // error
-		}
-		
-		Draft d = new Draft(source, op);
-		d.addOperand(op1);
-		
-		Operand op2 = new Operand(tokens[1]);
-		if (!op2.hasError())
-		{
-			d.addOperand(op2);
-		}
-		else
-		{
-			setError("  Syntax error: "+oper+" source operand must be either a register or an immediate value."+syntax);
-			// error
-		}
-		
-		return d;
-	}
-	
-	/*
-	 * gen <reg>
-	 */
-	private Draft _generic_register(Operation op, String operands, String oper, String syntax)
-	{
-		if (operands.contains(","))
-		{
-			setError("  Syntax error: "+oper+" instructions accept only one operand."+syntax);
-			return null;
-		}
-		
-		Draft d = new Draft(source, op);
-		Operand op1 = new Operand(operands);
-		if (op1.isRegister())
-		{
-			d.addOperand(op1);
-		}
-		else
-		{
-			setError("  Syntax error: "+oper+" target operand must be a register."+syntax);
-		}
-		
-		return d;
 	}
 	
 	/* ================================================================================
@@ -177,7 +108,7 @@ public class DataFlowBuilder
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) 
 		{
-			setError("  Syntax error: "+Operation.LOAD+" instructions use two operands."+load_syntax);
+			throwError("  Syntax error: "+Operation.LOAD+" instructions use two operands."+load_syntax);
 			return null; // error
 		}
 		
@@ -188,7 +119,7 @@ public class DataFlowBuilder
 		// if no memory manipulation is used, draft a "normal" load instruction
 		if (!memory)
 		{
-			return _generic_instruction(Operation.LOAD, operands, "Load", load_syntax);
+			return _generic_instruction(source, Operation.LOAD, operands, "Load", load_syntax);
 		}
 		
 		if (op1.isAddress() && !op2.isAddress())
@@ -201,7 +132,7 @@ public class DataFlowBuilder
 			return _load_read(op1, op2);
 		}
 		
-		setError("  Syntax error: "+Operation.LOAD+" instructions operands not recognized."+load_syntax);
+		throwError("  Syntax error: "+Operation.LOAD+" instructions operands not recognized."+load_syntax);
 		return null; // error
 	}
 	
@@ -220,7 +151,7 @@ public class DataFlowBuilder
 		 */
 		if (!op2.isRegister())
 		{
-			setError("  Syntax error: Store source operand must be a register."+sto_syntax);
+			throwError("  Syntax error: Store source operand must be a register."+sto_syntax);
 			return null;
 		}
 		
@@ -229,7 +160,7 @@ public class DataFlowBuilder
 		 */
 		if (!op1.isAddress())
 		{
-			setError("  Syntax error: Store target operand must be an address."+sto_syntax);
+			throwError("  Syntax error: Store target operand must be an address."+sto_syntax);
 			return null;
 		}
 		
@@ -240,7 +171,7 @@ public class DataFlowBuilder
 		}
 		else
 		{
-			setError("  Syntax error: Store target operand must be either a register or an immediate value."+sto_syntax);
+			throwError("  Syntax error: Store target operand must be either a register or an immediate value."+sto_syntax);
 		}
 		
 		return d;
@@ -261,7 +192,7 @@ public class DataFlowBuilder
 		 */
 		if (!op1.isRegister())
 		{
-			setError("  Syntax error: Read target operand must be a register."+read_syntax);
+			throwError("  Syntax error: Read target operand must be a register."+read_syntax);
 			return null;
 		}
 		d.addOperand(op1);
@@ -271,7 +202,7 @@ public class DataFlowBuilder
 		 */
 		if (!op2.isAddress())
 		{
-			setError("  Syntax error: Read source operand must be an address."+read_syntax);
+			throwError("  Syntax error: Read source operand must be an address."+read_syntax);
 			return null; // error
 		}
 		
@@ -281,7 +212,7 @@ public class DataFlowBuilder
 		}
 		else
 		{
-			setError("  Syntax error: Read source operand must be either a register or an immediate value."+read_syntax);
+			throwError("  Syntax error: Read source operand must be either a register or an immediate value."+read_syntax);
 		}
 		return d;
 	}
@@ -295,7 +226,7 @@ public class DataFlowBuilder
 	{
 		if (operands.contains(","))
 		{
-			setError("  Syntax error: Stack instructions accept only one operand."+push_syntax);
+			throwError("  Syntax error: Stack instructions accept only one operand."+push_syntax);
 			return null;
 		}
 		
@@ -307,7 +238,7 @@ public class DataFlowBuilder
 		}
 		else
 		{
-			setError("  Syntax error: Stack target operand must be a register."+push_syntax);
+			throwError("  Syntax error: Stack target operand must be a register."+push_syntax);
 		}
 		
 		return d;
@@ -319,15 +250,15 @@ public class DataFlowBuilder
 	private final String pop_syntax = "\n  pop <reg>";
 	private Draft _pop(String operands)
 	{
-		return _generic_register(Operation.POP, operands, "Pop", pop_syntax);
+		return _generic_register(source, Operation.POP, operands, "Pop", pop_syntax);
 	}
 	
 	/*
 	 * ===========================================================
 	 */
 	
-	private void setError(String str) 
+	private void throwError(String str) 
 	{
-		if (error == null) error = new AssemblerError(source, str);
+		super.setError(source, str);
 	}
 }

@@ -1,31 +1,11 @@
 package com.nullpointerworks.jasm.assembler;
 
 import com.nullpointerworks.jasm.assembler.errors.BuildError;
+import com.nullpointerworks.jasm.assembler.builder.ArithmeticBuilder;
+import com.nullpointerworks.jasm.assembler.builder.ControlFlowBuilder;
+import com.nullpointerworks.jasm.assembler.builder.DataFlowBuilder;
+import com.nullpointerworks.jasm.assembler.builder.SystemCallBuilder;
 import com.nullpointerworks.jasm.assembler.errors.AssemblerError;
-
-
-/*
-	
-	
-	load [x+1],a
-	
-	push x
-	add x,1
-	load &x,a
-	pop x
-	
-	
-	
-	
-	load a,[x+1]
-	
-	push x
-	add x,1
-	load a,&x
-	pop x
-
-
-*/
 
 /**
  * Turns SourceCode objects into Draft objects by interpreting it's text.
@@ -41,507 +21,75 @@ public class DraftBuilder
 	public void setError(BuildError e) {error = e;}
 	public BuildError getError() {return error;}
 	
-	public DraftBuilder() {}
+	private SystemCallBuilder sysBuilder;
+	private ArithmeticBuilder mathBuilder;
+	private DataFlowBuilder dataBuilder;
+	private ControlFlowBuilder ctrlBuilder;
+	
+	public DraftBuilder() 
+	{
+		sysBuilder = new SystemCallBuilder();
+		mathBuilder = new ArithmeticBuilder();
+		dataBuilder = new DataFlowBuilder();
+		ctrlBuilder = new ControlFlowBuilder();
+	}
 	
 	public Draft[] getDraft(SourceCode loc)
 	{
 		error = null;
 		source = loc;
+		
+		Draft[] newDraft;
 		String[] parts = loc.getLine().split(" ");
 		String instruct = parts[0].toLowerCase();
-		String operands = "";
-		if (parts.length > 1) operands = parts[1].toLowerCase();
 		
-		if (operands.contains("["))
-		if (operands.contains("]"))
-		{
-			return getBlockDraft(instruct, operands);
-		}
-		
-		return new Draft[] {getDraft(instruct, operands)};
-	}
-	
-	private Draft[] getBlockDraft(String instruct, String operands)
-	{
-		
-		if (instruct.equals("load"))
-		{
-			
-			
-			
-			
-		}
-		
-		setError("  Unrecognized instruction or parameters");
-		return new Draft[] {_nop()};
-	}
-	
-	private Draft getDraft(String instruct, String operands)
-	{
 		/*
 		 * system
 		 */
-		if (instruct.equals("nop")) {return _nop();}
-		if (instruct.equals("int")) {return _int(operands);}
-		
+		if (sysBuilder.isSystemCall(instruct))
+		{
+			newDraft = sysBuilder.getDraft(loc);
+			error = sysBuilder.getError();
+		}
+		else
 		/*
 		 * arithmetic
 		 */
-		if (instruct.equals("add")) {return _add(operands);}
-		if (instruct.equals("sub")) {return _sub(operands);}
-		if (instruct.equals("cmp")) {return _cmp(operands);}
-		if (instruct.equals("shl")) {return _shl(operands);}
-		if (instruct.equals("shr")) {return _shr(operands);}
-		if (instruct.equals("inc")) {return _inc(operands);}
-		if (instruct.equals("dec")) {return _dec(operands);}
-		if (instruct.equals("neg")) {return _neg(operands);}
-		
+		if (mathBuilder.isArithmetic(instruct))
+		{
+			newDraft = mathBuilder.getDraft(loc);
+			error = mathBuilder.getError();
+		}
+		else
 		/*
 		 * data transfer
 		 */
-		if (instruct.equals("load")) {return _load(operands);}
-		if (instruct.equals("push")) {return _push(operands);}
-		if (instruct.equals("pop")) {return _pop(operands);}
-		
+		if (dataBuilder.isDataFlow(instruct))
+		{
+			newDraft = dataBuilder.getDraft(loc);
+			error = dataBuilder.getError();
+		}
 		/*
 		 * control flow
 		 */
-		if (instruct.equals("call")) {return _call(operands);}
-		if (instruct.equals("jmp")) {return _jump(operands);}
-		if (instruct.equals("je")) {return _jequal(operands);}
-		if (instruct.equals("jne")) {return _jnotequal(operands);}
-		if (instruct.equals("jl")) {return _jless(operands);}
-		if (instruct.equals("jle")) {return _jlessequal(operands);}
-		if (instruct.equals("jg")) {return _jgreater(operands);}
-		if (instruct.equals("jge")) {return _jgreaterequal(operands);}
-		if (instruct.equals("ret")) {return _return();}
-		
-		setError("  Unrecognized instruction or parameters");
-		return _nop();
-	}
-
-	/* ================================================================================
-	 * 
-	 * 		generic builder methods
-	 * 
-	 * ============================================================================= */
-	
-	/*
-	 * gen <reg>,<reg>
-	 * gen <reg>,<imm>
-	 */
-	private Draft _generic_instruction(Operation op, String operands, String oper, String syntax)
-	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
+		else
+		if (ctrlBuilder.isControlFlow(instruct))
 		{
-			setError("  Syntax error: "+oper+" instructions use two operands."+syntax);
-			return null; // error
-		}
-		
-		Operand op1 = new Operand(tokens[0]);
-		if (!op1.isRegister())
-		{
-			setError("  Syntax error: "+oper+" target operand must be a register."+syntax);
-			return null; // error
-		}
-		
-		Draft d = new Draft(source, op);
-		d.addOperand(op1);
-		
-		Operand op2 = new Operand(tokens[1]);
-		if (!op2.hasError())
-		{
-			d.addOperand(op2);
+			newDraft = ctrlBuilder.getDraft(loc);
+			error = ctrlBuilder.getError();
 		}
 		else
 		{
-			setError("  Syntax error: "+oper+" source operand must be either a register or an immediate value."+syntax);
-			// error
+			newDraft = new Draft[] { _nop() };
+			error = new AssemblerError(source, "  Unrecognized instruction or parameters");
 		}
 		
-		return d;
+		return newDraft;
 	}
 	
-	/*
-	 * gen <reg>
-	 */
-	private Draft _generic_register(Operation op, String operands, String oper, String syntax)
-	{
-		if (operands.contains(","))
-		{
-			setError("  Syntax error: "+oper+" instructions accept only one operand."+syntax);
-			return null;
-		}
-		
-		Draft d = new Draft(source, op);
-		Operand op1 = new Operand(operands);
-		if (op1.isRegister())
-		{
-			d.addOperand(op1);
-		}
-		else
-		{
-			setError("  Syntax error: "+oper+" target operand must be a register."+syntax);
-		}
-		
-		return d;
-	}
-	
-	/*
-	 * gen
-	 */
-	private Draft _generic_jump(Operation op, String operand)
-	{
-		var d = new Draft(source, op);
-		d.setLabel(operand);
-		return d;
-	}
-	
-	/* ================================================================================
-	 * 
-	 * 		system
-	 * 
-	 * ============================================================================= */
-	
-	private final String int_syntax = "\n  int <imm>";
-	
-	/*
-	 * nop
-	 */
 	private Draft _nop()
 	{
 		Draft d = new Draft(source, Operation.NOP);
 		return d;
-	}
-	
-	/*
-	 * int <imm>
-	 */
-	private Draft _int(String operands)
-	{
-		if (operands.contains(","))
-		{
-			setError("  Syntax error: Interrupt instructions only accept one operand."+int_syntax);
-			return null;
-		}
-		
-		Draft d = new Draft(source, Operation.INT);
-		Operand op = new Operand(operands);
-		if (op.isImmediate())
-		{
-			d.addOperand(op);
-		}
-		else
-		{
-			setError("  Syntax error: Interrupts only accept immediate values."+int_syntax);
-		}
-		
-		return d;
-	}
-
-	/* ================================================================================
-	 * 
-	 * 		arithmetic
-	 * 
-	 * ============================================================================= */
-	
-	/*
-	 * add <reg>,<reg>
-	 * add <reg>,<imm>
-	 */
-	private final String add_syntax = "\n  add <reg>,<reg>\n  add <reg>,<imm>";
-	private Draft _add(String operands)
-	{
-		return _generic_instruction(Operation.ADD, operands, "Addition", add_syntax);
-	}
-	
-	/*
-	 * sub <reg>,<reg>
-	 * sub <reg>,<imm>
-	 */
-	private final String sub_syntax = "\n  sub <reg>,<reg>\n  sub <reg>,<imm>";
-	private Draft _sub(String operands)
-	{
-		return _generic_instruction(Operation.SUB, operands, "Subtraction", sub_syntax);
-	}
-	
-	/*
-	 * cmp <reg>,<reg>
-	 * cmp <reg>,<imm>
-	 */
-	private final String cmp_syntax = "\n  cmp <reg>,<reg>\n  cmp <reg>,<imm>";
-	private Draft _cmp(String operands)
-	{
-		return _generic_instruction(Operation.CMP, operands, "Compare", cmp_syntax);
-	}
-	
-	/*
-	 * shl <reg>
-	 */
-	private final String shl_syntax = "\n  shl <reg>";
-	private Draft _shl(String operands)
-	{
-		return _generic_register(Operation.SHL, operands, "Bitshift", shl_syntax);
-	}
-
-	/*
-	 * shr <reg>
-	 */
-	private final String shr_syntax = "\n  shr <reg>";
-	private Draft _shr(String operands)
-	{
-		return _generic_register(Operation.SHR, operands, "Bitshift", shr_syntax);
-	}
-	
-	/*
-	 * inc <reg>
-	 */
-	private final String inc_syntax = "\n  inc <reg>";
-	private Draft _inc(String operands)
-	{
-		return _generic_register(Operation.INC, operands, "Increment", inc_syntax);
-	}
-	
-	/*
-	 * dec <reg>
-	 */
-	private final String dec_syntax = "\n  dec <reg>";
-	private Draft _dec(String operands)
-	{
-		return _generic_register(Operation.DEC, operands, "Decrement", dec_syntax);
-	}
-	
-	/*
-	 * neg <reg>
-	 */
-	private final String neg_syntax = "\n  neg <reg>";
-	private Draft _neg(String operands) 
-	{
-		return _generic_register(Operation.NEG, operands, "Negate", neg_syntax);
-	}
-	
-	/* ================================================================================
-	 * 
-	 * 		data transfer
-	 * 
-	 * ============================================================================= */
-	
-	/*
-	 * load <reg>,<reg>
-	 * load <reg>,<imm>
-	 */
-	private final String load_syntax = 
-						"\n  load <reg>,<reg>" + 
-						"\n  load <reg>,<imm>";
-	
-	private Draft _load(String operands)
-	{
-		String[] tokens = operands.split(",");
-		if (tokens.length != 2) 
-		{
-			setError("  Syntax error: "+Operation.LOAD+" instructions use two operands."+load_syntax);
-			return null; // error
-		}
-		
-		Operand op1 = new Operand(tokens[0]);
-		Operand op2 = new Operand(tokens[1]);
-		boolean memory = op1.isAddress() || op2.isAddress();
-		
-		// if no memory manipulation is used, draft a "normal" load instruction
-		if (!memory)
-		{
-			return _generic_instruction(Operation.LOAD, operands, "Load", sub_syntax);
-		}
-		
-		if (op1.isAddress() && !op2.isAddress())
-		{
-			return _load_sto(op1, op2);
-		}
-		
-		if (op2.isAddress() && !op1.isAddress())
-		{
-			return _load_read(op1, op2);
-		}
-		
-		setError("  Syntax error: "+Operation.LOAD+" instructions operands not recognized."+load_syntax);
-		return null; // error
-	}
-	
-	/*
-	 * load &<reg>,<reg>
-	 * load &<imm>,<reg>
-	 */
-	private final String sto_syntax = "\n  load "+AssemblerConstants.ADDRESS+"<reg>,<reg>"
-									+ "\n  load "+AssemblerConstants.ADDRESS+"<imm>,<reg>";
-	private Draft _load_sto(Operand op1, Operand op2)
-	{
-		Draft d = new Draft(source, Operation.LOAD);
-		
-		/*
-		 * check source
-		 */
-		if (!op2.isRegister())
-		{
-			setError("  Syntax error: Store source operand must be a register."+sto_syntax);
-			return null;
-		}
-		
-		/*
-		 * check target location. must be an address
-		 */
-		if (!op1.isAddress())
-		{
-			setError("  Syntax error: Store target operand must be an address."+sto_syntax);
-			return null;
-		}
-		
-		if (!op1.hasError())
-		{
-			d.addOperand(op1);
-			d.addOperand(op2);
-		}
-		else
-		{
-			setError("  Syntax error: Store target operand must be either a register or an immediate value."+sto_syntax);
-		}
-		
-		return d;
-	}
-	
-	/*
-	 * load <reg>,&<reg>
-	 * load <reg>,&<imm>
-	 */
-	private final String read_syntax = "\n  load <reg>,"+AssemblerConstants.ADDRESS+"<reg>"
-									+ "\n  load <reg>,"+AssemblerConstants.ADDRESS+"<imm>";
-	private Draft _load_read(Operand op1, Operand op2)
-	{
-		Draft d = new Draft(source, Operation.LOAD);
-		
-		/*
-		 * check target
-		 */
-		if (!op1.isRegister())
-		{
-			setError("  Syntax error: Read target operand must be a register."+read_syntax);
-			return null;
-		}
-		d.addOperand(op1);
-		
-		/*
-		 * check source location. must be an address
-		 */
-		if (!op2.isAddress())
-		{
-			setError("  Syntax error: Read source operand must be an address."+read_syntax);
-			return null; // error
-		}
-		
-		if (!op2.hasError())
-		{
-			d.addOperand(op2);
-		}
-		else
-		{
-			setError("  Syntax error: Read source operand must be either a register or an immediate value."+read_syntax);
-		}
-		return d;
-	}
-	
-	/*
-	 * push <reg>
-	 * push <imm>
-	 */
-	private final String push_syntax = "\n  push <reg>\n  push <imm>";
-	private Draft _push(String operands)
-	{
-		if (operands.contains(","))
-		{
-			setError("  Syntax error: Stack instructions accept only one operand."+push_syntax);
-			return null;
-		}
-		
-		Draft d = new Draft(source, Operation.PUSH);
-		Operand op1 = new Operand(operands);
-		if (!op1.hasError())
-		{
-			d.addOperand(op1);
-		}
-		else
-		{
-			setError("  Syntax error: Stack target operand must be a register."+push_syntax);
-		}
-		
-		return d;
-	}
-	
-	/*
-	 * pop <reg>
-	 */
-	private final String pop_syntax = "\n  pop <reg>";
-	private Draft _pop(String operands)
-	{
-		return _generic_register(Operation.POP, operands, "Pop", pop_syntax);
-	}
-	
-	/* ================================================================================
-	 * 
-	 * 		control flow
-	 * 
-	 * ============================================================================= */
-	
-	private Draft _call(String operands)
-	{
-		return _generic_jump(Operation.CALL, operands);
-	}
-	
-	private Draft _jump(String operands)
-	{
-		return _generic_jump(Operation.JMP, operands);
-	}
-	
-	private Draft _jequal(String operands)
-	{
-		return _generic_jump(Operation.JE, operands);
-	}
-	
-	private Draft _jnotequal(String operands)
-	{
-		return _generic_jump(Operation.JNE, operands);
-	}
-	
-	private Draft _jless(String operands)
-	{
-		return _generic_jump(Operation.JL, operands);
-	}
-	
-	private Draft _jlessequal(String operands)
-	{
-		return _generic_jump(Operation.JLE, operands);
-	}
-	
-	private Draft _jgreater(String operands)
-	{
-		return _generic_jump(Operation.JG, operands);
-	}
-	
-	private Draft _jgreaterequal(String operands)
-	{
-		return _generic_jump(Operation.JGE, operands);
-	}
-	
-	private Draft _return()
-	{
-		return new Draft(source, Operation.RET);
-	}
-	
-	/*
-	 * ===========================================================
-	 */
-	
-	private void setError(String str) 
-	{
-		if (error == null) error = new AssemblerError(source, str);
 	}
 }

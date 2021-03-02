@@ -1,5 +1,5 @@
 # libnpw.jasm
-An assembly-like execution environment for the JASM language.
+An assembly-like execution environment running under Java.
 
 # module
 * requires libnpw.util

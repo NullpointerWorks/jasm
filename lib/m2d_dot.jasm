@@ -1,0 +1,59 @@
+; ======================================================
+; dot product
+; 
+; Performs the dot product of two 2D vectors. This 
+; function uses the memory map defined in the "defmath"
+; file. Function argument can be placed by loading 
+; values at the defined memory locations. The result is
+; places in register a.
+; 
+; x = V1_X
+; y = V1_Y
+; u = V2_X
+; v = V2_Y
+; 
+; a = x*u + y*v
+; 
+; labels:
+; m2d_dot
+; 
+; definitions:
+; V1_X
+; V1_Y
+; V2_X
+; V2_Y
+; 
+; using:
+; defmath.jasm
+; m_multiply.jasm
+; 
+; author: 
+; Michiel Drost - Nullpointer Works
+; 
+; updated: 
+; 02-03-2021
+; 
+; ======================================================
+
+.inc "defmath.jasm"
+.inc "m_multiply.jasm"
+
+m2d_dot:
+	push x
+	push y
+	push b
+	
+	load x, V1_X
+	load y, V2_X
+	call m_multiply
+	load b,a
+	
+	load x, V1_Y
+	load y, V2_Y
+	call m_multiply
+	add a,b
+	
+	pop b
+	pop y
+	pop x
+	ret

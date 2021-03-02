@@ -1,0 +1,71 @@
+; ======================================================
+; 2D vector transform
+; 
+; Performs a multiplication with a 2D vector on a 2D 
+; matrix. This function uses the memory map defined in 
+; the "def_m2d" file. The result can fetched by loading 
+; from the specified memory location.
+; 
+; |A1 B1|   |V1_X|   |V2_X|
+; |C1 D1| * |V1_Y| = |V2_Y|
+; 
+; V2_X = (A1, B1) dot (V1_X, V1_Y)
+; V2_Y = (C1, D1) dot (V1_X, V1_Y)
+; 
+; labels:
+; m2d_transform
+; 
+; definitions:
+; V1_X
+; V1_Y
+; V2_X
+; V2_Y
+; M2_A1
+; M2_B1
+; M2_C1
+; M2_D1
+; 
+; using:
+; def_m2d.jasm
+; m_multiply.jasm
+; 
+; author: 
+; Michiel Drost - Nullpointer Works
+; 
+; updated: 
+; 02-03-2021
+; 
+; ======================================================
+
+.inc "def_m2d.jasm"
+.inc "m_multiply.jasm"
+
+m2d_transform:
+	push a
+	push b
+	push x
+	
+	load a,M2_A1
+	load b,V1_X
+	call m_multiply
+	load x,a
+	load a,M2_B1
+	load b,V1_Y
+	call m_multiply
+	add x,a
+	load V2_X,x
+	
+	load a,M2_C1
+	load b,V1_X
+	call m_multiply
+	load x,a
+	load a,M2_D1
+	load b,V1_Y
+	call m_multiply
+	add x,a
+	load V2_Y,x
+	
+	pop x
+	pop b
+	pop a
+	ret

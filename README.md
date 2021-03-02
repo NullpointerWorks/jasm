@@ -15,6 +15,6 @@ An assembly-like execution environment running under Java.
 * exports com.nullpointerworks.jasm.virtualmachine.instruction.dataflow
 * exports com.nullpointerworks.jasm.virtualmachine.instruction.logic
 * exports com.nullpointerworks.jasm.virtualmachine.instruction.system
-	
+
 # jasm v1.0
 * util 1.0.x

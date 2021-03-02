@@ -1,0 +1,32 @@
+; ===========================
+; vector definition
+; ===========================
+.def V1_X &0
+.def V1_Y &1
+.def V1_Z &2
+
+.def V2_X &3
+.def V2_Y &4
+.def V2_Z &5
+
+.def V3_X &6
+.def V3_Y &7
+.def V3_Z &8
+
+; ===========================
+; matrix definition
+; ===========================
+.def M2_A1 &9
+.def M2_B1 &10
+.def M2_C1 &11
+.def M2_D1 &12
+
+.def M2_A2 &13
+.def M2_B2 &14
+.def M2_C2 &15
+.def M2_D2 &16
+
+.def M2_A3 &17
+.def M2_B3 &18
+.def M2_C3 &19
+.def M2_D3 &20

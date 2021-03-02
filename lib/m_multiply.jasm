@@ -1,0 +1,55 @@
+; ======================================================
+; multiply
+; 
+; This function multiplies the content of register x and 
+; y and stores the result in register a. 
+; 
+; This function uses a loop to sum up register y until 
+; the loop has ended. If x is a larger number than y, the 
+; two are swapped to reduce the number of iterations and 
+; thereby improve performance.
+; 
+; a = x * y
+; 
+; labels:
+; m_multiply
+; _m_mul_start
+; _m_mul_loop
+; _m_mul_done
+; 
+; author: 
+; Michiel Drost - Nullpointer Works
+; 
+; updated: 
+; 02-03-2021
+; 
+; ======================================================
+m_multiply:
+	push c
+	push x
+	push y
+	
+	cmp y,0
+	je _m_mul_done 		; if y == 0 
+	
+	cmp x,y
+	jle _m_mul_start	; if x > y, swap
+	load c,x
+	load x,y
+	load y,c
+	
+_m_mul_start:
+	load c,0 			; init c = 0
+	inc x
+_m_mul_loop:
+	dec x
+	je _m_mul_done 		; if x == 0
+	add c,y
+	jmp _m_mul_loop
+_m_mul_done:
+	load a,c
+	
+	pop y
+	pop x
+	pop c
+	ret

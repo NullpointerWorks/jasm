@@ -1,8 +1,11 @@
-package com.nullpointerworks.jasm.assembler;
+package com.nullpointerworks.jasm.assembly;
 
 import java.util.List;
 
-import com.nullpointerworks.jasm.assembler.errors.BuildError;
+import com.nullpointerworks.jasm.assembly.drafting.Draft;
+import com.nullpointerworks.jasm.assembly.errors.BuildError;
+import com.nullpointerworks.jasm.assembly.parser.Definition;
+import com.nullpointerworks.jasm.assembly.parser.SourceCode;
 
 public interface Assembler
 {

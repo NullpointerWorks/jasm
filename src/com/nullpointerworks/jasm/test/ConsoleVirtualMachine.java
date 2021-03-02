@@ -5,10 +5,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nullpointerworks.jasm.assembly.*;
+import com.nullpointerworks.jasm.assembly.Compiler;
+import com.nullpointerworks.jasm.assembly.compiler.InstructionCompiler;
+import com.nullpointerworks.jasm.assembly.drafting.Draft;
+import com.nullpointerworks.jasm.assembly.drafting.DraftAssembler;
+import com.nullpointerworks.jasm.assembly.errors.*;
+import com.nullpointerworks.jasm.assembly.parser.Definition;
+import com.nullpointerworks.jasm.assembly.parser.SourceCode;
+import com.nullpointerworks.jasm.assembly.parser.SourceParser;
 import com.nullpointerworks.jasm.virtualmachine.*;
-import com.nullpointerworks.jasm.assembler.*;
-import com.nullpointerworks.jasm.assembler.errors.*;
-
 import com.nullpointerworks.util.Convert;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.Encoding;
@@ -27,7 +33,7 @@ public class ConsoleVirtualMachine implements InterruptListener
 			"F:\\Development\\Assembly\\workspace\\jasm\\math\\playground.jasm",
 			"-LF:\\Development\\Assembly\\workspace\\jasm\\math\\math\\",
 			"-M4096",
-			"-VPC"
+			"-V"
 		};
 		//*/
 		
@@ -149,7 +155,7 @@ public class ConsoleVirtualMachine implements InterruptListener
 		/*
 		 * load primary source file
 		 */
-		URL url = new URL(args[0]);
+		PathBuilder url = new PathBuilder(args[0]);
 		List<String> paths = new ArrayList<String>();
 		paths.add(url.folderPath()); // always set source directory as primary linker
 		
@@ -159,12 +165,14 @@ public class ConsoleVirtualMachine implements InterruptListener
 		for (int i=1,l=args.length; i<l; i++)
 		{
 			String str = args[i];
+			
 			if (str.startsWith("-L"))
 			{
 				str = str.substring(2);
-				URL incPath = new URL(str);
+				PathBuilder incPath = new PathBuilder(str);
 				paths.add(incPath.folderPath());
 			}
+			
 			if (str.startsWith("-M"))
 			{
 				str = str.substring(2);
@@ -174,6 +182,7 @@ public class ConsoleVirtualMachine implements InterruptListener
 					if (memSize>0) sizeMemory = memSize;
 				}
 			}
+			
 			if (str.startsWith("-V"))
 			{
 				str = str.substring(2);
@@ -227,9 +236,9 @@ public class ConsoleVirtualMachine implements InterruptListener
 		List<Draft> draft = asmBuilder.getDraft();
 		
 		/*
-		 * convert draft to instructions
+		 * compile draft to instructions
 		 */
-		Builder<Instruction> builder = new InstructionBuilder();
+		Compiler<Instruction> builder = new InstructionCompiler();
 		builder.setDraft(draft);
 		builder.build();
 		List<Instruction> instructions = builder.getInstructions();

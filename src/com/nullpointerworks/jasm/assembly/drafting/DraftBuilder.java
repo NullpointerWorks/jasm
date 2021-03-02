@@ -1,11 +1,8 @@
-package com.nullpointerworks.jasm.assembler;
+package com.nullpointerworks.jasm.assembly.drafting;
 
-import com.nullpointerworks.jasm.assembler.errors.BuildError;
-import com.nullpointerworks.jasm.assembler.builder.ArithmeticBuilder;
-import com.nullpointerworks.jasm.assembler.builder.ControlFlowBuilder;
-import com.nullpointerworks.jasm.assembler.builder.DataFlowBuilder;
-import com.nullpointerworks.jasm.assembler.builder.SystemCallBuilder;
-import com.nullpointerworks.jasm.assembler.errors.AssemblerError;
+import com.nullpointerworks.jasm.assembly.errors.AssemblerError;
+import com.nullpointerworks.jasm.assembly.errors.BuildError;
+import com.nullpointerworks.jasm.assembly.parser.SourceCode;
 
 /**
  * Turns SourceCode objects into Draft objects by interpreting it's text.

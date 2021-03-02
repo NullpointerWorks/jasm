@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.assembler;
+package com.nullpointerworks.jasm.assembly.compiler;
 
 public class Bytecode 
 {

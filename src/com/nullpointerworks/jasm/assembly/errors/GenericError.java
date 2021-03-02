@@ -1,6 +1,6 @@
-package com.nullpointerworks.jasm.assembler.errors;
+package com.nullpointerworks.jasm.assembly.errors;
 
-import com.nullpointerworks.jasm.assembler.SourceCode;
+import com.nullpointerworks.jasm.assembly.parser.SourceCode;
 
 public class GenericError implements BuildError
 {

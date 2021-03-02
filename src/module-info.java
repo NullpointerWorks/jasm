@@ -12,8 +12,11 @@ module libnpw.jasm
 	/*
 	 * compiler and builders
 	 */
-	exports com.nullpointerworks.jasm.assembler;
-	exports com.nullpointerworks.jasm.assembler.errors;
+	exports com.nullpointerworks.jasm.assembly;
+	exports com.nullpointerworks.jasm.assembly.errors;
+	exports com.nullpointerworks.jasm.assembly.parser;
+	exports com.nullpointerworks.jasm.assembly.drafting;
+	exports com.nullpointerworks.jasm.assembly.compiler;
 	
 	/*
 	 * virtual machine

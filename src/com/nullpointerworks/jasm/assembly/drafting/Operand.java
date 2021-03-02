@@ -1,5 +1,6 @@
-package com.nullpointerworks.jasm.assembler;
+package com.nullpointerworks.jasm.assembly.drafting;
 
+import com.nullpointerworks.jasm.assembly.AssemblyConstants;
 import com.nullpointerworks.jasm.virtualmachine.Select;
 import com.nullpointerworks.util.StringUtil;
 
@@ -136,7 +137,7 @@ public class Operand
 	
 	private boolean checkAddress(String op)
 	{
-		if (op.startsWith( AssemblerConstants.ADDRESS )) return true;
+		if (op.startsWith( AssemblyConstants.ADDRESS )) return true;
 		return false;
 	}
 	

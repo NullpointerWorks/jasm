@@ -1,11 +1,8 @@
-package com.nullpointerworks.jasm.assembler.builder;
+package com.nullpointerworks.jasm.assembly.drafting;
 
-import com.nullpointerworks.jasm.assembler.Draft;
-import com.nullpointerworks.jasm.assembler.Operand;
-import com.nullpointerworks.jasm.assembler.Operation;
-import com.nullpointerworks.jasm.assembler.SourceCode;
-import com.nullpointerworks.jasm.assembler.errors.AssemblerError;
-import com.nullpointerworks.jasm.assembler.errors.BuildError;
+import com.nullpointerworks.jasm.assembly.errors.BuildError;
+import com.nullpointerworks.jasm.assembly.errors.CompileError;
+import com.nullpointerworks.jasm.assembly.parser.SourceCode;
 
 abstract class AbstractDraftBuilder 
 {
@@ -21,7 +18,7 @@ abstract class AbstractDraftBuilder
 	
 	protected void setError(SourceCode source, String str) 
 	{
-		if (error == null) error = new AssemblerError(source, str);
+		if (error == null) error = new CompileError(source, str);
 	}
 	
 	/*

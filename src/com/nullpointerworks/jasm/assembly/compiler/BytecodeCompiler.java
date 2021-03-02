@@ -1,14 +1,19 @@
-package com.nullpointerworks.jasm.assembler;
+package com.nullpointerworks.jasm.assembly.compiler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class BytecodeBuilder implements Builder<Bytecode>
+import com.nullpointerworks.jasm.assembly.Compiler;
+import com.nullpointerworks.jasm.assembly.drafting.Draft;
+import com.nullpointerworks.jasm.assembly.drafting.Operand;
+import com.nullpointerworks.jasm.assembly.drafting.Operation;
+
+public final class BytecodeCompiler implements Compiler<Bytecode>
 {
 	private List<Draft> draft;
 	private List<Bytecode> instructions;
 	
-	public BytecodeBuilder()
+	public BytecodeCompiler()
 	{
 		instructions = new ArrayList<Bytecode>();
 	}

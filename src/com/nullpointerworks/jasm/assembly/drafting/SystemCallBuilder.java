@@ -1,11 +1,8 @@
-package com.nullpointerworks.jasm.assembler.builder;
+package com.nullpointerworks.jasm.assembly.drafting;
 
-import com.nullpointerworks.jasm.assembler.Draft;
-import com.nullpointerworks.jasm.assembler.Operand;
-import com.nullpointerworks.jasm.assembler.Operation;
-import com.nullpointerworks.jasm.assembler.SourceCode;
+import com.nullpointerworks.jasm.assembly.parser.SourceCode;
 
-public class SystemCallBuilder extends AbstractDraftBuilder
+class SystemCallBuilder extends AbstractDraftBuilder
 {
 	private SourceCode source;
 	

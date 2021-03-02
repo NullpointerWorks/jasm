@@ -10,7 +10,7 @@ import java.util.List;
  * @author Michiel Drost - Nullpointer Works
  * @since 1.0.0
  */
-public class URL 
+public class PathBuilder 
 {
 	private List<String> folders = null;
 	private String file = "";
@@ -19,7 +19,7 @@ public class URL
 	 * 
 	 * @since 1.0.0
 	 */
-	public URL()
+	public PathBuilder()
 	{
 		folders = new ArrayList<String>();
 	}
@@ -28,7 +28,7 @@ public class URL
 	 * 
 	 * @since 1.0.0
 	 */
-	public URL(String path) 
+	public PathBuilder(String path) 
 	{
 		this();
 		boolean fend = false;
@@ -56,7 +56,7 @@ public class URL
 	 * 
 	 * @since 1.0.0
 	 */
-	private URL(List<String> d, String file) 
+	private PathBuilder(List<String> d, String file) 
 	{
 		this();
 		for (String dir : d) folder(dir);
@@ -69,7 +69,7 @@ public class URL
 	 * 
 	 * @since 1.0.0
 	 */
-	public URL folder(String folder)
+	public PathBuilder folder(String folder)
 	{
 		folder = folder.replace("\\", "/");
 		String[] nav = folder.split("/");
@@ -88,7 +88,7 @@ public class URL
 	 * 
 	 * @since 1.0.0
 	 */
-	public URL pop()
+	public PathBuilder pop()
 	{
 		folders.remove(folders.size()-1);
 		return this;
@@ -112,7 +112,7 @@ public class URL
 	 * 
 	 * @since 1.0.0
 	 */
-	public URL file(String file)
+	public PathBuilder file(String file)
 	{
 		this.file=file.trim();
 		return this;
@@ -140,7 +140,7 @@ public class URL
 	 * 
 	 * @since 1.0.0
 	 */
-	public URL fileName(String file)
+	public PathBuilder fileName(String file)
 	{
 		this.file=file;
 		return this;
@@ -161,16 +161,16 @@ public class URL
 	 * 
 	 * @since 1.0.0
 	 */
-	public URL copy()
+	public PathBuilder copy()
 	{
-		return new URL(folders,file);
+		return new PathBuilder(folders,file);
 	}
 	
 	/**
 	 * 
 	 * @since 1.0.0
 	 */
-	public URL add(URL url)
+	public PathBuilder add(PathBuilder url)
 	{
 		this.folder(url.folderPath());
 		this.file(url.fileName());

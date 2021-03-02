@@ -1,12 +1,16 @@
-package com.nullpointerworks.jasm.assembler;
+package com.nullpointerworks.jasm.assembly.parser;
+
+import static com.nullpointerworks.jasm.assembly.AssemblyConstants.ADDRESS;
+import static com.nullpointerworks.jasm.assembly.AssemblyConstants.LABEL;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.nullpointerworks.jasm.assembler.errors.BuildError;
-import com.nullpointerworks.jasm.assembler.errors.ParseError;
+import com.nullpointerworks.jasm.assembly.Parser;
+import com.nullpointerworks.jasm.assembly.errors.BuildError;
+import com.nullpointerworks.jasm.assembly.errors.ParseError;
 import com.nullpointerworks.util.StringUtil;
 import com.nullpointerworks.util.file.textfile.TextFile;
 import com.nullpointerworks.util.file.textfile.TextFileParser;
@@ -17,21 +21,18 @@ import com.nullpointerworks.util.file.textfile.TextFileParser;
  */
 public class SourceParser implements Parser
 {
-	private final String ADDRESS_MARK = "@";
-	private final String LABEL_MARK = ":";
-	
 	private List<String> includes = null; // keeps a list of all included files. this list is leading
 	private List<String> includesAux = null; // contains file yet to be included. this list gets modified
 	private List<String> includesPath = null; // all traceable paths to look for jasm source code 
 
 	private List<Definition> defs = null; // contains all definition code
-	private List<Definition> defDups = null;
+	private List<Definition> defDups = null; // contains duplicate definitions
 	
 	private List<SourceCode> code = null; // contains parsed code
 	private List<BuildError> errors; // contains errors
 	
 	private boolean verbose = false;
-	private int strLeng = 2;
+	private int strLeng = 2; // line numbering spacing. 2 characters by default
 	
 	/*
 	 * lexicographic sort
@@ -253,9 +254,9 @@ public class SourceParser implements Parser
 			/*
 			 * if the line of code contains a label mark, extract the label
 			 */
-			if (line.contains(LABEL_MARK))
+			if (line.contains(LABEL))
 			{
-				String t[] = line.split(LABEL_MARK);
+				String t[] = line.split(LABEL);
 				
 				/*
 				 * test for allowed label characters
@@ -272,7 +273,7 @@ public class SourceParser implements Parser
 				/*
 				 * insert the marked label into the code list
 				 */
-				processLine( new SourceCode(filename, linenumber, t[0]+LABEL_MARK) );
+				processLine( new SourceCode(filename, linenumber, t[0]+LABEL) );
 				if (t.length == 1) continue;
 				
 				/*
@@ -473,12 +474,12 @@ public class SourceParser implements Parser
 	
 	private boolean isAddress(String str)
 	{
-		return str.startsWith(ADDRESS_MARK);
+		return str.startsWith(ADDRESS);
 	}
 	
 	private boolean isValidAddress(String number)
 	{
-		if (!isAddress(ADDRESS_MARK)) return false;
+		if (!isAddress(ADDRESS)) return false;
 		number = number.substring(1);
 		return isValidNumber(number);
 	}

@@ -1,10 +1,7 @@
-package com.nullpointerworks.jasm.assembler.builder;
+package com.nullpointerworks.jasm.assembly.drafting;
 
-import com.nullpointerworks.jasm.assembler.AssemblerConstants;
-import com.nullpointerworks.jasm.assembler.Draft;
-import com.nullpointerworks.jasm.assembler.Operand;
-import com.nullpointerworks.jasm.assembler.Operation;
-import com.nullpointerworks.jasm.assembler.SourceCode;
+import com.nullpointerworks.jasm.assembly.AssemblyConstants;
+import com.nullpointerworks.jasm.assembly.parser.SourceCode;
 
 /*
 	
@@ -29,7 +26,7 @@ import com.nullpointerworks.jasm.assembler.SourceCode;
 
 */
 
-public class DataFlowBuilder extends AbstractDraftBuilder
+class DataFlowBuilder extends AbstractDraftBuilder
 {
 	private SourceCode source;
 	
@@ -140,8 +137,8 @@ public class DataFlowBuilder extends AbstractDraftBuilder
 	 * load &<reg>,<reg>
 	 * load &<imm>,<reg>
 	 */
-	private final String sto_syntax = "\n  load "+AssemblerConstants.ADDRESS+"<reg>,<reg>"
-									+ "\n  load "+AssemblerConstants.ADDRESS+"<imm>,<reg>";
+	private final String sto_syntax = "\n  load "+AssemblyConstants.ADDRESS+"<reg>,<reg>"
+									+ "\n  load "+AssemblyConstants.ADDRESS+"<imm>,<reg>";
 	private Draft _load_sto(Operand op1, Operand op2)
 	{
 		Draft d = new Draft(source, Operation.LOAD);
@@ -181,8 +178,8 @@ public class DataFlowBuilder extends AbstractDraftBuilder
 	 * load <reg>,&<reg>
 	 * load <reg>,&<imm>
 	 */
-	private final String read_syntax = "\n  load <reg>,"+AssemblerConstants.ADDRESS+"<reg>"
-									+ "\n  load <reg>,"+AssemblerConstants.ADDRESS+"<imm>";
+	private final String read_syntax = "\n  load <reg>,"+AssemblyConstants.ADDRESS+"<reg>"
+									+ "\n  load <reg>,"+AssemblyConstants.ADDRESS+"<imm>";
 	private Draft _load_read(Operand op1, Operand op2)
 	{
 		Draft d = new Draft(source, Operation.LOAD);

@@ -1,12 +1,15 @@
-package com.nullpointerworks.jasm.assembler;
+package com.nullpointerworks.jasm.assembly.drafting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.nullpointerworks.jasm.assembler.errors.BuildError;
-import com.nullpointerworks.jasm.assembler.errors.PreProcessorError;
+import com.nullpointerworks.jasm.assembly.Assembler;
+import com.nullpointerworks.jasm.assembly.errors.AssemblerError;
+import com.nullpointerworks.jasm.assembly.errors.BuildError;
+import com.nullpointerworks.jasm.assembly.parser.Definition;
+import com.nullpointerworks.jasm.assembly.parser.SourceCode;
 
 public class DraftAssembler implements Assembler
 {
@@ -148,7 +151,7 @@ public class DraftAssembler implements Assembler
 			String label = d.getLabel();
 			if (!labels.containsKey(label))
 			{
-				addPreProcError(d.getSourceCode(), "  Unknown label reference");
+				addAssemblerError(d.getSourceCode(), "  Unknown label reference");
 				return;
 			}
 			int addr = labels.get(label);
@@ -214,9 +217,9 @@ public class DraftAssembler implements Assembler
 	 * ==================================================================
 	 */
 	
-	private void addPreProcError(SourceCode code, String message)
+	private void addAssemblerError(SourceCode code, String message)
 	{
-		errors.add( new PreProcessorError(code, message) );
+		errors.add( new AssemblerError(code, message) );
 	}
 	
 	private void out(String string)

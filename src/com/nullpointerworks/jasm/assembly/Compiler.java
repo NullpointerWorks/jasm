@@ -1,8 +1,10 @@
-package com.nullpointerworks.jasm.assembler;
+package com.nullpointerworks.jasm.assembly;
 
 import java.util.List;
 
-public interface Builder<T>
+import com.nullpointerworks.jasm.assembly.drafting.Draft;
+
+public interface Compiler<T>
 {
 	/**
 	 * 

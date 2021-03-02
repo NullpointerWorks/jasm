@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.assembler;
+package com.nullpointerworks.jasm.assembly.drafting;
 
 public enum Operation 
 {

@@ -1,8 +1,12 @@
-package com.nullpointerworks.jasm.assembler;
+package com.nullpointerworks.jasm.assembly.compiler;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nullpointerworks.jasm.assembly.Compiler;
+import com.nullpointerworks.jasm.assembly.drafting.Draft;
+import com.nullpointerworks.jasm.assembly.drafting.Operand;
+import com.nullpointerworks.jasm.assembly.drafting.Operation;
 import com.nullpointerworks.jasm.virtualmachine.Instruction;
 import com.nullpointerworks.jasm.virtualmachine.instruction.arithmetic.*;
 import com.nullpointerworks.jasm.virtualmachine.instruction.controlflow.*;
@@ -13,12 +17,12 @@ import com.nullpointerworks.jasm.virtualmachine.instruction.system.*;
  * Creates Instruction objects from operands in the Draft objects
  * @author Michiel Drost - Nullpointer Works
  */
-public final class InstructionBuilder implements Builder<Instruction>
+public final class InstructionCompiler implements Compiler<Instruction>
 {
 	private List<Draft> draft;
 	private List<Instruction> instructions;
 	
-	public InstructionBuilder()
+	public InstructionCompiler()
 	{
 		instructions = new ArrayList<Instruction>();
 	}

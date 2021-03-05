@@ -22,7 +22,6 @@ public class SourceFileParser implements Parser
 {
 	private final String ADDRESS_MARK = "&";
 	private final String LABEL_MARK = ":";
-	private String basePath = "";
 	
 	private List<String> includes = null; // keeps a list of all uniquely included files while parsing
 	private List<String> includesAux = null; // contains file yet to be included. this list gets modified
@@ -108,35 +107,19 @@ public class SourceFileParser implements Parser
 	@Override
 	public void parse(String filename)
 	{
+		verbose.onPrint("-------------------------------");
+		verbose.onPrint("Parsing Start\n");
+		
 		if (!ParserUtility.isValidFile(filename))
 		{
 			addError("Primary source file \""+filename+"\" is not recognized as JASM source code.");
 			return; // fatal error
 		}
 		
-		// find base path. set as default include path
-		File main = new File(filename);
-		String filepath = main.getAbsolutePath();
-		basePath = filepath.substring(0, filepath.length() - filename.length());
-		addIncludesPath(basePath);
-		
-		verbose.onPrint("-------------------------------");
-		verbose.onPrint("Parsing Start\n");
-		if (includesPath.size() > 0)
-		{
-			verbose.onPrint("Linker");
-			for (String inc : includesPath)
-			{
-				verbose.onPrint(" "+inc);
-			}
-			verbose.onPrint("");
-		}
-		
 		/*
 		 * parse the given text as primary source code
 		 */
 		verbose.onPrint("Main: "+filename);
-		
 		String[] text = loadCode(filename);
 		parseCode(filename, text);
 		
@@ -150,28 +133,58 @@ public class SourceFileParser implements Parser
 			int l = includesAux.size()-1;
 			for (;l>=0;l--)
 			{
+				/*
+				 * get next include file
+				 */
 				String inc = includesAux.remove(l);
 				if (!ParserUtility.isValidFile(inc)) continue;
 				
-				boolean found = false;
+				/*
+				 * scan include directories for a matching path
+				 */
+				String includeFilePath = null;
 				for (String path : includesPath)
 				{
-					String[] lines = loadCode(path+inc);
-					if (lines!=null) 
+					File f = new File(path+inc);
+					if (f.exists())
 					{
-						verbose.onPrint("\nInclude: "+inc+"\n");
-						found = true;
-						parseCode(inc, lines);
+						includeFilePath = path+inc;
+						break;
 					}
 				}
 				
-				if (!found)
+				/*
+				 * when found, parse code
+				 */
+				if (includeFilePath != null)
+				{
+					String[] lines = loadCode(includeFilePath);
+					if (lines!=null) 
+					{
+						verbose.onPrint("\nInclude: "+inc+"\n");
+						parseCode(inc, lines);
+					}
+				}
+				else
 				{
 					addError( getIncludeErrorMessage(inc) );
 				}
 			}
 		}
 		while(includesAux.size() > 0);
+		
+		/*
+		 * print included directories
+		 */
+		if (includesPath.size() > 0)
+		{
+			verbose.onPrint("Linker");
+			for (String inc : includesPath)
+			{
+				verbose.onPrint(" "+inc);
+			}
+			verbose.onPrint("");
+		}
 		
 		/*
 		 * check for duplicate definitions
@@ -446,6 +459,12 @@ public class SourceFileParser implements Parser
 		{
 			return null;
 		}
+		
+		// find base path. set as default include path
+		File main = new File(inc);
+		String filepath = main.getAbsolutePath();
+		String include = filepath.substring(0, filepath.length() - inc.length());
+		addIncludesPath(include);
 		
 		FileReader fr;
 		try 

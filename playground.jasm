@@ -2,22 +2,22 @@
 .def OUT_A 1
 .def OUT_B 2
 
-.inc "lib/m_multiply.jasm"
-.inc "lib/m_divide.jasm"
+.inc "lib/m2d_defines.jasm"
+.inc "lib/m2d_dot.jasm"
 
-.org 100
+.org 20
 
 ; ======================================================
 ; program entry
 ; ======================================================
 main:
 	
-	load r0, 4
-	load r1, 3
-	call m_multiply
-	int OUT_A
+	load r0, 7
+	load r1, 5
+	load V1_X, r0
+	load V1_Y, r1
+	call m2d_dot
 	
-	call m_divide
-	int OUT_A
+	
 	
 	int EXIT

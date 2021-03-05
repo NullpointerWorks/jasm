@@ -24,7 +24,7 @@
 ; V2_r1
 ; 
 ; using:
-; def_m2d.jasm
+; m2d_defines.jasm
 ; m_multiply.jasm
 ; 
 ; author: 
@@ -35,7 +35,7 @@
 ; 
 ; ======================================================
 
-.inc "def_m2d.jasm"
+.inc "m2d_defines.jasm"
 .inc "m_multiply.jasm"
 
 m2d_dot:
@@ -43,13 +43,13 @@ m2d_dot:
 	push r1
 	push b
 	
-	load r0, V1_r0
-	load r1, V2_r0
+	load r0, V1_X
+	load r1, V2_X
 	call m_multiply
 	load b,a
 	
-	load r0, V1_r1
-	load r1, V2_r1
+	load r0, V1_Y
+	load r1, V2_Y
 	call m_multiply
 	add a,b
 	

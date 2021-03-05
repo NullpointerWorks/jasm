@@ -24,11 +24,11 @@
             <Keywords name="Folders in comment, open"></Keywords>
             <Keywords name="Folders in comment, middle"></Keywords>
             <Keywords name="Folders in comment, close"></Keywords>
-            <Keywords name="Keywords1">load LOAD call CALL ret RET cmp CMP sub SUB add ADD jmp JMP je JE jne JNE jl JL jle JLE jg JG jge JGE pop POP push PUSH nop NOP neg NEG inc INC dec DEC shl SHL shr SHR int INT or OR and AND xor XOR</Keywords>
+            <Keywords name="Keywords1">load call ret cmp sub add jmp je jne jl jle jg jge pop push nop neg inc dec shl shr int or and xor </Keywords>
             <Keywords name="Keywords2">&amp;</Keywords>
-            <Keywords name="Keywords3">0x 0X</Keywords>
-            <Keywords name="Keywords4">.inc .INC .def .DEF .org .ORG</Keywords>
-            <Keywords name="Keywords5">a A b B c C d D sp SP ip IP dp DP r0 r1 r2 r3 r4 r5 r6 r7 r8 r9 R0 R1 R2 R3 R4 R5 R6 R7 R8 R9</Keywords>
+            <Keywords name="Keywords3">0x</Keywords>
+            <Keywords name="Keywords4">.inc .def .org </Keywords>
+            <Keywords name="Keywords5">a A b B c C d D sp SP ip IP dp DP r0 r1 r2 r3 r4 r5 r6 r7 r8 r9 </Keywords>
             <Keywords name="Keywords6"></Keywords>
             <Keywords name="Keywords7"></Keywords>
             <Keywords name="Keywords8"></Keywords>

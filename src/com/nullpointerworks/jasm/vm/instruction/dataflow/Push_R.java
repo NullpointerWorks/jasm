@@ -18,9 +18,9 @@ import com.nullpointerworks.jasm.vm.VirtualMachine;
  * </pre>
  * Pushes the value of a register onto the stack
  */
-public class Push implements Instruction
+public class Push_R implements Instruction
 {
-	private final VMInstruction operation = VMInstruction.PUSH;
+	private final VMInstruction operation = VMInstruction.PUSH_R;
 	
 	@Override
 	public boolean match(int opcode)

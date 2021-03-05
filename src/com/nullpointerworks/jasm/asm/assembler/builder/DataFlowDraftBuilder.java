@@ -4,8 +4,9 @@ import static com.nullpointerworks.jasm.vm.VMInstruction.LOAD_MR;
 import static com.nullpointerworks.jasm.vm.VMInstruction.LOAD_RM;
 import static com.nullpointerworks.jasm.vm.VMInstruction.LOAD_RR;
 import static com.nullpointerworks.jasm.vm.VMInstruction.LOAD_RV;
+import static com.nullpointerworks.jasm.vm.VMInstruction.PUSH_R;
+import static com.nullpointerworks.jasm.vm.VMInstruction.PUSH_V;
 import static com.nullpointerworks.jasm.vm.VMInstruction.POP;
-import static com.nullpointerworks.jasm.vm.VMInstruction.PUSH;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,8 +126,9 @@ class DataFlowDraftBuilder extends AbstractDraftBuilder
 		
 		throwError(sc, "  Syntax error: LOAD instructions operands not recognized."+load_syntax);
 	}
-	
+
 	// push <reg>
+	// push <val>
 	private void buildPUSH(SourceCode sc, List<Draft> draft, String operands) 
 	{
 		if (operands.contains(",")) 
@@ -140,11 +142,18 @@ class DataFlowDraftBuilder extends AbstractDraftBuilder
 		
 		if (op.isRegister())
 		{
-			BuilderUtil.setCode(d, PUSH, op.getRegister());
+			BuilderUtil.setCode(d, PUSH_R, op.getRegister());
 			draft.add(d);
 			return;
 		}
-
+		else
+		if (op.isInteger())
+		{
+			BuilderUtil.setCode(d, PUSH_V, op.getInteger() );
+			draft.add(d);
+			return;
+		}
+		
 		throwError(sc, "  Syntax error: PUSH instructions operands not recognized."+push_syntax);
 	}
 	

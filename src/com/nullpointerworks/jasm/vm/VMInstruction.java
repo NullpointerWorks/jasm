@@ -16,8 +16,9 @@ public enum VMInstruction
 	LOAD_RV(0x31),
 	LOAD_RM(0x32),
 	LOAD_MR(0x33),
-	PUSH(0x34),
-	POP(0x35),
+	PUSH_R(0x34),
+	PUSH_V(0x35),
+	POP(0x36),
 	
 	/*
 	 * (2x) control flow

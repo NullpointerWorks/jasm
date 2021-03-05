@@ -2,26 +2,26 @@
 ; dot product
 ; 
 ; Performs the dot product of two 2D vectors. This 
-; function uses the memory map defined in the "def_m2d"
-; file. Function argument can be placed by loading 
-; values at the defined memory locations. The result is
+; function uses the memorr1 map defined in the "def_m2d"
+; file. Function argument can be placed br1 loading 
+; values at the defined memorr1 locations. The result is
 ; places in register a.
 ; 
-; x = V1_X
-; y = V1_Y
-; u = V2_X
-; v = V2_Y
+; r0 = V1_r0
+; r1 = V1_r1
+; u = V2_r0
+; v = V2_r1
 ; 
-; a = x*u + y*v
+; a = r0*u + r1*v
 ; 
 ; labels:
 ; m2d_dot
 ; 
 ; definitions:
-; V1_X
-; V1_Y
-; V2_X
-; V2_Y
+; V1_r0
+; V1_r1
+; V2_r0
+; V2_r1
 ; 
 ; using:
 ; def_m2d.jasm
@@ -39,21 +39,21 @@
 .inc "m_multiply.jasm"
 
 m2d_dot:
-	push x
-	push y
+	push r0
+	push r1
 	push b
 	
-	load x, V1_X
-	load y, V2_X
+	load r0, V1_r0
+	load r1, V2_r0
 	call m_multiply
 	load b,a
 	
-	load x, V1_Y
-	load y, V2_Y
+	load r0, V1_r1
+	load r1, V2_r1
 	call m_multiply
 	add a,b
 	
 	pop b
-	pop y
-	pop x
+	pop r1
+	pop r0
 	ret

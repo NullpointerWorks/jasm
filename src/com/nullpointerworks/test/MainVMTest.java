@@ -61,7 +61,7 @@ public class MainVMTest implements InterruptListener, VerboseListener
 			return;
 		}
 		List<Integer> code = assemble.getMachineCode();
-		//printMachineCode(code);
+		printMachineCode(code);
 		
 		/*
 		 * create virtual machine and run code

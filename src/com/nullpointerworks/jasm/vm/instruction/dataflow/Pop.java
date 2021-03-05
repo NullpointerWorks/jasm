@@ -10,7 +10,7 @@ import com.nullpointerworks.jasm.vm.VirtualMachine;
 /**
  * <pre>
  * instruction: 		POP 
- * bytes: 		35 r1 ?? ??
+ * bytes: 		36 r1 ?? ??
  * byte 1:		operation code
  * byte 2:		register 1
  * byte 3:		n/a

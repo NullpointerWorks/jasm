@@ -73,7 +73,8 @@ public class BytecodeVirtualMachine implements VirtualMachine
 		instructions.add( new Load_RV() );
 		instructions.add( new Load_RM() );
 		instructions.add( new Load_MR() );
-		instructions.add( new Push() );
+		instructions.add( new Push_R() );
+		instructions.add( new Push_V() );
 		instructions.add( new Pop() );
 		
 		instructions.add( new Add_RR() );

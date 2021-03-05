@@ -1,15 +1,9 @@
 ; ======================================================
-; multiply
+; m_multiply
 ; 
-; This function multiplies the content of register x and 
-; y and stores the result in register a. 
 ; 
-; This function uses a loop to sum up register y until 
-; the loop has ended. If x is a larger number than y, the 
-; two are swapped to reduce the number of iterations and 
-; thereby improve performance.
 ; 
-; a = x * y
+; a = r0 * r1
 ; 
 ; labels:
 ; m_multiply
@@ -21,35 +15,35 @@
 ; Michiel Drost - Nullpointer Works
 ; 
 ; updated: 
-; 02-03-2021
+; 05-03-2021
 ; 
 ; ======================================================
 m_multiply:
 	push c
-	push x
-	push y
+	push r0
+	push r1
 	
-	cmp y,0
-	je _m_mul_done 		; if y == 0 
+	cmp r1,0
+	je _m_mul_done 		; if r1 == 0 
 	
-	cmp x,y
-	jle _m_mul_start	; if x > y, swap
-	load c,x
-	load x,y
-	load y,c
+	cmp r0,r1
+	jle _m_mul_start	; if r0 > r1, swap
+	load c,r0
+	load r0,r1
+	load r1,c
 	
 _m_mul_start:
 	load c,0 			; init c = 0
-	inc x
+	inc r0
 _m_mul_loop:
-	dec x
-	je _m_mul_done 		; if x == 0
-	add c,y
+	dec r0
+	je _m_mul_done 		; if r0 == 0
+	add c,r1
 	jmp _m_mul_loop
 _m_mul_done:
 	load a,c
 	
-	pop y
-	pop x
+	pop r1
+	pop r0
 	pop c
 	ret

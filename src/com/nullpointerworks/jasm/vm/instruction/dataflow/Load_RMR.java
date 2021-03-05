@@ -10,21 +10,17 @@ import com.nullpointerworks.jasm.vm.VirtualMachine;
 /**
  * <pre>
  * instruction: 		LOAD 
- * bytes: 		33 r1 ?? ?? xx xx xx xx
+ * bytes: 		32 r1 r2 ??
  * byte 1:		operation code
  * byte 2:		register 1
- * byte 3:		n/a
+ * byte 3:		register 2
  * byte 4:		n/a
- * byte 5:		value
- * byte 6:		value
- * byte 7:		value
- * byte 8:		value
  * </pre>
- * Load value into register
+ * Load value of register into another register
  */
-public class Load_RV implements Instruction
+public class Load_RMR implements Instruction
 {
-	private final VMInstruction operation = VMInstruction.LOAD_RV;
+	private final VMInstruction operation = VMInstruction.LOAD_RMR;
 	
 	@Override
 	public boolean match(int opcode)
@@ -36,21 +32,23 @@ public class Load_RV implements Instruction
 	@Override
 	public void execute(VirtualMachine vm) 
 	{
-		Register regIP 		= vm.getRegister(VMRegister.REG_IP);
-		int instruction 	= vm.getMemory( regIP.getValue() );
-		int value 			= vm.getMemory( regIP.getValue()+1 );
+		Register regIP = vm.getRegister(VMRegister.REG_IP);
+		int instruction = vm.getMemoryAt( regIP );
 		
 		int tar1 = (instruction & 0x00ff0000) >> 16;
+		int tar2 = (instruction & 0x0000ff00) >> 8;
+		
 		VMRegister sel1 = VMRegister.findRegister(tar1);
-		if (sel1 == null)
-		{
-			vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
-			return;
-		}
+		VMRegister sel2 = VMRegister.findRegister(tar2);
+		
+		if (sel1 == null) vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
+		if (sel2 == null) vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
+		if (vm.hasException()) return;
 		
 		Register reg1 = vm.getRegister(sel1);
-		reg1.setValue( value );
+		Register reg2 = vm.getRegister(sel2);
 		
-		regIP.addValue(2);
+		vm.setMemory(reg1.getValue(), reg2.getValue());
+		regIP.addValue(1);
 	}
 }

@@ -70,6 +70,8 @@ public class BytecodeVirtualMachine implements VirtualMachine
 		instructions.add( new Interrupt() );
 		
 		instructions.add( new Load_RR() );
+		instructions.add( new Load_RRM() );
+		instructions.add( new Load_RMR() );
 		instructions.add( new Load_RV() );
 		instructions.add( new Load_RM() );
 		instructions.add( new Load_MR() );
@@ -83,15 +85,11 @@ public class BytecodeVirtualMachine implements VirtualMachine
 		instructions.add( new Sub_RV() );
 		instructions.add( new Cmp_RR() );
 		instructions.add( new Cmp_RV() );
+		instructions.add( new Shl() );
+		instructions.add( new Shr() );
 		instructions.add( new Neg() );
 		instructions.add( new Inc() );
 		instructions.add( new Dec() );
-		instructions.add( new Shl() );
-		instructions.add( new Shr() );
-		//instructions.add( new Mul_RR() );
-		//instructions.add( new Mul_RV() );
-		//instructions.add( new Div_RR() );
-		//instructions.add( new Div_RV() );
 		
 		instructions.add( new Jump() );
 		instructions.add( new JumpEqual() );

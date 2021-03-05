@@ -1,30 +1,26 @@
-package com.nullpointerworks.jasm.vm.instruction.arithmetic;
+package com.nullpointerworks.jasm.vm.instruction.dataflow;
 
 import com.nullpointerworks.jasm.vm.Instruction;
 import com.nullpointerworks.jasm.vm.Register;
+import com.nullpointerworks.jasm.vm.VMException;
 import com.nullpointerworks.jasm.vm.VMInstruction;
 import com.nullpointerworks.jasm.vm.VMRegister;
 import com.nullpointerworks.jasm.vm.VirtualMachine;
 
-/*
- * add <reg>,<reg>
- * add <reg>,<imm>
- */
-
 /**
  * <pre>
- * instruction: 		MUL 
- * bytes: 		16 r1 r2 ??
+ * instruction: 		LOAD 
+ * bytes: 		31 r1 r2 ??
  * byte 1:		operation code
  * byte 2:		register 1
  * byte 3:		register 2
  * byte 4:		n/a
  * </pre>
- * Multiply the content of two registers and stores the result in register 1.
+ * Load value of register into another register
  */
-public class Mul_RR implements Instruction
+public class Load_RRM implements Instruction
 {
-	private final VMInstruction operation = VMInstruction.MUL_RR;
+	private final VMInstruction operation = VMInstruction.LOAD_RRM;
 	
 	@Override
 	public boolean match(int opcode)
@@ -39,19 +35,20 @@ public class Mul_RR implements Instruction
 		Register regIP = vm.getRegister(VMRegister.REG_IP);
 		int instruction = vm.getMemoryAt( regIP );
 		
-		VMRegister sel1 = VMUtil.getFirstRegister(vm, instruction);
-		VMRegister sel2 = VMUtil.getSecondRegister(vm, instruction);
+		int tar1 = (instruction & 0x00ff0000) >> 16;
+		int tar2 = (instruction & 0x0000ff00) >> 8;
+		
+		VMRegister sel1 = VMRegister.findRegister(tar1);
+		VMRegister sel2 = VMRegister.findRegister(tar2);
+		
+		if (sel1 == null) vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
+		if (sel2 == null) vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
 		if (vm.hasException()) return;
 		
 		Register reg1 = vm.getRegister(sel1);
 		Register reg2 = vm.getRegister(sel2);
 		
-		long result = (long)reg1.getValue() * (long)reg2.getValue();
-		int v = (int)(result & 0x00000000ffffffff);
-		int o = (int)(result >> 32);
-		
-		reg1.setValue(v);
-		VMUtil.setFlags(vm, v, o);
+		reg1.setValue( vm.getMemory( reg2.getValue() ) );
 		regIP.addValue(1);
 	}
 }

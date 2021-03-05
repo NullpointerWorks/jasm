@@ -10,7 +10,7 @@ import com.nullpointerworks.jasm.vm.VirtualMachine;
 /**
  * <pre>
  * instruction: 		LOAD 
- * bytes: 		32 r1 ?? ?? xx xx xx xx
+ * bytes: 		34 r1 ?? ?? xx xx xx xx
  * byte 1:		operation code
  * byte 2:		register 1
  * byte 3:		n/a

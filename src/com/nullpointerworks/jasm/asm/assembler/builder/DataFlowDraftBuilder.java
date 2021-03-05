@@ -3,6 +3,7 @@ package com.nullpointerworks.jasm.asm.assembler.builder;
 import static com.nullpointerworks.jasm.vm.VMInstruction.LOAD_MR;
 import static com.nullpointerworks.jasm.vm.VMInstruction.LOAD_RM;
 import static com.nullpointerworks.jasm.vm.VMInstruction.LOAD_RR;
+import static com.nullpointerworks.jasm.vm.VMInstruction.LOAD_RRM;
 import static com.nullpointerworks.jasm.vm.VMInstruction.LOAD_RV;
 import static com.nullpointerworks.jasm.vm.VMInstruction.PUSH_R;
 import static com.nullpointerworks.jasm.vm.VMInstruction.PUSH_V;
@@ -88,9 +89,19 @@ class DataFlowDraftBuilder extends AbstractDraftBuilder
 		{
 			if (op2.isRegister())
 			{
-				BuilderUtil.setCode(d, LOAD_RR, 
-									op1.getRegister(), 
-									op2.getRegister());
+				if (op2.isAddress())
+				{
+					BuilderUtil.setCode(d, LOAD_RRM, 
+											op1.getRegister(), 
+											op2.getRegister());
+				}
+				else
+				{
+					BuilderUtil.setCode(d, LOAD_RR, 
+										op1.getRegister(), 
+										op2.getRegister());
+				}
+				
 				draft.add(d);
 				return;
 			}

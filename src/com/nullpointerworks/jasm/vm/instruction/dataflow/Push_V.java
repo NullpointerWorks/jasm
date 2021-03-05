@@ -9,7 +9,7 @@ import com.nullpointerworks.jasm.vm.VirtualMachine;
 /**
  * <pre>
  * instruction: 		PUSH 
- * bytes: 		35 r1 ?? ?? xx xx xx xx
+ * bytes: 		37 r1 ?? ?? xx xx xx xx
  * byte 1:		operation code
  * byte 2:		n/a
  * byte 3:		n/a

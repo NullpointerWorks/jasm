@@ -13,12 +13,14 @@ public enum VMInstruction
 	 * (3x) data flow
 	 */
 	LOAD_RR(0x30),
-	LOAD_RV(0x31),
-	LOAD_RM(0x32),
-	LOAD_MR(0x33),
-	PUSH_R(0x34),
-	PUSH_V(0x35),
-	POP(0x36),
+	LOAD_RRM(0x31),
+	LOAD_RMR(0x32),
+	LOAD_RV(0x33),
+	LOAD_RM(0x34),
+	LOAD_MR(0x35),
+	PUSH_R(0x36),
+	PUSH_V(0x37),
+	POP(0x38),
 	
 	/*
 	 * (2x) control flow
@@ -47,10 +49,6 @@ public enum VMInstruction
 	NEG(0x18),
 	INC(0x19),
 	DEC(0x1a),
-	MUL_RR(0x1b),
-	MUL_RV(0x1c),
-	DIV_RR(0x1d),
-	DIV_RV(0x1e),
 	
 	/*
 	 * (0x) system

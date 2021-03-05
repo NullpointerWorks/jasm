@@ -7,17 +7,15 @@ jmp main
 ; ======================================================
 ; multiply
 ; ======================================================
-m_multiply:
-	push a
-	inc sp
-	load a, &sp
-	int OUT_A
+multiply:
+	push r0
+	push r1
 	
 	
 	
 	
-	dec sp
-	pop a
+	pop r1
+	pop r0
 	ret
 
 ; ======================================================
@@ -26,7 +24,7 @@ m_multiply:
 main:
 	push 2
 	push 3
-	call m_multiply
+	call multiply
 	
 	int OUT_A
 	int EXIT

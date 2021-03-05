@@ -1,5 +1,5 @@
 <NotepadPlus>
-    <UserLang name="Assembly VM" ext="jasm jsm asm" udlVersion="2.1">
+    <UserLang name="Assembly JASM" ext="jasm jsm asm" udlVersion="2.1">
         <Settings>
             <Global caseIgnored="yes" allowFoldOfComments="no" foldCompact="no" forcePureLC="0" decimalSeparator="0" />
             <Prefix Keywords1="no" Keywords2="yes" Keywords3="yes" Keywords4="yes" Keywords5="no" Keywords6="no" Keywords7="no" Keywords8="no" />
@@ -24,7 +24,7 @@
             <Keywords name="Folders in comment, open"></Keywords>
             <Keywords name="Folders in comment, middle"></Keywords>
             <Keywords name="Folders in comment, close"></Keywords>
-            <Keywords name="Keywords1">load LOAD call CALL ret RET cmp CMP sub SUB add ADD jmp JMP je JE jne JNE jl JL jle JLE jg JG jge JGE pop POP push PUSH nop NOP neg NEG inc INC dec DEC shl SHL shr SHR int INT or OR and AND xor XOR </Keywords>
+            <Keywords name="Keywords1">load LOAD call CALL ret RET cmp CMP sub SUB add ADD jmp JMP je JE jne JNE jl JL jle JLE jg JG jge JGE pop POP push PUSH nop NOP neg NEG inc INC dec DEC shl SHL shr SHR int INT or OR and AND xor XOR</Keywords>
             <Keywords name="Keywords2">&amp;</Keywords>
             <Keywords name="Keywords3">0x 0X</Keywords>
             <Keywords name="Keywords4">.inc .INC .def .DEF .org .ORG</Keywords>

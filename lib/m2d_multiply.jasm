@@ -19,18 +19,20 @@
 ; _m2d_multiply_sub
 ; 
 ; definitions:
-; M2_A1
-; M2_B1
-; M2_C1
-; M2_D1
-;  M2_A2
-;  M2_B2
-;  M2_C2
-;  M2_D2
-; M2_A3
-; M2_B3
-; M2_C3
-; M2_D3
+; M1_A
+; M1_B
+; M1_C
+; M1_D
+; 
+; M2_A
+; M2_B
+; M2_C
+; M2_D
+; 
+; M3_A
+; M3_B
+; M3_C
+; M3_D
 ; 
 ; using:
 ; m2d_defines.jasm
@@ -55,36 +57,36 @@ m2d_multiply:
 	push r0
 	
 	; calc A3
-	load a,M2_A1
-	load b,M2_A2
-	load c,M2_B1
-	load d,M2_C2
+	load a,M1_A
+	load b,M2_A
+	load c,M1_B
+	load d,M2_C
 	call _m2d_multiply_sub
-	load M2_A3,r0
+	load M3_A,r0
 	
 	; calc B3
-	load a,M2_A1
-	load b,M2_B2
-	load c,M2_B1
-	load d,M2_D2
+	load a,M1_A
+	load b,M2_B
+	load c,M1_B
+	load d,M2_D
 	call _m2d_multiply_sub
-	load M2_B3,r0
+	load M3_B,r0
 	
 	; calc C3
-	load a,M2_C1
-	load b,M2_A2
-	load c,M2_D1
-	load d,M2_C2
+	load a,M1_C
+	load b,M2_A
+	load c,M1_D
+	load d,M2_C
 	call _m2d_multiply_sub
-	load M2_C3,r0
+	load M3_C,r0
 	
 	; calc D3
-	load a,M2_C1
-	load b,M2_B2
-	load c,M2_D1
-	load d,M2_D2
+	load a,M1_C
+	load b,M2_B
+	load c,M1_D
+	load d,M2_D
 	call _m2d_multiply_sub
-	load M2_D3,r0
+	load M3_D,r0
 	
 	pop r0
 	pop d

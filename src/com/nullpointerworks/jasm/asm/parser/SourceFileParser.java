@@ -359,6 +359,7 @@ public class SourceFileParser implements Parser
 			/*
 			 * checks are done based on file names
 			 * the auxiliary list hold path information
+			 * these paths are later used to create new include directories
 			 */
 			if (!includes.contains(filename)) 
 			{

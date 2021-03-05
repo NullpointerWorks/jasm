@@ -21,6 +21,7 @@ public class SourceFileParser implements Parser
 {
 	private final String ADDRESS_MARK = "&";
 	private final String LABEL_MARK = ":";
+	private String basePath = "";
 	
 	private List<String> includes = null; // keeps a list of all uniquely included files while parsing
 	private List<String> includesAux = null; // contains file yet to be included. this list gets modified
@@ -104,6 +105,12 @@ public class SourceFileParser implements Parser
 			addError("Primary source file \""+filename+"\" is not recognized as JASM source code.");
 			return; // fatal error
 		}
+		
+		// find base path. set as default include path
+		File main = new File(filename);
+		String filepath = main.getAbsolutePath();
+		basePath = filepath.substring(0, filepath.length() - filename.length());
+		addIncludesPath(basePath);
 		
 		verbose.onPrint("-------------------------------");
 		verbose.onPrint("Parsing Start\n");

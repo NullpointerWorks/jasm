@@ -83,6 +83,7 @@ public class SourceCodeAssembler implements Assembler
 	
 	private void setOrigin(int origin) 
 	{
+		instIndex = origin;
 		for (int o = origin; o>0; o--) code.add(0);
 	}
 	

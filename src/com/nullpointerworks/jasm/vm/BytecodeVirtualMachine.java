@@ -126,7 +126,7 @@ public class BytecodeVirtualMachine implements VirtualMachine
 				return;
 			}
 		}
-		
+		System.out.println(""+regIP.getValue());
 		throwException( VMException.VMEX_NO_EXECUTION );
 		regIP.addValue(1);
 	}
@@ -165,10 +165,15 @@ public class BytecodeVirtualMachine implements VirtualMachine
 	}
 	
 	@Override
+	public void setOrigin(int origin)
+	{
+		regIP.setValue(origin);
+	}
+	
+	@Override
 	public void setMemorySize(int size)
 	{
 		regSP.setValue(size);
-		regIP.setValue(0);
 		memory.clear();
 		for (; size>0; size--)
 		{

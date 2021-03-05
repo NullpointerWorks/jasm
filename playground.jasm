@@ -5,7 +5,7 @@
 .inc "lib/m_multiply.jasm"
 .inc "lib/m_divide.jasm"
 
-.org 800
+.org 100
 
 ; ======================================================
 ; program entry

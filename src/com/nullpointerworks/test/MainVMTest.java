@@ -31,7 +31,7 @@ public class MainVMTest implements InterruptListener, VerboseListener
 		 * the parser formats the source code writing
 		 */
 		Parser parser = new SourceFileParser();
-		parser.setVerboseListener(this);
+		//parser.setVerboseListener(this);
 		parser.parse("playground.jasm");
 		if(parser.hasErrors())
 		{
@@ -70,6 +70,7 @@ public class MainVMTest implements InterruptListener, VerboseListener
 		VirtualMachine vm = new BytecodeVirtualMachine();
 		vm.setMemorySize(2048);
 		vm.setInterruptListener(this);
+		vm.setOrigin(origin);
 		vm.setMemory(0, code);
 		
 		boolean running = !vm.hasException();

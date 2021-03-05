@@ -8,6 +8,7 @@ public interface VirtualMachine
 	void throwInterrupt(int code);
 	
 	void setInterruptListener(InterruptListener il);
+	void setOrigin(int origin);
 	void setMemorySize(int size);
 	void setMemory(int index, int value);
 	void setMemory(int offset, List<Integer> mem);

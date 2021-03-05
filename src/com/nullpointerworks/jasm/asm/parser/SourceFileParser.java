@@ -351,9 +351,18 @@ public class SourceFileParser implements Parser
 		if (include.startsWith("\"") && include.endsWith("\"")) 
 		{
 			include = include.replace("\"", "");
-			if (!includes.contains(include)) 
+			include = include.replace("\\", "/");
+			
+			String[] tokens = include.split("/");
+			String filename = tokens[tokens.length-1];
+			
+			/*
+			 * checks are done based on file names
+			 * the auxiliary list hold path information
+			 */
+			if (!includes.contains(filename)) 
 			{
-				includes.add(include);
+				includes.add(filename);
 				includesAux.add(include);
 			}
 		}
@@ -460,10 +469,10 @@ public class SourceFileParser implements Parser
 			return null;
 		}
 		
-		// find base path. set as default include path
-		File main = new File(inc);
-		String filepath = main.getAbsolutePath();
-		String include = filepath.substring(0, filepath.length() - inc.length());
+		// find path. set as new include directory
+		String filepath = file.getAbsolutePath();
+		String filename = file.getName();
+		String include = filepath.substring(0, filepath.length() - filename.length());
 		addIncludesPath(include);
 		
 		FileReader fr;

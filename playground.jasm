@@ -16,8 +16,13 @@ main:
 	load r1, 5
 	load V1_X, r0
 	load V1_Y, r1
+	
+	load r0, 1
+	load r1, 3
+	load V2_X, r0
+	load V2_Y, r1
+	
 	call m2d_dot
-	
-	
+	int OUT_A
 	
 	int EXIT

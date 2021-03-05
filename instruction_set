@@ -1,0 +1,160 @@
+		    _   _     _  __  __ 
+		   / \ \ \   / /|  \/  |
+		  / _ \ \ \_/ / | |\/| |
+		 / ___ \ \   /  | |  | |
+		/_/   \_\ \_/   |_|  |_|
+	
+    NPW Assembler Virtual Machine
+    Version 2.0.0
+
+================================================
+
+instruction: 	NOP 
+bytes: 			00 00 00 00
+
+================================================
+
+instruction: 	INT <x> 
+bytes: 			01 xx xx xx
+
+================================================
+
+instruction: 	ADD <reg , reg>
+bytes: 			10 r1 r2 ??
+
+instruction: 	ADD <reg , imm>
+bytes: 			11 r1 ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	SUB <reg , reg>
+bytes: 			12 r1 r2 ??
+
+instruction: 	SUB <reg , imm>
+bytes: 			13 r1 ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	CMP <reg , reg>
+bytes: 			14 r1 r2 ??
+
+instruction: 	CMP <reg , imm>
+bytes: 			15 r1 ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	MUL <reg , reg>
+bytes: 			16 r1 r2 ??
+
+instruction: 	MUL <reg , imm>
+bytes: 			17 r1 ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	NEG <reg>
+bytes: 			18 r1 ?? ??
+
+================================================
+
+instruction: 	INC <reg>
+bytes: 			19 r1 ?? ??
+
+================================================
+
+instruction: 	DEC <reg>
+bytes: 			1a r1 ?? ??
+
+================================================
+
+instruction: 	DIV <reg , reg , reg>
+bytes: 			1b r1 r2 r2
+
+instruction: 	DIV <reg , imm , reg>
+bytes: 			1c r1 r2 ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	LOAD <reg, reg> 
+bytes: 			30 r1 r2 ??
+
+instruction: 	LOAD <reg, imm> 
+bytes: 			31 r1 ?? ??
+bytes: 			xx xx xx xx
+
+instruction: 	LOAD <reg, mem> 
+bytes: 			32 r1 ?? ??
+bytes: 			xx xx xx xx
+
+instruction: 	LOAD <mem, reg> 
+bytes: 			33 r1 ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	PUSH <reg> 
+bytes: 			34 r1 00 00
+
+================================================
+
+instruction: 	POP <reg> 
+bytes: 			35 r1 00 00
+
+================================================
+
+instruction: 	JMP <imm>
+bytes: 			20 ?? ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	JE <imm>
+bytes: 			21 ?? ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	JNE <imm>
+bytes: 			22 ?? ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	JL <imm>
+bytes: 			23 ?? ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	JLE <imm>
+bytes: 			24 ?? ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	JG <imm>
+bytes: 			25 ?? ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	JGE <imm>
+bytes: 			26 ?? ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	CALL <imm>
+bytes: 			27 ?? ?? ??
+bytes: 			xx xx xx xx
+
+================================================
+
+instruction: 	RET
+bytes: 			28 ?? ?? ??
+
+================================================

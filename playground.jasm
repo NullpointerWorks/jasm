@@ -1,0 +1,19 @@
+.def EXIT 0
+.def OUT_A 1
+.def OUT_B 2
+jmp main
+
+print:
+	int OUT_A
+	ret
+
+main:
+	load a, 22	; 0b 0001 0110
+	load b, 8   ; 0b 0000 1000
+	and a, b    ; 0b 0000 0000
+	jne exit
+	call print
+	
+exit:
+	int EXIT
+

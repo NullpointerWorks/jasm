@@ -6,11 +6,11 @@
 ; the "def_m2d" file. The result can fetched by loading 
 ; from the specified memory location.
 ; 
-; |A1 B1|   |V2_X|   |V1_X|
-; |C1 D1| * |V2_Y| = |V1_Y|
+; |M1_A M1_B|   |V2_X|   |V1_X|
+; |M1_C M1_D| * |V2_Y| = |V1_Y|
 ; 
-; V2_X = (A1, B1) dot (V2_X, V2_Y)
-; V2_Y = (C1, D1) dot (V2_X, V2_Y)
+; X1 = (A, B) dot (X2, Y2)
+; Y1 = (C, D) dot (X2, Y2)
 ; 
 ; labels:
 ; m2d_transform
@@ -20,10 +20,10 @@
 ; V1_Y
 ; V2_X
 ; V2_Y
-; M2_A1
-; M2_B1
-; M2_C1
-; M2_D1
+; M1_A
+; M1_B
+; M1_C
+; M1_D
 ; 
 ; using:
 ; m2d_defines.jasm
@@ -46,15 +46,15 @@ m2d_transform:
 	push r2
 	push a
 	
-	load r0, M2_A1
-	load r1, M2_B1
+	load r0, M1_A
+	load r1, M1_B
 	load V1_X, r0
 	load V1_Y, r1
 	call m2d_dot
 	load r2, a
 	
-	load r0, M2_C1
-	load r1, M2_D1
+	load r0, M1_C
+	load r1, M1_D
 	load V1_X, r0
 	load V1_Y, r1
 	call m2d_dot

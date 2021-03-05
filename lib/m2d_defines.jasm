@@ -28,17 +28,17 @@
 ; |A B|
 ; |C D|
 
-.def M2_A1 &6
-.def M2_B1 &7
-.def M2_C1 &8
-.def M2_D1 &9
+.def M1_A &6
+.def M1_B &7
+.def M1_C &8
+.def M1_D &9
 
-.def M2_A2 &10
-.def M2_B2 &11
-.def M2_C2 &12
-.def M2_D2 &13
+.def M2_A &10
+.def M2_B &11
+.def M2_C &12
+.def M2_D &13
 
-.def M2_A3 &14
-.def M2_B3 &15
-.def M2_C3 &16
-.def M2_D3 &17
+.def M3_A &14
+.def M3_B &15
+.def M3_C &16
+.def M3_D &17

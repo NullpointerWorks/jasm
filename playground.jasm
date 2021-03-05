@@ -29,10 +29,10 @@ main:
 	load r1, 0
 	load r2, 0
 	load r3, 1
-	load M2_A1, r0
-	load M2_B1, r1
-	load M2_C1, r2
-	load M2_D1, r3
+	load M1_A, r0
+	load M1_B, r1
+	load M1_C, r2
+	load M1_D, r3
 	load r0, 3
 	load r1, 4
 	load V2_X, r0

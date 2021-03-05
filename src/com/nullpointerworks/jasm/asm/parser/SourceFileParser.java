@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.nullpointerworks.jasm.asm.ParserUtility;
+import static com.nullpointerworks.jasm.asm.ParserUtility.*;
+
 import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.error.ParseError;
@@ -20,9 +21,6 @@ import com.nullpointerworks.jasm.asm.error.ParseError;
  */
 public class SourceFileParser implements Parser
 {
-	private final String ADDRESS_MARK = "&";
-	private final String LABEL_MARK = ":";
-	
 	private List<String> includes = null; // keeps a list of all uniquely included files while parsing
 	private List<String> includesAux = null; // contains file yet to be included. this list gets modified
 	private List<String> includesPath = null; // all traceable paths to look for jasm source code 
@@ -110,7 +108,7 @@ public class SourceFileParser implements Parser
 		verbose.onPrint("-------------------------------");
 		verbose.onPrint("Parsing Start\n");
 		
-		if (!ParserUtility.isValidFile(filename))
+		if (!isValidFile(filename))
 		{
 			addError("Primary source file \""+filename+"\" is not recognized as JASM source code.");
 			return; // fatal error
@@ -137,7 +135,7 @@ public class SourceFileParser implements Parser
 				 * get next include file
 				 */
 				String inc = includesAux.remove(l);
-				if (!ParserUtility.isValidFile(inc)) continue;
+				if (!isValidFile(inc)) continue;
 				
 				/*
 				 * scan include directories for a matching path
@@ -335,7 +333,7 @@ public class SourceFileParser implements Parser
 		/*
 		 * if verbose, print parsed line
 		 */
-		String linemarker = ParserUtility.fillFromBack(""+linenumber," ",strLeng)+"| "+line;
+		String linemarker = fillFromBack(""+linenumber," ",strLeng)+"| "+line;
 		verbose.onPrint(linemarker);
 		code.add(sc);
 	}
@@ -445,8 +443,8 @@ public class SourceFileParser implements Parser
 	{
 		String line = sc.getLine();
 		String org = line.substring(5).trim();
-		boolean isHexadec = ParserUtility.isHexadec(org);
-		boolean isInteger = ParserUtility.isInteger(org);
+		boolean isHexadec = isHexadec(org);
+		boolean isInteger = isInteger(org);
 		
 		if (isHexadec)
 		{
@@ -534,32 +532,6 @@ public class SourceFileParser implements Parser
 	}
 	
 	// =================================================================
-	
-	private boolean isValidLabel(String label)
-	{
-		if ( isValidNumber(label) ) return false;
-		if ( label.matches("\\D[a-zA-Z0-9\\_]+") ) return true;
-		return false;
-	}
-	
-	private boolean isAddress(String str)
-	{
-		return str.startsWith(ADDRESS_MARK);
-	}
-	
-	private boolean isValidAddress(String number)
-	{
-		if (!isAddress(ADDRESS_MARK)) return false;
-		number = number.substring(1);
-		return isValidNumber(number);
-	}
-	
-	private boolean isValidNumber(String number)
-	{
-		if (ParserUtility.isInteger(number)) return true;
-		if (ParserUtility.isHexadec(number)) return true;
-		return false;
-	}
 	
 	private void newDefine(String n, String v, SourceCode sc, List<Definition> defs) 
 	{

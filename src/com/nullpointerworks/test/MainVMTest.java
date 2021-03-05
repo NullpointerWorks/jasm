@@ -115,6 +115,15 @@ public class MainVMTest implements InterruptListener, VerboseListener
 			System.out.println( "B: "+regB.getValue() );
 			return;
 		}
+		
+		if (code == 3)
+		{
+			int V1_X = vm.getMemory(0);
+			int V1_Y = vm.getMemory(1);
+			
+			System.out.println( "V1: ("+V1_X+","+V1_Y+")");
+			return;
+		}
 	}
 	
 	private void printMachineCode(int offset, List<Integer> code) 

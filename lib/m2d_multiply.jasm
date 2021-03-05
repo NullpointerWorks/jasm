@@ -33,18 +33,18 @@
 ; M2_D3
 ; 
 ; using:
-; def_m2d.jasm
+; m2d_defines.jasm
 ; m_multiply.jasm
 ; 
 ; author: 
 ; Michiel Drost - Nullpointer Works
 ; 
 ; updated: 
-; 02-03-2021
+; 05-03-2021
 ; 
 ; ======================================================
 
-.inc "def_m2d.jasm"
+.inc "m2d_defines.jasm"
 .inc "m_multiply.jasm"
 
 m2d_multiply:
@@ -52,7 +52,7 @@ m2d_multiply:
 	push b
 	push c
 	push d
-	push x
+	push r0
 	
 	; calc A3
 	load a,M2_A1
@@ -60,7 +60,7 @@ m2d_multiply:
 	load c,M2_B1
 	load d,M2_C2
 	call _m2d_multiply_sub
-	load M2_A3,x
+	load M2_A3,r0
 	
 	; calc B3
 	load a,M2_A1
@@ -68,7 +68,7 @@ m2d_multiply:
 	load c,M2_B1
 	load d,M2_D2
 	call _m2d_multiply_sub
-	load M2_B3,x
+	load M2_B3,r0
 	
 	; calc C3
 	load a,M2_C1
@@ -76,7 +76,7 @@ m2d_multiply:
 	load c,M2_D1
 	load d,M2_C2
 	call _m2d_multiply_sub
-	load M2_C3,x
+	load M2_C3,r0
 	
 	; calc D3
 	load a,M2_C1
@@ -84,9 +84,9 @@ m2d_multiply:
 	load c,M2_D1
 	load d,M2_D2
 	call _m2d_multiply_sub
-	load M2_D3,x
+	load M2_D3,r0
 	
-	pop x
+	pop r0
 	pop d
 	pop c
 	pop b
@@ -95,9 +95,9 @@ m2d_multiply:
 	
 _m2d_multiply_sub:
 	call m_multiply
-	load x,a
+	load r0,a
 	load a,c
 	load b,d
 	call m_multiply
-	add x,a
+	add r0,a
 	ret

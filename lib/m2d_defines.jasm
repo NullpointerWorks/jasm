@@ -13,6 +13,8 @@
 ; ======================================================
 
 ; vector definition
+; (X, Y)
+
 .def V1_X &0
 .def V1_Y &1
 
@@ -23,6 +25,9 @@
 .def V3_Y &5
 
 ; matrix definition
+; |A B|
+; |C D|
+
 .def M2_A1 &6
 .def M2_B1 &7
 .def M2_C1 &8

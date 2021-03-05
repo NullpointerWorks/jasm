@@ -1,9 +1,11 @@
 .def EXIT 0
 .def OUT_A 1
 .def OUT_B 2
+.def OUT_V1 3
 
 .inc "lib/m2d_defines.jasm"
 .inc "lib/m2d_dot.jasm"
+.inc "lib/m2d_transform.jasm"
 
 .org 20
 
@@ -16,13 +18,28 @@ main:
 	load r1, 5
 	load V1_X, r0
 	load V1_Y, r1
-	
 	load r0, 1
 	load r1, 3
 	load V2_X, r0
 	load V2_Y, r1
-	
 	call m2d_dot
 	int OUT_A
 	
+	load r0, 1
+	load r1, 0
+	load r2, 0
+	load r3, 1
+	load M2_A1, r0
+	load M2_B1, r1
+	load M2_C1, r2
+	load M2_D1, r3
+	load r0, 3
+	load r1, 4
+	load V2_X, r0
+	load V2_Y, r1
+	call m2d_transform
+	
+	int OUT_V1
+	
+exit:
 	int EXIT

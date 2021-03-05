@@ -13,6 +13,7 @@ import static com.nullpointerworks.jasm.vm.VMInstruction.RET;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.BuilderUtil;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 import com.nullpointerworks.jasm.vm.VMInstruction;

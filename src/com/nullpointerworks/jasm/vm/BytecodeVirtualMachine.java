@@ -13,6 +13,7 @@ public class BytecodeVirtualMachine implements VirtualMachine
 {
 	private Register regIP;
 	private Register regSP;
+	private Register regDP;
 	
 	private Register regA;
 	private Register regB;
@@ -43,6 +44,7 @@ public class BytecodeVirtualMachine implements VirtualMachine
 	{
 		regIP = new Register();
 		regSP = new Register();
+		regDP = new Register();
 		regA = new Register();
 		regB = new Register();
 		regC = new Register();
@@ -210,6 +212,7 @@ public class BytecodeVirtualMachine implements VirtualMachine
 		{
 		case REG_IP: return regIP;
 		case REG_SP: return regSP;
+		case REG_DP: return regDP;
 		case REG_A: return regA;
 		case REG_B: return regB;
 		case REG_C: return regC;

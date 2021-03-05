@@ -1,7 +1,8 @@
 ; ======================================================
 ; m_multiply
 ; 
-; 
+; Multiplies the content of register r0 with r1 and stores 
+; the result in register a.
 ; 
 ; a = r0 * r1
 ; 

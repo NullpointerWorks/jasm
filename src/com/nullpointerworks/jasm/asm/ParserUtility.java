@@ -1,6 +1,6 @@
-package com.nullpointerworks.jasm.asm.parser;
+package com.nullpointerworks.jasm.asm;
 
-class ParseUtil 
+public class ParserUtility 
 {
 	private static final String INTEGER 	= "[+-]?\\d+";
 	private static final String HEXADEC 	= "^(0x|0X|#).[0-9A-Fa-f]+";

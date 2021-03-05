@@ -3,6 +3,8 @@ package com.nullpointerworks.jasm.asm.assembler.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.BuilderUtil;
+import com.nullpointerworks.jasm.asm.ParserUtility;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 import com.nullpointerworks.jasm.vm.VMInstruction;
@@ -55,12 +57,12 @@ class SystemDraftBuilder extends AbstractDraftBuilder
 
 		VMInstruction inst = VMInstruction.INT;
 		int value = 0;
-		if ( BuilderUtil.isInteger(operands) )
+		if ( ParserUtility.isInteger(operands) )
 		{
 			value = Integer.parseInt(operands);
 		}
 		else
-		if ( BuilderUtil.isHexadec(operands) )
+		if ( ParserUtility.isHexadec(operands) )
 		{
 			String opp = operands.replace("0x", "");
 			value = Integer.parseInt(opp, 16);

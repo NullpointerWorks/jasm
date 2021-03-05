@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.ParserUtility;
 import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.error.ParseError;
@@ -26,12 +27,13 @@ public class SourceFileParser implements Parser
 	private List<String> includes = null; // keeps a list of all uniquely included files while parsing
 	private List<String> includesAux = null; // contains file yet to be included. this list gets modified
 	private List<String> includesPath = null; // all traceable paths to look for jasm source code 
-
+	
 	private List<Definition> defs = null; // contains all definition code
 	private List<Definition> defDups = null; // contains duplicate definitions
 	
 	private List<SourceCode> code = null; // contains parsed code
 	private List<BuildError> errors; // contains errors
+	private int origin = 0;
 	
 	private VerboseListener verbose = (s)->{};
 	private int strLeng = 2; // line numbering spacing. 2 characters by default
@@ -51,7 +53,7 @@ public class SourceFileParser implements Parser
 	public SourceFileParser() 
 	{
 		strLeng = 2;
-		
+		origin = 0;
 		code = new ArrayList<SourceCode>();
 		includes = new ArrayList<String>();
 		includesAux = new ArrayList<String>();
@@ -86,6 +88,12 @@ public class SourceFileParser implements Parser
 	}
 	
 	@Override
+	public int getOrigin()
+	{
+		return origin;
+	}
+	
+	@Override
 	public void setVerboseListener(VerboseListener verbose)
 	{
 		this.verbose = verbose;
@@ -100,7 +108,7 @@ public class SourceFileParser implements Parser
 	@Override
 	public void parse(String filename)
 	{
-		if (!ParseUtil.isValidFile(filename))
+		if (!ParserUtility.isValidFile(filename))
 		{
 			addError("Primary source file \""+filename+"\" is not recognized as JASM source code.");
 			return; // fatal error
@@ -114,7 +122,6 @@ public class SourceFileParser implements Parser
 		
 		verbose.onPrint("-------------------------------");
 		verbose.onPrint("Parsing Start\n");
-		
 		if (includesPath.size() > 0)
 		{
 			verbose.onPrint("Linker");
@@ -144,7 +151,7 @@ public class SourceFileParser implements Parser
 			for (;l>=0;l--)
 			{
 				String inc = includesAux.remove(l);
-				if (!ParseUtil.isValidFile(inc)) continue;
+				if (!ParserUtility.isValidFile(inc)) continue;
 				
 				boolean found = false;
 				for (String path : includesPath)
@@ -294,7 +301,6 @@ public class SourceFileParser implements Parser
 		if (line.startsWith(".inc "))
 		{
 			parseInclude(sc);
-			return;
 		}
 		
 		/*
@@ -306,14 +312,21 @@ public class SourceFileParser implements Parser
 		}
 		
 		/*
+		 * if origin directive
+		 */
+		if (line.startsWith(".org "))
+		{
+			parseOrigin(sc);
+		}
+		
+		/*
 		 * if verbose, print parsed line
 		 */
-		String linemarker = ParseUtil.fillFromBack(""+linenumber," ",strLeng)+"| "+line;
+		String linemarker = ParserUtility.fillFromBack(""+linenumber," ",strLeng)+"| "+line;
 		verbose.onPrint(linemarker);
-		
 		code.add(sc);
 	}
-	
+
 	private void parseInclude(SourceCode sc) 
 	{
 		String line = sc.getLine();
@@ -402,6 +415,25 @@ public class SourceFileParser implements Parser
 			// also add the first instance of that definition
 			if (findDefine(name,defDups) == null) defDups.add(pack3);
 			defDups.add( new Definition(name, "", sc));
+		}
+	}
+	
+	private void parseOrigin(SourceCode sc) 
+	{
+		String line = sc.getLine();
+		String org = line.substring(5).trim();
+		boolean isHexadec = ParserUtility.isHexadec(org);
+		boolean isInteger = ParserUtility.isInteger(org);
+		
+		if (isHexadec)
+		{
+			org = org.substring(2);
+			origin = Integer.parseInt(org, 16);
+		}
+		else
+		if (isInteger)
+		{
+			origin = Integer.parseInt(org);
 		}
 	}
 	
@@ -495,8 +527,8 @@ public class SourceFileParser implements Parser
 	
 	private boolean isValidNumber(String number)
 	{
-		if (ParseUtil.isInteger(number)) return true;
-		if (ParseUtil.isHexadec(number)) return true;
+		if (ParserUtility.isInteger(number)) return true;
+		if (ParserUtility.isHexadec(number)) return true;
 		return false;
 	}
 	

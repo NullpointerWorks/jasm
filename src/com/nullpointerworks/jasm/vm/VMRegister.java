@@ -4,6 +4,7 @@ public enum VMRegister
 {
 	REG_IP,
 	REG_SP,
+	REG_DP,
 	
 	REG_A,
 	REG_B,

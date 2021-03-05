@@ -44,4 +44,9 @@ public interface Parser
 	 * 
 	 */
 	List<Definition> getDefinitions();
+	
+	/**
+	 * 
+	 */
+	int getOrigin();
 }

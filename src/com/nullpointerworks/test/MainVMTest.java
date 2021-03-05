@@ -28,10 +28,10 @@ public class MainVMTest implements InterruptListener, VerboseListener
 	public MainVMTest()
 	{
 		/*
-		 * the parser formats the source code writting
+		 * the parser formats the source code writing
 		 */
 		Parser parser = new SourceFileParser();
-		//parser.setVerboseListener(this);
+		parser.setVerboseListener(this);
 		parser.parse("playground.jasm");
 		if(parser.hasErrors())
 		{
@@ -44,13 +44,14 @@ public class MainVMTest implements InterruptListener, VerboseListener
 		}
 		List<SourceCode> sourcecode = parser.getSourceCode();
 		List<Definition> definitions = parser.getDefinitions();
+		int origin = parser.getOrigin();
 		
 		/*
 		 * the assembler turns source code objects into machine code
 		 */
 		Assembler assemble = new SourceCodeAssembler();
 		//assemble.setVerboseListener(this);
-		assemble.draft(sourcecode, definitions);
+		assemble.draft(sourcecode, definitions, origin);
 		if(assemble.hasErrors())
 		{
 			List<BuildError> errors = assemble.getErrors();
@@ -61,7 +62,7 @@ public class MainVMTest implements InterruptListener, VerboseListener
 			return;
 		}
 		List<Integer> code = assemble.getMachineCode();
-		printMachineCode(code);
+		//printMachineCode(origin, code);
 		
 		/*
 		 * create virtual machine and run code
@@ -115,7 +116,7 @@ public class MainVMTest implements InterruptListener, VerboseListener
 		}
 	}
 	
-	private void printMachineCode(List<Integer> code) 
+	private void printMachineCode(int offset, List<Integer> code) 
 	{
 		onPrint("-------------------------------");
 		onPrint("Machine Code Start\n");
@@ -126,8 +127,10 @@ public class MainVMTest implements InterruptListener, VerboseListener
 		for (int k=0; k<leng; k++) padding += " ";
 		String paddingFormat = "%0"+leng+"x";
 		
-		for (Integer i : code)
+		for (int j = offset, l = code.size(); j<l; j++)
 		{
+			Integer i = code.get(j);
+			
 			int b1 = (i>>24)&0xff;
 			int b2 = (i>>16)&0xff;
 			int b3 = (i>>8)&0xff;

@@ -1,5 +1,6 @@
 package com.nullpointerworks.jasm.asm.assembler.builder;
 
+import com.nullpointerworks.jasm.asm.ParserUtility;
 import com.nullpointerworks.jasm.vm.VMRegister;
 
 class Operand 
@@ -17,8 +18,8 @@ class Operand
 		if (isAddress) op = o.substring(1);
 		else op = o;
 		
-		isInteger = BuilderUtil.isInteger(op);
-		isHexadec = BuilderUtil.isHexadec(op);
+		isInteger = ParserUtility.isInteger(op);
+		isHexadec = ParserUtility.isHexadec(op);
 		
 		r = findRegister(op);
 		isRegister = r != null;
@@ -64,6 +65,7 @@ class Operand
 		{
 		case "ip": return VMRegister.REG_IP;
 		case "sp": return VMRegister.REG_SP;
+		case "dp": return VMRegister.REG_DP;
 		
 		case "a": return VMRegister.REG_A;
 		case "b": return VMRegister.REG_B;

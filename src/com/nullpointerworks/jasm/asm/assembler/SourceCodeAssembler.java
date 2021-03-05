@@ -62,11 +62,12 @@ public class SourceCodeAssembler implements Assembler
 	}
 	
 	@Override
-	public void draft(List<SourceCode> sourcecode, List<Definition> definitions)
+	public void draft(List<SourceCode> sourcecode, List<Definition> definitions, int origin)
 	{
 		verbose.onPrint("-------------------------------");
 		verbose.onPrint("Assembler Start\n");
 		
+		setOrigin(origin);
 		insertDefinition(sourcecode, definitions);
 		processCode(sourcecode);
 		insertLabels(labelled, labels, code);
@@ -74,12 +75,17 @@ public class SourceCodeAssembler implements Assembler
 		verbose.onPrint("\nAssembler End");
 		verbose.onPrint("-------------------------------");
 	}
-	
+
 	private void addError(SourceCode code, String message)
 	{
 		errors.add( new AssembleError(code, message) );
 	}
-
+	
+	private void setOrigin(int origin) 
+	{
+		for (int o = origin; o>0; o--) code.add(0);
+	}
+	
 	private void insertDefinition(List<SourceCode> code, List<Definition> defs) 
 	{
 		/*

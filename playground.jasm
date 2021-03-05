@@ -2,30 +2,22 @@
 .def OUT_A 1
 .def OUT_B 2
 
-jmp main
+.inc "lib/m_multiply.jasm"
+.inc "lib/m_divide.jasm"
 
-; ======================================================
-; multiply
-; ======================================================
-multiply:
-	push r0
-	push r1
-	
-	
-	
-	
-	pop r1
-	pop r0
-	ret
+.org 800
 
 ; ======================================================
 ; program entry
 ; ======================================================
 main:
-	push 2
-	push 3
-	call multiply
 	
+	load r0, 4
+	load r1, 3
+	call m_multiply
 	int OUT_A
+	
+	call m_divide
+	int OUT_A
+	
 	int EXIT
-

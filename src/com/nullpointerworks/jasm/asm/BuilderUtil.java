@@ -1,24 +1,11 @@
-package com.nullpointerworks.jasm.asm.assembler.builder;
+package com.nullpointerworks.jasm.asm;
 
 import com.nullpointerworks.jasm.asm.assembler.Draft;
 import com.nullpointerworks.jasm.vm.VMInstruction;
 import com.nullpointerworks.jasm.vm.VMRegister;
 
-class BuilderUtil 
+public class BuilderUtil 
 {
-	private static final String INTEGER = "[+-]?\\d+";
-	private static final String HEXADEC = "^(0x|0X|#).[0-9A-Fa-f]+";
-	
-	public static boolean isInteger(String str)
-	{
-		return str.matches(INTEGER);
-	}
-	
-	public static boolean isHexadec(String str)
-	{
-		return str.matches(HEXADEC);
-	}
-	
 	public static void setCodeImmidiate(Draft d, VMInstruction inst, int value)
 	{
 		int opcode = inst.getCode() << 24;

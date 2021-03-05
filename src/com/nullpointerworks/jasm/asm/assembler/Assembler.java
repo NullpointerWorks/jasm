@@ -12,7 +12,7 @@ public interface Assembler
 	/**
 	 * 
 	 */
-	void draft(List<SourceCode> sourcecode, List<Definition> definitions);
+	void draft(List<SourceCode> sourcecode, List<Definition> definitions, int origin);
 	
 	/**
 	 * 

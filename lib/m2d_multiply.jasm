@@ -42,7 +42,7 @@
 ; Michiel Drost - Nullpointer Works
 ; 
 ; updated: 
-; 05-03-2021
+; 06-03-2021
 ; 
 ; ======================================================
 
@@ -51,55 +51,57 @@
 
 m2d_multiply:
 	push a
-	push b
-	push c
-	push d
 	push r0
+	push r1
+	push r2
+	push r3
+	push r4
 	
 	; calc A3
-	load a,M1_A
-	load b,M2_A
-	load c,M1_B
-	load d,M2_C
+	load r0,M1_A
+	load r1,M2_A
+	load r2,M1_B
+	load r3,M2_C
 	call _m2d_multiply_sub
-	load M3_A,r0
+	load M3_A,r4
 	
 	; calc B3
-	load a,M1_A
-	load b,M2_B
-	load c,M1_B
-	load d,M2_D
+	load r0,M1_A
+	load r1,M2_B
+	load r2,M1_B
+	load r3,M2_D
 	call _m2d_multiply_sub
-	load M3_B,r0
+	load M3_B,r4
 	
 	; calc C3
-	load a,M1_C
-	load b,M2_A
-	load c,M1_D
-	load d,M2_C
+	load r0,M1_C
+	load r1,M2_A
+	load r2,M1_D
+	load r3,M2_C
 	call _m2d_multiply_sub
-	load M3_C,r0
+	load M3_C,r4
 	
 	; calc D3
-	load a,M1_C
-	load b,M2_B
-	load c,M1_D
-	load d,M2_D
+	load r0,M1_C
+	load r1,M2_B
+	load r2,M1_D
+	load r3,M2_D
 	call _m2d_multiply_sub
-	load M3_D,r0
+	load M3_D,r4
 	
+	pop r4
+	pop r3
+	pop r2
+	pop r1
 	pop r0
-	pop d
-	pop c
-	pop b
 	pop a
 	ret
 	
 _m2d_multiply_sub:
 	call m_multiply
-	load r0,a
-	load a,c
-	load b,d
+	load r4,a
+	load r0, r2
+	load r1, r3
 	call m_multiply
-	add r0,a
+	add r4,a
 	ret

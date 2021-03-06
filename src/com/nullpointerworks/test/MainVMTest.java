@@ -128,6 +128,34 @@ public class MainVMTest implements InterruptListener, VerboseListener
 		
 		if (code == 4)
 		{
+			String A = vm.getMemory(6)+"";
+			String B = vm.getMemory(7)+"";
+			String C = vm.getMemory(8)+"";
+			String D = vm.getMemory(9)+"";
+			
+			System.out.println( "M1:");
+			System.out.println( "  | "+A+" "+B+" |");
+			System.out.println( "  | "+C+" "+D+" |");
+			
+			return;
+		}
+		
+		if (code == 5)
+		{
+			String A = vm.getMemory(10)+"";
+			String B = vm.getMemory(11)+"";
+			String C = vm.getMemory(12)+"";
+			String D = vm.getMemory(13)+"";
+			
+			System.out.println( "M2:");
+			System.out.println( "  | "+A+" "+B+" |");
+			System.out.println( "  | "+C+" "+D+" |");
+			
+			return;
+		}
+		
+		if (code == 6)
+		{
 			String A = vm.getMemory(14)+"";
 			String B = vm.getMemory(15)+"";
 			String C = vm.getMemory(16)+"";

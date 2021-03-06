@@ -2,7 +2,9 @@
 .def OUT_A 1
 .def OUT_B 2
 .def OUT_V1 3
-.def OUT_M3 4
+.def OUT_M1 4
+.def OUT_M2 5
+.def OUT_M3 6
 
 .inc "lib/m2d_defines.jasm"
 .inc "lib/m2d_multiply.jasm"
@@ -14,10 +16,10 @@
 ; ======================================================
 main:
 	
-	load r0, 1
-	load r1, 0
-	load r2, 0
-	load r3, 1
+	load r0, 2
+	load r1, 4
+	load r2, 1
+	load r3, 6
 	load M1_A, r0
 	load M1_B, r1
 	load M1_C, r2
@@ -33,6 +35,8 @@ main:
 	load M2_D, r3
 	
 	call m2d_multiply
+	int OUT_M1
+	int OUT_M2
 	int OUT_M3
 	
 exit:

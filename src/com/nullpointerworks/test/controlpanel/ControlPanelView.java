@@ -1,19 +1,23 @@
 package com.nullpointerworks.test.controlpanel;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-public class ControlPanelView 
+public class ControlPanelView implements KeyListener
 {
 	
 	JFrame jfWindow;
 	JPanel jpInterface;
 	JTable jtBytecode;
 	
-	String[] saBytecodeColumn = {"","Address","Bytecode"};
+	HighlightedJTextPane jtaCode;
 	
+	String[] saBytecodeColumn = {"","Address","Bytecode"};
 	
 	JTextField tjfRegisterA;
 	JTextField tjfRegisterB;
@@ -24,16 +28,14 @@ public class ControlPanelView
 	{
 		
 		
-		HighlightedJTextPane jtaCode = new HighlightedJTextPane();
+		jtaCode = new HighlightedJTextPane();
 		jtaCode.setSize(1000, 600);
-		jtaCode.append("load a, 12\n");
-		jtaCode.append("load b, 31\n");
-		jtaCode.append("add a, b\n");
-		jtaCode.append("int OUT_A\n");
+		jtaCode.appendLine("load a, 12");
+		jtaCode.appendLine("load b, 31");
+		jtaCode.appendLine("add a, b");
+		jtaCode.appendLine("int OUT_A");
 		jtaCode.updateHighlight();
-
-		
-		
+		jtaCode.addKeyListener(this);
 		
 		JPanel jpCodeScreen = new JPanel();
 		jpCodeScreen.setLayout( new AbsoluteLayout() );
@@ -77,8 +79,8 @@ public class ControlPanelView
 		jfWindow.setLayout( new AbsoluteLayout() );
 		jfWindow.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		jfWindow.setResizable(false);
-		//jfWindow.add(jpInterface);
-		jfWindow.add(jpCodeScreen);
+		jfWindow.add(jpInterface);
+		//jfWindow.add(jpCodeScreen);
 		jfWindow.pack();
 		jfWindow.validate();
 		jfWindow.setLocationRelativeTo(null);
@@ -89,6 +91,15 @@ public class ControlPanelView
 		jfWindow.setVisible(b);
 	}
 	
-	
-	
+	@Override
+	public void keyTyped(KeyEvent e) {}
+
+	@Override
+	public void keyPressed(KeyEvent e) {}
+
+	@Override
+	public void keyReleased(KeyEvent e) 
+	{
+		jtaCode.updateHighlight();
+	}
 }

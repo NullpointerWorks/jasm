@@ -223,7 +223,7 @@ public class SourceFileParser implements Parser
 			 * format instruction text to make it more predictable for parsing
 			 */
 			line = line.replace("\t", " ");
-			line = line.replaceAll(" +", " ");
+			line = line.replaceAll("\\s+", " ");
 			line = line.replace(", ", ",");
 			line = line.replace(" ,", ",");
 			line = line.trim();

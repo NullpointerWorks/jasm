@@ -1,4 +1,4 @@
-package com.nullpointerworks.test.controlpanel;
+package com.nullpointerworks.test.controlpanel.awt;
 
 import java.awt.Component;
 import java.awt.Container;

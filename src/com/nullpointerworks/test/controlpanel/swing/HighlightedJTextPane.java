@@ -1,4 +1,4 @@
-package com.nullpointerworks.test.controlpanel;
+package com.nullpointerworks.test.controlpanel.swing;
 
 import java.awt.Color;
 

@@ -31,10 +31,23 @@ public class ControlPanelView implements KeyListener
 	JPanel jpInterface;
 	JTable jtBytecode;
 	
+	JTextField tjfRegisterIP;
+	JTextField tjfRegisterSP;
+	JTextField tjfRegisterDP;
 	JTextField tjfRegisterA;
 	JTextField tjfRegisterB;
 	JTextField tjfRegisterC;
 	JTextField tjfRegisterD;
+	JTextField tjfRegister0;
+	JTextField tjfRegister1;
+	JTextField tjfRegister2;
+	JTextField tjfRegister3;
+	JTextField tjfRegister4;
+	JTextField tjfRegister5;
+	JTextField tjfRegister6;
+	JTextField tjfRegister7;
+	JTextField tjfRegister8;
+	JTextField tjfRegister9;
 	
 	public ControlPanelView()
 	{
@@ -77,62 +90,100 @@ public class ControlPanelView implements KeyListener
 		addTableEntry("00000000h", "00 00 00 00");
 		addTableEntry("00000000h", "00 00 00 00");
 		addTableEntry("00000000h", "00 00 00 00");
-		
 
+		JLabel jlRegIP = new JLabel("IP");
+		JLabel jlRegSP = new JLabel("SP");
+		JLabel jlRegDP = new JLabel("DP");
 		JLabel jlRegA = new JLabel("A");
-		jlRegA.setLocation(15, 25);
-		jlRegA.setSize(10, 24);
-		
 		JLabel jlRegB = new JLabel("B");
-		jlRegB.setLocation(15, 55);
-		jlRegB.setSize(10, 24);
-		
 		JLabel jlRegC = new JLabel("C");
-		jlRegC.setLocation(15, 85);
-		jlRegC.setSize(10, 24);
-		
 		JLabel jlRegD = new JLabel("D");
-		jlRegD.setLocation(15, 115);
-		jlRegD.setSize(10, 24);
-		
+		JLabel jlReg0 = new JLabel("R0");
+		JLabel jlReg1 = new JLabel("R1");
+		JLabel jlReg2 = new JLabel("R2");
+		JLabel jlReg3 = new JLabel("R3");
+		JLabel jlReg4 = new JLabel("R4");
+		JLabel jlReg5 = new JLabel("R5");
+		JLabel jlReg6 = new JLabel("R6");
+		JLabel jlReg7 = new JLabel("R7");
+		JLabel jlReg8 = new JLabel("R8");
+		JLabel jlReg9 = new JLabel("R9");
+		tjfRegisterIP = new JTextField("00 00 00 00");
+		tjfRegisterSP = new JTextField("00 00 00 00");
+		tjfRegisterDP = new JTextField("00 00 00 00");
 		tjfRegisterA = new JTextField("00 00 00 00");
-		tjfRegisterA.setLocation(40, 25);
-		tjfRegisterA.setSize(115, 24);
-		tjfRegisterA.setEditable(false);
-		tjfRegisterA.setFont(fCourier);
-		
 		tjfRegisterB = new JTextField("00 00 00 00");
-		tjfRegisterB.setLocation(40, 55);
-		tjfRegisterB.setSize(115, 24);
-		tjfRegisterB.setEditable(false);
-		tjfRegisterB.setFont(fCourier);
-		
 		tjfRegisterC = new JTextField("00 00 00 00");
-		tjfRegisterC.setLocation(40, 85);
-		tjfRegisterC.setSize(115, 24);
-		tjfRegisterC.setEditable(false);
-		tjfRegisterC.setFont(fCourier);
-		
 		tjfRegisterD = new JTextField("00 00 00 00");
-		tjfRegisterD.setLocation(40, 115);
-		tjfRegisterD.setSize(115, 24);
-		tjfRegisterD.setEditable(false);
-		tjfRegisterD.setFont(fCourier);
+		tjfRegister0 = new JTextField("00 00 00 00");
+		tjfRegister1 = new JTextField("00 00 00 00");
+		tjfRegister2 = new JTextField("00 00 00 00");
+		tjfRegister3 = new JTextField("00 00 00 00");
+		tjfRegister4 = new JTextField("00 00 00 00");
+		tjfRegister5 = new JTextField("00 00 00 00");
+		tjfRegister6 = new JTextField("00 00 00 00");
+		tjfRegister7 = new JTextField("00 00 00 00");
+		tjfRegister8 = new JTextField("00 00 00 00");
+		tjfRegister9 = new JTextField("00 00 00 00");
 		
-
+		makeRegisterReadOut(jlRegIP, tjfRegisterIP, 25);
+		makeRegisterReadOut(jlRegSP, tjfRegisterSP, 55);
+		makeRegisterReadOut(jlRegDP, tjfRegisterDP, 85);
+		
+		makeRegisterReadOut(jlRegA, tjfRegisterA, 115);
+		makeRegisterReadOut(jlRegB, tjfRegisterB, 145);
+		makeRegisterReadOut(jlRegC, tjfRegisterC, 175);
+		makeRegisterReadOut(jlRegD, tjfRegisterD, 205);
+		makeRegisterReadOut(jlReg0, tjfRegister0, 235);
+		makeRegisterReadOut(jlReg1, tjfRegister1, 265);
+		makeRegisterReadOut(jlReg2, tjfRegister2, 295);
+		makeRegisterReadOut(jlReg3, tjfRegister3, 325);
+		makeRegisterReadOut(jlReg4, tjfRegister4, 355);
+		makeRegisterReadOut(jlReg5, tjfRegister5, 385);
+		makeRegisterReadOut(jlReg6, tjfRegister6, 415);
+		makeRegisterReadOut(jlReg7, tjfRegister7, 445);
+		makeRegisterReadOut(jlReg8, tjfRegister8, 475);
+		makeRegisterReadOut(jlReg9, tjfRegister9, 505);
+		
 		JPanel jpRegisterPanel = new JPanel();
 		jpRegisterPanel.setLayout( new AbsoluteLayout() );
 		jpRegisterPanel.setLocation(270, 5);
-		jpRegisterPanel.setSize(170, 400);
+		jpRegisterPanel.setSize(180, 590);
 		jpRegisterPanel.setBorder(BorderFactory.createTitledBorder("Registers"));
+		jpRegisterPanel.add(jlRegIP);
+		jpRegisterPanel.add(jlRegSP);
+		jpRegisterPanel.add(jlRegDP);
 		jpRegisterPanel.add(jlRegA);
 		jpRegisterPanel.add(jlRegB);
 		jpRegisterPanel.add(jlRegC);
 		jpRegisterPanel.add(jlRegD);
+		jpRegisterPanel.add(jlReg0);
+		jpRegisterPanel.add(jlReg1);
+		jpRegisterPanel.add(jlReg2);
+		jpRegisterPanel.add(jlReg3);
+		jpRegisterPanel.add(jlReg4);
+		jpRegisterPanel.add(jlReg5);
+		jpRegisterPanel.add(jlReg6);
+		jpRegisterPanel.add(jlReg7);
+		jpRegisterPanel.add(jlReg8);
+		jpRegisterPanel.add(jlReg9);
+		jpRegisterPanel.add(tjfRegisterIP);
+		jpRegisterPanel.add(tjfRegisterSP);
+		jpRegisterPanel.add(tjfRegisterDP);
 		jpRegisterPanel.add(tjfRegisterA);
 		jpRegisterPanel.add(tjfRegisterB);
 		jpRegisterPanel.add(tjfRegisterC);
 		jpRegisterPanel.add(tjfRegisterD);
+		jpRegisterPanel.add(tjfRegister0);
+		jpRegisterPanel.add(tjfRegister1);
+		jpRegisterPanel.add(tjfRegister2);
+		jpRegisterPanel.add(tjfRegister3);
+		jpRegisterPanel.add(tjfRegister4);
+		jpRegisterPanel.add(tjfRegister5);
+		jpRegisterPanel.add(tjfRegister6);
+		jpRegisterPanel.add(tjfRegister7);
+		jpRegisterPanel.add(tjfRegister8);
+		jpRegisterPanel.add(tjfRegister9);
 		
 		
 		
@@ -193,7 +244,15 @@ public class ControlPanelView implements KeyListener
         jtable.revalidate();
 	}
 	
-	
+	private void makeRegisterReadOut(JLabel jlRegA, JTextField tjfRegisterA, int y)
+	{
+		jlRegA.setLocation(15, y);
+		jlRegA.setSize(20, 24);
+		tjfRegisterA.setLocation(50, y);
+		tjfRegisterA.setSize(115, 24);
+		tjfRegisterA.setEditable(false);
+		tjfRegisterA.setFont(fCourier);
+	}
 	
 	@Override
 	public void keyTyped(KeyEvent e) {}

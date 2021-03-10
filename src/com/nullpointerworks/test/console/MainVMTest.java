@@ -1,4 +1,4 @@
-package com.nullpointerworks.test;
+package com.nullpointerworks.test.console;
 
 import static com.nullpointerworks.jasm.vm.VMRegister.*;
 
@@ -22,10 +22,10 @@ public class MainVMTest implements InterruptListener, VerboseListener
 {
 	public static void main(String[] args) 
 	{
-		new MainVMTest();
+		new MainVMTest(args);
 	}
 	
-	public MainVMTest()
+	public MainVMTest(String[] args)
 	{
 		/*
 		 * the parser formats the source code writing

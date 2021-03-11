@@ -125,11 +125,9 @@ public class ControlPanelView implements KeyListener
 		tjfRegister7 = new JTextField("00 00 00 00");
 		tjfRegister8 = new JTextField("00 00 00 00");
 		tjfRegister9 = new JTextField("00 00 00 00");
-		
 		makeRegisterReadOut(jlRegIP, tjfRegisterIP, 25);
 		makeRegisterReadOut(jlRegSP, tjfRegisterSP, 55);
 		makeRegisterReadOut(jlRegDP, tjfRegisterDP, 85);
-		
 		makeRegisterReadOut(jlRegA, tjfRegisterA, 115);
 		makeRegisterReadOut(jlRegB, tjfRegisterB, 145);
 		makeRegisterReadOut(jlRegC, tjfRegisterC, 175);
@@ -184,6 +182,11 @@ public class ControlPanelView implements KeyListener
 		jpRegisterPanel.add(tjfRegister7);
 		jpRegisterPanel.add(tjfRegister8);
 		jpRegisterPanel.add(tjfRegister9);
+		
+		
+		
+		
+		
 		
 		
 		

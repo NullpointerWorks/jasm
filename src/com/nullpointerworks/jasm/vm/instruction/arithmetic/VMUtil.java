@@ -7,20 +7,22 @@ import com.nullpointerworks.jasm.vm.VirtualMachine;
 
 class VMUtil 
 {
-	public static void setFlags(VirtualMachine vm, int v) 
-	{
-		setFlags(vm,v,0);
-	}
-	
-	public static void setFlags(VirtualMachine vm, int v, int o) 
+	public static void checkZeroFlag(VirtualMachine vm, int v) 
 	{
 		vm.getFlag(VMFlag.ZERO).setValue(false);
-		vm.getFlag(VMFlag.SIGN).setValue(false);
-		vm.getFlag(VMFlag.FLOW).setValue(false);
-		
 		if (v==0) vm.getFlag(VMFlag.ZERO).setValue(true);
+	}
+	
+	public static void checkSignFlag(VirtualMachine vm, int v) 
+	{
+		vm.getFlag(VMFlag.SIGN).setValue(false);
 		if (v<0) vm.getFlag(VMFlag.SIGN).setValue(true);
-		if (o!=0) vm.getFlag(VMFlag.FLOW).setValue(true);
+	}
+	
+	public static void checkOverflowFlag(VirtualMachine vm, int v) 
+	{
+		vm.getFlag(VMFlag.FLOW).setValue(false);
+		if (v!=0) vm.getFlag(VMFlag.FLOW).setValue(true);
 	}
 	
 	public static VMRegister getFirstRegister(VirtualMachine vm, int instruction) 

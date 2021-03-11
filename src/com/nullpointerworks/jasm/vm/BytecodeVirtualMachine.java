@@ -11,15 +11,18 @@ import com.nullpointerworks.jasm.vm.instruction.system.*;
 
 public class BytecodeVirtualMachine implements VirtualMachine
 {
+	// processor registers
 	private Register regIP;
 	private Register regSP;
 	private Register regDP;
 	
+	// system registers
 	private Register regA;
 	private Register regB;
 	private Register regC;
 	private Register regD;
 	
+	// general purpose registers
 	private Register reg0;
 	private Register reg1;
 	private Register reg2;

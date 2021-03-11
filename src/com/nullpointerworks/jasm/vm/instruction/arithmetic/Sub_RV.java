@@ -2,7 +2,6 @@ package com.nullpointerworks.jasm.vm.instruction.arithmetic;
 
 import com.nullpointerworks.jasm.vm.Instruction;
 import com.nullpointerworks.jasm.vm.Register;
-import com.nullpointerworks.jasm.vm.VMFlag;
 import com.nullpointerworks.jasm.vm.VMInstruction;
 import com.nullpointerworks.jasm.vm.VMRegister;
 import com.nullpointerworks.jasm.vm.VirtualMachine;
@@ -47,16 +46,9 @@ public class Sub_RV implements Instruction
 		reg1.addValue( -value );
 
 		int v = reg1.getValue();
-		setFlags(vm, v);
+		VMUtil.checkZeroFlag(vm, v);
+		VMUtil.checkSignFlag(vm, v);
+		VMUtil.checkOverflowFlag(vm, v);
 		regIP.addValue(2);
-	}
-	
-	protected void setFlags(VirtualMachine vm, int v) 
-	{
-		vm.getFlag(VMFlag.ZERO).setValue(false);
-		vm.getFlag(VMFlag.SIGN).setValue(false);
-		
-		if (v==0) vm.getFlag(VMFlag.ZERO).setValue(true);
-		if (v<0) vm.getFlag(VMFlag.SIGN).setValue(true);
 	}
 }

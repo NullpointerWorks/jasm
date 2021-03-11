@@ -46,7 +46,9 @@ public class Shl implements Instruction
 		reg1.setValue( reg1.getValue() << 1 );
 		
 		int v = reg1.getValue();
-		VMUtil.setFlags(vm, v);
+		VMUtil.checkZeroFlag(vm, v);
+		VMUtil.checkSignFlag(vm, v);
+		VMUtil.checkOverflowFlag(vm, v);
 		regIP.addValue(1);
 	}
 }

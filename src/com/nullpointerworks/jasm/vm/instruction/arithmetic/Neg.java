@@ -46,7 +46,7 @@ public class Neg implements Instruction
 		reg1.setValue( -reg1.getValue() );
 		
 		int v = reg1.getValue();
-		VMUtil.setFlags(vm, v);
+		VMUtil.checkSignFlag(vm, v);
 		regIP.addValue(1);
 	}
 }

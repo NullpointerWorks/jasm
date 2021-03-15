@@ -5,7 +5,7 @@ import java.awt.Color;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.StyleConstants;
 
-public class UnrecognizedHighlighter implements HighlightValidator 
+public class DefaultHighlighter implements HighlightValidator 
 {
 	@Override
 	public boolean isValid(String token) 

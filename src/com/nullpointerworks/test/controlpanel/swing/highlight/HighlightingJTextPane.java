@@ -1,6 +1,8 @@
 package com.nullpointerworks.test.controlpanel.swing.highlight;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -15,47 +17,49 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
-public class HighlightedJTextPane extends JTextPane implements KeyListener
+public class HighlightingJTextPane extends JTextPane implements KeyListener
 {
 	private static final long serialVersionUID = 6407970407357102776L;
-
+	
 	private List<HighlightValidator> highlights;
-	private HighlightValidator unrecognizedHilite;
 	private AttributeSet aset;
 	
-	public HighlightedJTextPane()
+	public HighlightingJTextPane()
 	{
-		StyleContext sc = StyleContext.getDefaultStyleContext();
-        aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.black);
-        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
-        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
-        
         highlights = new ArrayList<HighlightValidator>();
-        highlights.add( new InstructionHighlighter() );
-        highlights.add( new RegisterHighlighter() );
-        highlights.add( new NumberHighlighter() );
-        unrecognizedHilite = new UnrecognizedHighlighter();
-        
 		addKeyListener(this);
+		setFontFamily("Lucida Console", 12);
+	}
+
+	/**
+	 * 
+	 */
+	public void addHighlightValidator(HighlightValidator hlv)
+	{
+		highlights.add(hlv);
 	}
 	
-	/*
-	 * convoluted way of adding text to the textpane
+	/**
+	 * Add a string of text to the textpane.
 	 */
 	public void append(String str)
 	{
-		int len = getDocument().getLength();
-        setCaretPosition(len);
+		str = str.replace("\t", "    ");
+        setCaretPosition(getDocument().getLength());
         setCharacterAttributes(aset, false);
         replaceSelection(str);
+        setCaretPosition(getDocument().getLength());
 	}
 	
+	/**
+	 * Add a line of text to the textpane.
+	 */
 	public void appendLine(String str)
 	{
 		append(str+"\n");
 	}
 	
-	/*
+	/**
 	 * scan for text tokens and highlight them accordingly
 	 */
 	public void updateHighlight()
@@ -83,11 +87,23 @@ public class HighlightedJTextPane extends JTextPane implements KeyListener
 	}
 	
 	@Override
+	public void setFont(Font font) 
+	{
+		setFontFamily(font);
+	}
+	
+	@Override
 	public void keyTyped(KeyEvent e) {}
 	
 	@Override
 	public void keyPressed(KeyEvent e) 
 	{
+		
+		if (isKeystrokeUndo(e))
+		{
+			// TODO
+		}
+		
 		if (e.getKeyChar() == KeyEvent.VK_TAB) 
 		{
 			e.consume();
@@ -95,7 +111,7 @@ public class HighlightedJTextPane extends JTextPane implements KeyListener
 	        replaceSelection("    "); // add 4 spaces instead of a tab
         }
 	}
-	
+
 	@Override
 	public void keyReleased(KeyEvent e) 
 	{
@@ -134,6 +150,34 @@ public class HighlightedJTextPane extends JTextPane implements KeyListener
 				return;
 			}
 		}
-		unrecognizedHilite.setHighlight(asNew);
+	}
+	
+	private void setFontFamily(String fam, int size) 
+	{
+		setFontFamily( new Font(fam, Font.PLAIN, size) );
+	}
+	
+	private void setFontFamily(Font font) 
+	{
+		String fontFamily = font.getFamily();
+		int fontSize = font.getSize();
+		
+		StyleContext sc = StyleContext.getDefaultStyleContext();
+        aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLACK);
+        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+        aset = sc.addAttribute(aset, StyleConstants.FontFamily, fontFamily);
+        aset = sc.addAttribute(aset, StyleConstants.FontSize, fontSize);
+        super.setFont( font );
+	}
+	
+	private boolean isKeystrokeUndo(KeyEvent e) 
+	{
+		int code = e.getKeyCode();
+		int mod = e.getModifiersEx();
+		if (mod == InputEvent.CTRL_DOWN_MASK)
+		{
+			return code == KeyEvent.VK_Z;
+		}
+		return false;
 	}
 }

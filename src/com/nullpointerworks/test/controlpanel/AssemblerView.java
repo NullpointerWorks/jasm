@@ -5,14 +5,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.nullpointerworks.test.controlpanel.awt.AbsoluteLayout;
-import com.nullpointerworks.test.controlpanel.swing.highlight.HighlightedJTextPane;
+import com.nullpointerworks.test.controlpanel.swing.highlight.*;
 
 public class AssemblerView 
 {
 	private JFrame jfWindow;
 	private JPanel jpInterface;
 	
-	private HighlightedJTextPane jtaCode;
+	private HighlightingJTextPane jtaCode;
 	
 	private JButton jbLoadMain;
 	
@@ -20,14 +20,19 @@ public class AssemblerView
 	public AssemblerView()
 	{
 		
-		jtaCode = new HighlightedJTextPane();
+		jtaCode = new HighlightingJTextPane();
 		jtaCode.setSize(500, 300);
+		jtaCode.addHighlightValidator( new InstructionHighlighter() );
+		jtaCode.addHighlightValidator( new RegisterHighlighter() );
+		jtaCode.addHighlightValidator( new NumberHighlighter() );
+		jtaCode.addHighlightValidator( new DefaultHighlighter() );
 		jtaCode.appendLine("load a, 12");
 		jtaCode.appendLine("load b, 31");
 		jtaCode.appendLine("add a, b");
 		jtaCode.appendLine("int OUT_A");
 		jtaCode.updateHighlight();
-		//jtaCode.addKeyListener(this);
+		
+		
 		
 		
 		jpInterface = new JPanel();

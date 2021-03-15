@@ -18,14 +18,14 @@ import com.nullpointerworks.jasm.vm.Register;
 import com.nullpointerworks.jasm.vm.VMProcessException;
 import com.nullpointerworks.jasm.vm.VirtualMachine;
 
-public class MainVMTest implements InterruptListener, VerboseListener
+public class MainConsoleVM implements InterruptListener, VerboseListener
 {
 	public static void main(String[] args) 
 	{
-		new MainVMTest(args);
+		new MainConsoleVM(args);
 	}
 	
-	public MainVMTest(String[] args)
+	public MainConsoleVM(String[] args)
 	{
 		/*
 		 * the parser formats the source code writing

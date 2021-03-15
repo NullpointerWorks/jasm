@@ -1,10 +1,6 @@
 package com.nullpointerworks.test.controlpanel;
 
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Insets;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,19 +19,16 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import com.nullpointerworks.test.controlpanel.awt.AbsoluteLayout;
-import com.nullpointerworks.test.controlpanel.swing.HighlightedJTextPane;
 import com.nullpointerworks.test.controlpanel.swing.StaticTableModel;
 
-public class ControlPanelView implements KeyListener
+public class ControlPanelView
 {
 	private final ImageIcon iiEmpty = new ImageIcon();
 	private final Font fCourier12 = new Font("Courier New", Font.PLAIN, 12);
 	
-	
 	private JFrame jfWindow;
-	private HighlightedJTextPane jtaCode;
 	private JPanel jpInterface;
-
+	
 	private int[] iaColumnWidth;
 	private String[] saBytecodeColumn;
 	private List<Object[]> tableDataSet;
@@ -66,22 +59,6 @@ public class ControlPanelView implements KeyListener
 	
 	public ControlPanelView()
 	{
-		
-		/*
-		jtaCode = new HighlightedJTextPane();
-		jtaCode.setSize(1000, 600);
-		jtaCode.appendLine("load a, 12");
-		jtaCode.appendLine("load b, 31");
-		jtaCode.appendLine("add a, b");
-		jtaCode.appendLine("int OUT_A");
-		jtaCode.updateHighlight();
-		jtaCode.addKeyListener(this);
-		
-		JPanel jpCodeScreen = new JPanel();
-		jpCodeScreen.setLayout( new AbsoluteLayout() );
-		jpCodeScreen.setSize(1000, 600);
-		jpCodeScreen.add(jtaCode);
-		//*/
 		
 		/*
 		 * construct menu
@@ -391,17 +368,5 @@ public class ControlPanelView implements KeyListener
 		String s4 = String.format("%02x", b4);
 		
 		return (s1+s2+s3+s4);
-	}
-	
-	@Override
-	public void keyTyped(KeyEvent e) {}
-
-	@Override
-	public void keyPressed(KeyEvent e) {}
-
-	@Override
-	public void keyReleased(KeyEvent e) 
-	{
-		jtaCode.updateHighlight();
 	}
 }

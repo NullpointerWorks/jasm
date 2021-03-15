@@ -17,5 +17,4 @@ public class MainControlPanel
 		//ControlPanelController ctrl = new ControlPanelController();
 		//view.setVisible(true);
 	}
-
 }

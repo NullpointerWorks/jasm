@@ -11,5 +11,7 @@ module libnpw.jasm
 	exports com.nullpointerworks.jasm.vm.instruction.dataflow;
 	exports com.nullpointerworks.jasm.vm.instruction.logic;
 	exports com.nullpointerworks.jasm.vm.instruction.system;
+	
 	requires java.desktop;
+	requires java.datatransfer;
 }

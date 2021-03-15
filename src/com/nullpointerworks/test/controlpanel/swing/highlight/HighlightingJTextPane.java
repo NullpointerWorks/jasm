@@ -17,20 +17,49 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
-public class HighlightingJTextPane extends JTextPane implements KeyListener
+public class HighlightingJTextPane extends JTextPane
 {
 	private static final long serialVersionUID = 6407970407357102776L;
-	
+
+	private String TAB_SIZE;
 	private List<HighlightValidator> highlights;
 	private AttributeSet aset;
+	private KeyListener keyListener;
 	
 	public HighlightingJTextPane()
 	{
         highlights = new ArrayList<HighlightValidator>();
-		addKeyListener(this);
 		setFontFamily("Lucida Console", 12);
+		setTabSize(4);
+		
+		keyListener = new KeyListener() // i prefer to keep anonymous classes as brief as possible
+		{
+			@Override
+			public void keyTyped(KeyEvent e) {}
+			@Override
+			public void keyPressed(KeyEvent e) {parseKeyPressed(e);}
+			@Override
+			public void keyReleased(KeyEvent e) {parseKeyReleased(e);}
+		};
+		addKeyListener(keyListener);
 	}
-
+	
+	/**
+	 * 
+	 */
+	public void setTabSize(int spaces)
+	{
+		if (spaces < 1) return;
+		TAB_SIZE = "";
+		for (; spaces>0; spaces--) TAB_SIZE+=" ";
+	}
+	
+	@Override
+	public void setFont(Font font)
+	{
+		setFontFamily(font);
+	}
+	
 	/**
 	 * 
 	 */
@@ -40,15 +69,24 @@ public class HighlightingJTextPane extends JTextPane implements KeyListener
 	}
 	
 	/**
+	 * 
+	 */
+	public void clearHighlightValidators()
+	{
+		highlights.clear();
+	}
+	
+	/**
 	 * Add a string of text to the textpane.
 	 */
 	public void append(String str)
 	{
-		str = str.replace("\t", "    ");
+		str = str.replace("\t", TAB_SIZE);
         setCaretPosition(getDocument().getLength());
         setCharacterAttributes(aset, false);
         replaceSelection(str);
         setCaretPosition(getDocument().getLength());
+        updateHighlight();
 	}
 	
 	/**
@@ -56,7 +94,7 @@ public class HighlightingJTextPane extends JTextPane implements KeyListener
 	 */
 	public void appendLine(String str)
 	{
-		append(str+"\n");
+		append(str+"\r\n");
 	}
 	
 	/**
@@ -86,42 +124,56 @@ public class HighlightingJTextPane extends JTextPane implements KeyListener
 		}
 	}
 	
-	@Override
-	public void setFont(Font font) 
-	{
-		setFontFamily(font);
-	}
+	// ==================================================================================
 	
-	@Override
-	public void keyTyped(KeyEvent e) {}
-	
-	@Override
-	public void keyPressed(KeyEvent e) 
+	private void parseKeyPressed(KeyEvent e)
 	{
-		
 		if (isKeystrokeUndo(e))
 		{
-			// TODO
+			// TODO implement momento to undo edit
+			return;
 		}
 		
+		// replace tabs with spaces
 		if (e.getKeyChar() == KeyEvent.VK_TAB) 
 		{
 			e.consume();
 	        setCharacterAttributes(aset, false);
-	        replaceSelection("    "); // add 4 spaces instead of a tab
+	        replaceSelection(TAB_SIZE);
+			return;
         }
+		
+		// add a new line. continue from the same indentation as the previous line
+		if (e.getKeyChar() == KeyEvent.VK_ENTER) 
+		{
+			e.consume();
+			
+			String text = getText();
+			int index = text.lastIndexOf("\n");
+			String segment = text.substring(index+1);
+			
+			int count = 0;
+			for (int i=0, l=segment.length(); i<l; i++)
+			{
+				String chr = segment.substring(i,i+1);
+				if (chr.equals("\s")) count++;
+				else break;
+			}
+			String whitespace = "\r\n";
+			for (; count>0; count--) whitespace+=" ";
+			
+			append(whitespace);
+			return;
+		}
 	}
-
-	@Override
-	public void keyReleased(KeyEvent e) 
+	
+	public void parseKeyReleased(KeyEvent e) 
 	{
 		if (e.getKeyChar() == KeyEvent.VK_ENTER) 
 		{
 			updateHighlight();
         }
 	}
-	
-	// ==================================================================================
 	
 	private void highlightToken(int offset, String token) 
 	{
@@ -132,11 +184,10 @@ public class HighlightingJTextPane extends JTextPane implements KeyListener
 		Element element = doc.getCharacterElement(offset);
 	    AttributeSet as = element.getAttributes();
 	    MutableAttributeSet asNew = new SimpleAttributeSet(as.copyAttributes());
+	    StyleConstants.setItalic(asNew, false); // reset anything italic
 	    
-	    // style the text according to keyword styles
+	    // style the text according to keyword styles, then commit changes
 	    applyHighlight(asNew, token);
-	    
-	    // commit changes for the given token
 	    doc.setCharacterAttributes(offset, token.length(), asNew, true);
 	}
 	
@@ -161,7 +212,6 @@ public class HighlightingJTextPane extends JTextPane implements KeyListener
 	{
 		String fontFamily = font.getFamily();
 		int fontSize = font.getSize();
-		
 		StyleContext sc = StyleContext.getDefaultStyleContext();
         aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLACK);
         aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);

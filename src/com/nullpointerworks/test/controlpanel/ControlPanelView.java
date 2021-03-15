@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -22,13 +23,14 @@ import com.nullpointerworks.test.controlpanel.swing.StaticTableModel;
 public class ControlPanelView implements KeyListener
 {
 	final Font fCourier12 = new Font("Courier New", Font.PLAIN, 12);
-	final Font fCourier = new Font("Courier New", Font.PLAIN, 16);
+	final Font fCourier16 = new Font("Courier New", Font.PLAIN, 16);
 	
 	
 	private JFrame jfWindow;
 	private HighlightedJTextPane jtaCode;
 	private JPanel jpInterface;
-	
+
+	private int[] iaColumnWidth;
 	private String[] saBytecodeColumn;
 	private List<Object[]> tableDataSet;
 	private JTable jtBytecode;
@@ -73,28 +75,22 @@ public class ControlPanelView implements KeyListener
 		jpCodeScreen.add(jtaCode);
 		//*/
 		
-		
-		
-		
+		iaColumnWidth = new int[] {25, 75, 95};
 		saBytecodeColumn = new String[] {"","Address","Bytecode"};
 		tableDataSet = new ArrayList<Object[]>();
-		
 		StaticTableModel stmBytecode = new StaticTableModel();
 		stmBytecode.addColumn("");
 		stmBytecode.addColumn("Address");
 		stmBytecode.addColumn("Bytecode");
-		
 		jtBytecode = new JTable(stmBytecode);
-		jtBytecode.setLocation(205, 5);
-		jtBytecode.setSize(250, 590);
-		jtBytecode.setRowHeight(22);
-		jtBytecode.setFont(fCourier);
+		jtBytecode.setRowHeight(16);
+		jtBytecode.setFont(fCourier12);
+		jtBytecode.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		jtBytecode.getTableHeader().setReorderingAllowed(false);
+		JScrollPane jcpTableScroll = new JScrollPane(jtBytecode);
+		jcpTableScroll.setLocation(165, 5);
+		jcpTableScroll.setSize(215, 590);
 		
-		addTableEntry("00000000h", "00 00 00 00");
-		addTableEntry("00000000h", "00 00 00 00");
-		addTableEntry("00000000h", "00 00 00 00");
-		addTableEntry("00000000h", "00 00 00 00");
-		addTableEntry("00000000h", "00 00 00 00");
 		
 		JLabel jlRegIP = new JLabel("IP");
 		JLabel jlRegSP = new JLabel("SP");
@@ -186,8 +182,11 @@ public class ControlPanelView implements KeyListener
 		JPanel jpStatusFlagPanel = new JPanel();
 		jpStatusFlagPanel.setLayout( new AbsoluteLayout() );
 		jpStatusFlagPanel.setLocation(5, 390);
-		jpStatusFlagPanel.setSize(155, 150);
+		jpStatusFlagPanel.setSize(155, 200);
 		jpStatusFlagPanel.setBorder(BorderFactory.createTitledBorder("Flags"));
+		
+		
+		
 		
 		
 		
@@ -197,14 +196,12 @@ public class ControlPanelView implements KeyListener
 		jpInterface.setLayout( new AbsoluteLayout() );
 		jpInterface.setLocation(0, 0);
 		jpInterface.setSize(1000, 600);
-		jpInterface.add(jtBytecode);
+		jpInterface.add(jcpTableScroll);
 		jpInterface.add(jpRegisterPanel);
 		jpInterface.add(jpStatusFlagPanel);
 		
-		
-		
 		jfWindow = new JFrame();
-		jfWindow.setTitle("Monitor VM");
+		jfWindow.setTitle("Virtual Machine Monitor");
 		jfWindow.setLayout( new AbsoluteLayout() );
 		jfWindow.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		jfWindow.setResizable(false);
@@ -213,6 +210,15 @@ public class ControlPanelView implements KeyListener
 		jfWindow.pack();
 		jfWindow.validate();
 		jfWindow.setLocationRelativeTo(null);
+		
+		
+		
+		
+		
+		for(int i=0, l=1024; i<l;i++)
+		{
+			addTableEntry(i, 0);
+		}
 		
 	}
 	
@@ -247,30 +253,35 @@ public class ControlPanelView implements KeyListener
 	{
 		tableDataSet.clear();
 		Object[][] data = new Object[][] {};
-		setDataVector(jtBytecode, data, saBytecodeColumn);
+		setDataVector(jtBytecode, data, saBytecodeColumn, iaColumnWidth);
 	}
 	
-	public synchronized void addTableEntry(String addr, String bytecode)
+	public synchronized void addTableEntry(int a, int code)
 	{
-		tableDataSet.add( new Object[] {"", addr, bytecode} );
-		Object[][] data = tableDataSet.toArray(new Object[][] {});
-		setDataVector(jtBytecode, data, saBytecodeColumn);
+		addTableEntry( getAddressFormatting(a), getCodeFormatting(code) );
 	}
 	
 	// =========================================================================================
 	
-	private void setDataVector(JTable jtable, Object[][] data, String[] columns)
+	private void addTableEntry(String addr, String bytecode)
+	{
+		tableDataSet.add( new Object[] {"", addr, bytecode} );
+		Object[][] data = tableDataSet.toArray(new Object[][] {});
+		setDataVector(jtBytecode, data, saBytecodeColumn, iaColumnWidth);
+	}
+	
+	private void setDataVector(JTable jtable, Object[][] data, String[] columns, int[] widths)
 	{
 		var model = (DefaultTableModel) jtable.getModel();
         model.setDataVector(data, columns);
         
-        var col = jtable.getColumnModel().getColumn(0);
-        col.setMinWidth(32);
-        col.setMaxWidth(32);
-
-        col = jtable.getColumnModel().getColumn(1);
-        col.setMinWidth(105);
-        col.setMaxWidth(105);
+        for (int i=0, l=widths.length; i<l; i++)
+        {
+        	var col = jtable.getColumnModel().getColumn(i);
+        	int w = widths[i];
+	        col.setMinWidth(w);
+	        col.setMaxWidth(w);
+        }
         
         jtable.revalidate();
 	}
@@ -288,6 +299,11 @@ public class ControlPanelView implements KeyListener
 	
 	private void setRegisterTextField(JTextField tjf, int i)
 	{
+		tjf.setText( getCodeFormatting(i) );
+	}
+	
+	private String getCodeFormatting(int i)
+	{
 		int b1 = (i>>24)&0xff;
 		int b2 = (i>>16)&0xff;
 		int b3 = (i>>8)&0xff;
@@ -298,7 +314,22 @@ public class ControlPanelView implements KeyListener
 		String s3 = String.format("%02x ", b3);
 		String s4 = String.format("%02x", b4);
 		
-		tjf.setText(s1+s2+s3+s4);
+		return (s1+s2+s3+s4);
+	}
+	
+	private String getAddressFormatting(int i)
+	{
+		int b1 = (i>>24)&0xff;
+		int b2 = (i>>16)&0xff;
+		int b3 = (i>>8)&0xff;
+		int b4 = (i)&0xff;
+		
+		String s1 = String.format("%02x", b1);
+		String s2 = String.format("%02x", b2);
+		String s3 = String.format("%02x", b3);
+		String s4 = String.format("%02x", b4);
+		
+		return (s1+s2+s3+s4);
 	}
 	
 	@Override

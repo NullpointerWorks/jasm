@@ -22,32 +22,32 @@ public class ControlPanelView implements KeyListener
 {
 	final Font fCourier = new Font("Courier New", Font.PLAIN, 16);
 	
-	HighlightedJTextPane jtaCode;
+	private HighlightedJTextPane jtaCode;
 	
-	String[] saBytecodeColumn;
-	List<Object[]> tableDataSet;
+	private String[] saBytecodeColumn;
+	private List<Object[]> tableDataSet;
 	
-	JFrame jfWindow;
-	JPanel jpInterface;
-	JTable jtBytecode;
+	private JFrame jfWindow;
+	private JPanel jpInterface;
+	private JTable jtBytecode;
 	
-	JTextField tjfRegisterIP;
-	JTextField tjfRegisterSP;
-	JTextField tjfRegisterDP;
-	JTextField tjfRegisterA;
-	JTextField tjfRegisterB;
-	JTextField tjfRegisterC;
-	JTextField tjfRegisterD;
-	JTextField tjfRegister0;
-	JTextField tjfRegister1;
-	JTextField tjfRegister2;
-	JTextField tjfRegister3;
-	JTextField tjfRegister4;
-	JTextField tjfRegister5;
-	JTextField tjfRegister6;
-	JTextField tjfRegister7;
-	JTextField tjfRegister8;
-	JTextField tjfRegister9;
+	private JTextField tjfRegisterIP;
+	private JTextField tjfRegisterSP;
+	private JTextField tjfRegisterDP;
+	private JTextField tjfRegisterA;
+	private JTextField tjfRegisterB;
+	private JTextField tjfRegisterC;
+	private JTextField tjfRegisterD;
+	private JTextField tjfRegister0;
+	private JTextField tjfRegister1;
+	private JTextField tjfRegister2;
+	private JTextField tjfRegister3;
+	private JTextField tjfRegister4;
+	private JTextField tjfRegister5;
+	private JTextField tjfRegister6;
+	private JTextField tjfRegister7;
+	private JTextField tjfRegister8;
+	private JTextField tjfRegister9;
 	
 	public ControlPanelView()
 	{
@@ -84,13 +84,13 @@ public class ControlPanelView implements KeyListener
 		jtBytecode.setSize(250, 590);
 		jtBytecode.setRowHeight(22);
 		jtBytecode.setFont(fCourier);
-
+		
 		addTableEntry("00000000h", "00 00 00 00");
 		addTableEntry("00000000h", "00 00 00 00");
 		addTableEntry("00000000h", "00 00 00 00");
 		addTableEntry("00000000h", "00 00 00 00");
 		addTableEntry("00000000h", "00 00 00 00");
-
+		
 		JLabel jlRegIP = new JLabel("IP");
 		JLabel jlRegSP = new JLabel("SP");
 		JLabel jlRegDP = new JLabel("DP");
@@ -128,24 +128,24 @@ public class ControlPanelView implements KeyListener
 		makeRegisterReadOut(jlRegIP, tjfRegisterIP, 25);
 		makeRegisterReadOut(jlRegSP, tjfRegisterSP, 55);
 		makeRegisterReadOut(jlRegDP, tjfRegisterDP, 85);
-		makeRegisterReadOut(jlRegA, tjfRegisterA, 115);
-		makeRegisterReadOut(jlRegB, tjfRegisterB, 145);
-		makeRegisterReadOut(jlRegC, tjfRegisterC, 175);
-		makeRegisterReadOut(jlRegD, tjfRegisterD, 205);
-		makeRegisterReadOut(jlReg0, tjfRegister0, 235);
-		makeRegisterReadOut(jlReg1, tjfRegister1, 265);
-		makeRegisterReadOut(jlReg2, tjfRegister2, 295);
-		makeRegisterReadOut(jlReg3, tjfRegister3, 325);
-		makeRegisterReadOut(jlReg4, tjfRegister4, 355);
-		makeRegisterReadOut(jlReg5, tjfRegister5, 385);
-		makeRegisterReadOut(jlReg6, tjfRegister6, 415);
-		makeRegisterReadOut(jlReg7, tjfRegister7, 445);
-		makeRegisterReadOut(jlReg8, tjfRegister8, 475);
-		makeRegisterReadOut(jlReg9, tjfRegister9, 505);
+		makeRegisterReadOut(jlRegA, tjfRegisterA, 140);
+		makeRegisterReadOut(jlRegB, tjfRegisterB, 170);
+		makeRegisterReadOut(jlRegC, tjfRegisterC, 200);
+		makeRegisterReadOut(jlRegD, tjfRegisterD, 230);
+		makeRegisterReadOut(jlReg0, tjfRegister0, 285);
+		makeRegisterReadOut(jlReg1, tjfRegister1, 315);
+		makeRegisterReadOut(jlReg2, tjfRegister2, 345);
+		makeRegisterReadOut(jlReg3, tjfRegister3, 375);
+		makeRegisterReadOut(jlReg4, tjfRegister4, 405);
+		makeRegisterReadOut(jlReg5, tjfRegister5, 435);
+		makeRegisterReadOut(jlReg6, tjfRegister6, 465);
+		makeRegisterReadOut(jlReg7, tjfRegister7, 495);
+		makeRegisterReadOut(jlReg8, tjfRegister8, 525);
+		makeRegisterReadOut(jlReg9, tjfRegister9, 555);
 		
 		JPanel jpRegisterPanel = new JPanel();
 		jpRegisterPanel.setLayout( new AbsoluteLayout() );
-		jpRegisterPanel.setLocation(270, 5);
+		jpRegisterPanel.setLocation(265, 5);
 		jpRegisterPanel.setSize(180, 590);
 		jpRegisterPanel.setBorder(BorderFactory.createTitledBorder("Registers"));
 		jpRegisterPanel.add(jlRegIP);
@@ -184,8 +184,11 @@ public class ControlPanelView implements KeyListener
 		jpRegisterPanel.add(tjfRegister9);
 		
 		
-		
-		
+		JPanel jpStatusFlagPanel = new JPanel();
+		jpStatusFlagPanel.setLayout( new AbsoluteLayout() );
+		jpStatusFlagPanel.setLocation(450, 5);
+		jpStatusFlagPanel.setSize(180, 150);
+		jpStatusFlagPanel.setBorder(BorderFactory.createTitledBorder("Flags"));
 		
 		
 		
@@ -193,9 +196,13 @@ public class ControlPanelView implements KeyListener
 		
 		jpInterface = new JPanel();
 		jpInterface.setLayout( new AbsoluteLayout() );
+		jpInterface.setLocation(0, 0);
 		jpInterface.setSize(1000, 600);
 		jpInterface.add(jtBytecode);
 		jpInterface.add(jpRegisterPanel);
+		jpInterface.add(jpStatusFlagPanel);
+		
+		
 		
 		jfWindow = new JFrame();
 		jfWindow.setTitle("Monitor VM");

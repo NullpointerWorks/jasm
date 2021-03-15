@@ -7,7 +7,7 @@ public class MainControlPanel
 
 	public static void main(String[] args) 
 	{
-		//UILookAndFeel.setLookAndFeel( UILookAndFeel.WINDOWS );
+		UILookAndFeel.setLookAndFeel( UILookAndFeel.WINDOWS );
 		
 		
 		

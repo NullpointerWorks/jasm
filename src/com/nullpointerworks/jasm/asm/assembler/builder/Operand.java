@@ -65,7 +65,6 @@ class Operand
 		{
 		case "ip": return VMRegister.REG_IP;
 		case "sp": return VMRegister.REG_SP;
-		case "dp": return VMRegister.REG_DP;
 		
 		case "a": return VMRegister.REG_A;
 		case "b": return VMRegister.REG_B;

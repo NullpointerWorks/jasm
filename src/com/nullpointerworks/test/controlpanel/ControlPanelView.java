@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,20 +21,24 @@ import com.nullpointerworks.test.controlpanel.swing.StaticTableModel;
 
 public class ControlPanelView implements KeyListener
 {
+	final Font fCourier12 = new Font("Courier New", Font.PLAIN, 12);
 	final Font fCourier = new Font("Courier New", Font.PLAIN, 16);
 	
+	
+	private JFrame jfWindow;
 	private HighlightedJTextPane jtaCode;
+	private JPanel jpInterface;
 	
 	private String[] saBytecodeColumn;
 	private List<Object[]> tableDataSet;
-	
-	private JFrame jfWindow;
-	private JPanel jpInterface;
 	private JTable jtBytecode;
+	
+	private JButton jbStep;
+	private JButton jbRun;
+	private JButton jbStop;
 	
 	private JTextField tjfRegisterIP;
 	private JTextField tjfRegisterSP;
-	private JTextField tjfRegisterDP;
 	private JTextField tjfRegisterA;
 	private JTextField tjfRegisterB;
 	private JTextField tjfRegisterC;
@@ -80,7 +85,7 @@ public class ControlPanelView implements KeyListener
 		stmBytecode.addColumn("Bytecode");
 		
 		jtBytecode = new JTable(stmBytecode);
-		jtBytecode.setLocation(5, 5);
+		jtBytecode.setLocation(205, 5);
 		jtBytecode.setSize(250, 590);
 		jtBytecode.setRowHeight(22);
 		jtBytecode.setFont(fCourier);
@@ -93,7 +98,6 @@ public class ControlPanelView implements KeyListener
 		
 		JLabel jlRegIP = new JLabel("IP");
 		JLabel jlRegSP = new JLabel("SP");
-		JLabel jlRegDP = new JLabel("DP");
 		JLabel jlRegA = new JLabel("A");
 		JLabel jlRegB = new JLabel("B");
 		JLabel jlRegC = new JLabel("C");
@@ -110,7 +114,6 @@ public class ControlPanelView implements KeyListener
 		JLabel jlReg9 = new JLabel("R9");
 		tjfRegisterIP = new JTextField("00 00 00 00");
 		tjfRegisterSP = new JTextField("00 00 00 00");
-		tjfRegisterDP = new JTextField("00 00 00 00");
 		tjfRegisterA = new JTextField("00 00 00 00");
 		tjfRegisterB = new JTextField("00 00 00 00");
 		tjfRegisterC = new JTextField("00 00 00 00");
@@ -126,31 +129,29 @@ public class ControlPanelView implements KeyListener
 		tjfRegister8 = new JTextField("00 00 00 00");
 		tjfRegister9 = new JTextField("00 00 00 00");
 		makeRegisterReadOut(jlRegIP, tjfRegisterIP, 25);
-		makeRegisterReadOut(jlRegSP, tjfRegisterSP, 55);
-		makeRegisterReadOut(jlRegDP, tjfRegisterDP, 85);
-		makeRegisterReadOut(jlRegA, tjfRegisterA, 140);
-		makeRegisterReadOut(jlRegB, tjfRegisterB, 170);
-		makeRegisterReadOut(jlRegC, tjfRegisterC, 200);
-		makeRegisterReadOut(jlRegD, tjfRegisterD, 230);
-		makeRegisterReadOut(jlReg0, tjfRegister0, 285);
-		makeRegisterReadOut(jlReg1, tjfRegister1, 315);
-		makeRegisterReadOut(jlReg2, tjfRegister2, 345);
-		makeRegisterReadOut(jlReg3, tjfRegister3, 375);
-		makeRegisterReadOut(jlReg4, tjfRegister4, 405);
-		makeRegisterReadOut(jlReg5, tjfRegister5, 435);
-		makeRegisterReadOut(jlReg6, tjfRegister6, 465);
-		makeRegisterReadOut(jlReg7, tjfRegister7, 495);
-		makeRegisterReadOut(jlReg8, tjfRegister8, 525);
-		makeRegisterReadOut(jlReg9, tjfRegister9, 555);
+		makeRegisterReadOut(jlRegSP, tjfRegisterSP, 45);
+		makeRegisterReadOut(jlRegA, tjfRegisterA, 75);
+		makeRegisterReadOut(jlRegB, tjfRegisterB, 95);
+		makeRegisterReadOut(jlRegC, tjfRegisterC, 115);
+		makeRegisterReadOut(jlRegD, tjfRegisterD, 135);
+		makeRegisterReadOut(jlReg0, tjfRegister0, 165);
+		makeRegisterReadOut(jlReg1, tjfRegister1, 185);
+		makeRegisterReadOut(jlReg2, tjfRegister2, 205);
+		makeRegisterReadOut(jlReg3, tjfRegister3, 225);
+		makeRegisterReadOut(jlReg4, tjfRegister4, 245);
+		makeRegisterReadOut(jlReg5, tjfRegister5, 265);
+		makeRegisterReadOut(jlReg6, tjfRegister6, 285);
+		makeRegisterReadOut(jlReg7, tjfRegister7, 305);
+		makeRegisterReadOut(jlReg8, tjfRegister8, 325);
+		makeRegisterReadOut(jlReg9, tjfRegister9, 345);
 		
 		JPanel jpRegisterPanel = new JPanel();
 		jpRegisterPanel.setLayout( new AbsoluteLayout() );
-		jpRegisterPanel.setLocation(265, 5);
-		jpRegisterPanel.setSize(180, 590);
+		jpRegisterPanel.setLocation(5, 5);
+		jpRegisterPanel.setSize(155, 375);
 		jpRegisterPanel.setBorder(BorderFactory.createTitledBorder("Registers"));
 		jpRegisterPanel.add(jlRegIP);
 		jpRegisterPanel.add(jlRegSP);
-		jpRegisterPanel.add(jlRegDP);
 		jpRegisterPanel.add(jlRegA);
 		jpRegisterPanel.add(jlRegB);
 		jpRegisterPanel.add(jlRegC);
@@ -167,7 +168,6 @@ public class ControlPanelView implements KeyListener
 		jpRegisterPanel.add(jlReg9);
 		jpRegisterPanel.add(tjfRegisterIP);
 		jpRegisterPanel.add(tjfRegisterSP);
-		jpRegisterPanel.add(tjfRegisterDP);
 		jpRegisterPanel.add(tjfRegisterA);
 		jpRegisterPanel.add(tjfRegisterB);
 		jpRegisterPanel.add(tjfRegisterC);
@@ -183,11 +183,10 @@ public class ControlPanelView implements KeyListener
 		jpRegisterPanel.add(tjfRegister8);
 		jpRegisterPanel.add(tjfRegister9);
 		
-		
 		JPanel jpStatusFlagPanel = new JPanel();
 		jpStatusFlagPanel.setLayout( new AbsoluteLayout() );
-		jpStatusFlagPanel.setLocation(450, 5);
-		jpStatusFlagPanel.setSize(180, 150);
+		jpStatusFlagPanel.setLocation(5, 390);
+		jpStatusFlagPanel.setSize(155, 150);
 		jpStatusFlagPanel.setBorder(BorderFactory.createTitledBorder("Flags"));
 		
 		
@@ -214,6 +213,7 @@ public class ControlPanelView implements KeyListener
 		jfWindow.pack();
 		jfWindow.validate();
 		jfWindow.setLocationRelativeTo(null);
+		
 	}
 	
 	public void setVisible(boolean b)
@@ -223,6 +223,25 @@ public class ControlPanelView implements KeyListener
 	
 	
 	
+	
+	
+	
+	public void setRegisterIP(int i) {setRegisterTextField(tjfRegisterIP, i);}
+	public void setRegisterSP(int i) {setRegisterTextField(tjfRegisterSP, i);}
+	public void setRegisterA(int i) {setRegisterTextField(tjfRegisterA, i);}
+	public void setRegisterB(int i) {setRegisterTextField(tjfRegisterB, i);}
+	public void setRegisterC(int i) {setRegisterTextField(tjfRegisterC, i);}
+	public void setRegisterD(int i) {setRegisterTextField(tjfRegisterD, i);}
+	public void setRegister0(int i) {setRegisterTextField(tjfRegister0, i);}
+	public void setRegister1(int i) {setRegisterTextField(tjfRegister1, i);}
+	public void setRegister2(int i) {setRegisterTextField(tjfRegister2, i);}
+	public void setRegister3(int i) {setRegisterTextField(tjfRegister3, i);}
+	public void setRegister4(int i) {setRegisterTextField(tjfRegister4, i);}
+	public void setRegister5(int i) {setRegisterTextField(tjfRegister5, i);}
+	public void setRegister6(int i) {setRegisterTextField(tjfRegister6, i);}
+	public void setRegister7(int i) {setRegisterTextField(tjfRegister7, i);}
+	public void setRegister8(int i) {setRegisterTextField(tjfRegister8, i);}
+	public void setRegister9(int i) {setRegisterTextField(tjfRegister9, i);}
 	
 	public void clearTable() 
 	{
@@ -237,6 +256,8 @@ public class ControlPanelView implements KeyListener
 		Object[][] data = tableDataSet.toArray(new Object[][] {});
 		setDataVector(jtBytecode, data, saBytecodeColumn);
 	}
+	
+	// =========================================================================================
 	
 	private void setDataVector(JTable jtable, Object[][] data, String[] columns)
 	{
@@ -257,11 +278,27 @@ public class ControlPanelView implements KeyListener
 	private void makeRegisterReadOut(JLabel jlRegA, JTextField tjfRegisterA, int y)
 	{
 		jlRegA.setLocation(15, y);
-		jlRegA.setSize(20, 24);
+		jlRegA.setSize(20, 18);
+		jlRegA.setFont(fCourier12);
 		tjfRegisterA.setLocation(50, y);
-		tjfRegisterA.setSize(115, 24);
+		tjfRegisterA.setSize(90, 18);
 		tjfRegisterA.setEditable(false);
-		tjfRegisterA.setFont(fCourier);
+		tjfRegisterA.setFont(fCourier12);
+	}
+	
+	private void setRegisterTextField(JTextField tjf, int i)
+	{
+		int b1 = (i>>24)&0xff;
+		int b2 = (i>>16)&0xff;
+		int b3 = (i>>8)&0xff;
+		int b4 = (i)&0xff;
+		
+		String s1 = String.format("%02x ", b1);
+		String s2 = String.format("%02x ", b2);
+		String s3 = String.format("%02x ", b3);
+		String s4 = String.format("%02x", b4);
+		
+		tjf.setText(s1+s2+s3+s4);
 	}
 	
 	@Override

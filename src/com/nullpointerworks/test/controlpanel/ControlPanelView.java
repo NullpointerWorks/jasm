@@ -1,6 +1,8 @@
 package com.nullpointerworks.test.controlpanel;
 
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -39,10 +41,11 @@ public class ControlPanelView implements KeyListener
 	private List<Object[]> tableDataSet;
 	private JTable jtBytecode;
 	
+	private JTextField tjfMemorySize;
+	private JTextField tjfCycleSpeed;
 	private JButton jbStep;
 	private JButton jbRun;
 	private JButton jbStop;
-	private JTextField tjfMemorySize;
 	
 	private JTextField tjfRegisterIP;
 	private JTextField tjfRegisterSP;
@@ -83,22 +86,17 @@ public class ControlPanelView implements KeyListener
 		/*
 		 * construct menu
 		 */
-
-		
 		JMenuItem jmiBinary = new JMenuItem("Binary");
 		JMenuItem jmiSource = new JMenuItem("Source");
-		
-		
 		JMenuItem jmiExit = new JMenuItem("Exit");
 		
-
 		JMenu jmiOpen = new JMenu("Open");
 		jmiOpen.add(jmiBinary);
 		jmiOpen.add(jmiSource);
 		
+		
 		JMenu jmProgram = new JMenu("Program");
 		jmProgram.add(jmiOpen);
-		
 		jmProgram.addSeparator();
 		jmProgram.add(jmiExit);
 		
@@ -127,7 +125,7 @@ public class ControlPanelView implements KeyListener
 		JScrollPane jcpTableScroll = new JScrollPane(jtBytecode);
 		jcpTableScroll.setLocation(165, 5);
 		jcpTableScroll.setSize(215, 590);
-		
+		setTableColumnSize(jtBytecode, iaColumnWidth);
 
 		/*
 		 * construct register readout
@@ -148,22 +146,22 @@ public class ControlPanelView implements KeyListener
 		JLabel jlReg7 = new JLabel("R7");
 		JLabel jlReg8 = new JLabel("R8");
 		JLabel jlReg9 = new JLabel("R9");
-		tjfRegisterIP = new JTextField("00 00 00 00");
-		tjfRegisterSP = new JTextField("00 00 00 00");
-		tjfRegisterA = new JTextField("00 00 00 00");
-		tjfRegisterB = new JTextField("00 00 00 00");
-		tjfRegisterC = new JTextField("00 00 00 00");
-		tjfRegisterD = new JTextField("00 00 00 00");
-		tjfRegister0 = new JTextField("00 00 00 00");
-		tjfRegister1 = new JTextField("00 00 00 00");
-		tjfRegister2 = new JTextField("00 00 00 00");
-		tjfRegister3 = new JTextField("00 00 00 00");
-		tjfRegister4 = new JTextField("00 00 00 00");
-		tjfRegister5 = new JTextField("00 00 00 00");
-		tjfRegister6 = new JTextField("00 00 00 00");
-		tjfRegister7 = new JTextField("00 00 00 00");
-		tjfRegister8 = new JTextField("00 00 00 00");
-		tjfRegister9 = new JTextField("00 00 00 00");
+		tjfRegisterIP = new JTextField("");
+		tjfRegisterSP = new JTextField("");
+		tjfRegisterA = new JTextField("");
+		tjfRegisterB = new JTextField("");
+		tjfRegisterC = new JTextField("");
+		tjfRegisterD = new JTextField("");
+		tjfRegister0 = new JTextField("");
+		tjfRegister1 = new JTextField("");
+		tjfRegister2 = new JTextField("");
+		tjfRegister3 = new JTextField("");
+		tjfRegister4 = new JTextField("");
+		tjfRegister5 = new JTextField("");
+		tjfRegister6 = new JTextField("");
+		tjfRegister7 = new JTextField("");
+		tjfRegister8 = new JTextField("");
+		tjfRegister9 = new JTextField("");
 		makeRegisterReadOut(jlRegIP, tjfRegisterIP, 25);
 		makeRegisterReadOut(jlRegSP, tjfRegisterSP, 45);
 		makeRegisterReadOut(jlRegA, tjfRegisterA, 75);
@@ -228,6 +226,21 @@ public class ControlPanelView implements KeyListener
 		jpStatusFlagPanel.setSize(155, 200);
 		jpStatusFlagPanel.setBorder(BorderFactory.createTitledBorder("Flags"));
 		
+		/*
+		 * cycle stepping
+		 */
+		jbStep = new JButton("Next Step");
+		jbStep.setLocation(500, 390);
+		jbStep.setSize(100, 25);
+		
+		JPanel jpVMControl = new JPanel();
+		jpVMControl.setLayout( new AbsoluteLayout() );
+		jpVMControl.setLocation(385, 5);
+		jpVMControl.setSize(610, 200);
+		jpVMControl.setBorder( BorderFactory.createTitledBorder("Virtual Machine Control") );
+		jpVMControl.add(jbStep);
+		
+		
 		
 		
 		
@@ -239,6 +252,7 @@ public class ControlPanelView implements KeyListener
 		jpInterface.add(jcpTableScroll);
 		jpInterface.add(jpRegisterPanel);
 		jpInterface.add(jpStatusFlagPanel);
+		jpInterface.add(jpVMControl);
 		
 		jfWindow = new JFrame();
 		jfWindow.setTitle("Virtual Machine Monitor");
@@ -254,12 +268,8 @@ public class ControlPanelView implements KeyListener
 		
 		
 		
-		for(int i=0, l=1024; i<l;i++)
-		{
-			addTableEntry(i, 0);
-		}
-		
-		setInstructionPointerAt(10);
+		//for(int i=0, l=1024; i<l;i++) addTableEntry(i, 0);
+		//setInstructionPointerAt(10);
 		//jtBytecode.setRowSelectionInterval(0, 1);
 	}
 	
@@ -268,13 +278,6 @@ public class ControlPanelView implements KeyListener
 		jfWindow.setVisible(b);
 	}
 	
-	
-	
-	
-	
-	
-	
-
 	public void setInstructionPointerAt(int a) 
 	{
 		jtBytecode.setValueAt(Resources.getIPIcon(), a, 0);
@@ -329,16 +332,19 @@ public class ControlPanelView implements KeyListener
 	{
 		var model = (DefaultTableModel) jtable.getModel();
         model.setDataVector(data, columns);
-        
-        for (int i=0, l=widths.length; i<l; i++)
+        setTableColumnSize(jtable, widths);
+        jtable.revalidate();
+	}
+	
+	private void setTableColumnSize(JTable jtable, int[] widths)
+	{
+		for (int i=0, l=widths.length; i<l; i++)
         {
         	var col = jtable.getColumnModel().getColumn(i);
         	int w = widths[i];
 	        col.setMinWidth(w);
 	        col.setMaxWidth(w);
         }
-        
-        jtable.revalidate();
 	}
 	
 	private void makeRegisterReadOut(JLabel jlRegA, JTextField tjfRegisterA, int y)

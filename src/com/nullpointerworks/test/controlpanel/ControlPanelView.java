@@ -7,9 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -22,8 +26,8 @@ import com.nullpointerworks.test.controlpanel.swing.StaticTableModel;
 
 public class ControlPanelView implements KeyListener
 {
-	final Font fCourier12 = new Font("Courier New", Font.PLAIN, 12);
-	final Font fCourier16 = new Font("Courier New", Font.PLAIN, 16);
+	private final ImageIcon iiEmpty = new ImageIcon();
+	private final Font fCourier12 = new Font("Courier New", Font.PLAIN, 12);
 	
 	
 	private JFrame jfWindow;
@@ -38,6 +42,7 @@ public class ControlPanelView implements KeyListener
 	private JButton jbStep;
 	private JButton jbRun;
 	private JButton jbStop;
+	private JTextField tjfMemorySize;
 	
 	private JTextField tjfRegisterIP;
 	private JTextField tjfRegisterSP;
@@ -75,6 +80,38 @@ public class ControlPanelView implements KeyListener
 		jpCodeScreen.add(jtaCode);
 		//*/
 		
+		/*
+		 * construct menu
+		 */
+
+		
+		JMenuItem jmiBinary = new JMenuItem("Binary");
+		JMenuItem jmiSource = new JMenuItem("Source");
+		
+		
+		JMenuItem jmiExit = new JMenuItem("Exit");
+		
+
+		JMenu jmiOpen = new JMenu("Open");
+		jmiOpen.add(jmiBinary);
+		jmiOpen.add(jmiSource);
+		
+		JMenu jmProgram = new JMenu("Program");
+		jmProgram.add(jmiOpen);
+		
+		jmProgram.addSeparator();
+		jmProgram.add(jmiExit);
+		
+		
+		JMenuBar jmbMenuBar = new JMenuBar();
+		jmbMenuBar.add(jmProgram);
+		
+		
+		
+		
+		/*
+		 * construct bytecode table
+		 */
 		iaColumnWidth = new int[] {25, 75, 95};
 		saBytecodeColumn = new String[] {"","Address","Bytecode"};
 		tableDataSet = new ArrayList<Object[]>();
@@ -91,7 +128,10 @@ public class ControlPanelView implements KeyListener
 		jcpTableScroll.setLocation(165, 5);
 		jcpTableScroll.setSize(215, 590);
 		
-		
+
+		/*
+		 * construct register readout
+		 */
 		JLabel jlRegIP = new JLabel("IP");
 		JLabel jlRegSP = new JLabel("SP");
 		JLabel jlRegA = new JLabel("A");
@@ -179,14 +219,14 @@ public class ControlPanelView implements KeyListener
 		jpRegisterPanel.add(tjfRegister8);
 		jpRegisterPanel.add(tjfRegister9);
 		
+		/*
+		 * construct flag readout
+		 */
 		JPanel jpStatusFlagPanel = new JPanel();
 		jpStatusFlagPanel.setLayout( new AbsoluteLayout() );
 		jpStatusFlagPanel.setLocation(5, 390);
 		jpStatusFlagPanel.setSize(155, 200);
 		jpStatusFlagPanel.setBorder(BorderFactory.createTitledBorder("Flags"));
-		
-		
-		
 		
 		
 		
@@ -205,6 +245,7 @@ public class ControlPanelView implements KeyListener
 		jfWindow.setLayout( new AbsoluteLayout() );
 		jfWindow.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		jfWindow.setResizable(false);
+		jfWindow.setJMenuBar(jmbMenuBar);
 		jfWindow.add(jpInterface);
 		//jfWindow.add(jpCodeScreen);
 		jfWindow.pack();
@@ -213,13 +254,13 @@ public class ControlPanelView implements KeyListener
 		
 		
 		
-		
-		
 		for(int i=0, l=1024; i<l;i++)
 		{
 			addTableEntry(i, 0);
 		}
 		
+		setInstructionPointerAt(10);
+		//jtBytecode.setRowSelectionInterval(0, 1);
 	}
 	
 	public void setVisible(boolean b)
@@ -232,22 +273,36 @@ public class ControlPanelView implements KeyListener
 	
 	
 	
-	public void setRegisterIP(int i) {setRegisterTextField(tjfRegisterIP, i);}
-	public void setRegisterSP(int i) {setRegisterTextField(tjfRegisterSP, i);}
-	public void setRegisterA(int i) {setRegisterTextField(tjfRegisterA, i);}
-	public void setRegisterB(int i) {setRegisterTextField(tjfRegisterB, i);}
-	public void setRegisterC(int i) {setRegisterTextField(tjfRegisterC, i);}
-	public void setRegisterD(int i) {setRegisterTextField(tjfRegisterD, i);}
-	public void setRegister0(int i) {setRegisterTextField(tjfRegister0, i);}
-	public void setRegister1(int i) {setRegisterTextField(tjfRegister1, i);}
-	public void setRegister2(int i) {setRegisterTextField(tjfRegister2, i);}
-	public void setRegister3(int i) {setRegisterTextField(tjfRegister3, i);}
-	public void setRegister4(int i) {setRegisterTextField(tjfRegister4, i);}
-	public void setRegister5(int i) {setRegisterTextField(tjfRegister5, i);}
-	public void setRegister6(int i) {setRegisterTextField(tjfRegister6, i);}
-	public void setRegister7(int i) {setRegisterTextField(tjfRegister7, i);}
-	public void setRegister8(int i) {setRegisterTextField(tjfRegister8, i);}
-	public void setRegister9(int i) {setRegisterTextField(tjfRegister9, i);}
+	
+
+	public void setInstructionPointerAt(int a) 
+	{
+		jtBytecode.setValueAt(Resources.getIPIcon(), a, 0);
+		setRegisterIPText(a);
+	}
+	
+	public void setStackPointerAt(int a) 
+	{
+		jtBytecode.setValueAt(Resources.getSPIcon(), a, 0);
+		setRegisterSPText(a);
+	}
+	
+	public void setRegisterIPText(int i) {setRegisterTextField(tjfRegisterIP, i);}
+	public void setRegisterSPText(int i) {setRegisterTextField(tjfRegisterSP, i);}
+	public void setRegisterAText(int i) {setRegisterTextField(tjfRegisterA, i);}
+	public void setRegisterBText(int i) {setRegisterTextField(tjfRegisterB, i);}
+	public void setRegisterCText(int i) {setRegisterTextField(tjfRegisterC, i);}
+	public void setRegisterDText(int i) {setRegisterTextField(tjfRegisterD, i);}
+	public void setRegister0Text(int i) {setRegisterTextField(tjfRegister0, i);}
+	public void setRegister1Text(int i) {setRegisterTextField(tjfRegister1, i);}
+	public void setRegister2Text(int i) {setRegisterTextField(tjfRegister2, i);}
+	public void setRegister3Text(int i) {setRegisterTextField(tjfRegister3, i);}
+	public void setRegister4Text(int i) {setRegisterTextField(tjfRegister4, i);}
+	public void setRegister5Text(int i) {setRegisterTextField(tjfRegister5, i);}
+	public void setRegister6Text(int i) {setRegisterTextField(tjfRegister6, i);}
+	public void setRegister7Text(int i) {setRegisterTextField(tjfRegister7, i);}
+	public void setRegister8Text(int i) {setRegisterTextField(tjfRegister8, i);}
+	public void setRegister9Text(int i) {setRegisterTextField(tjfRegister9, i);}
 	
 	public void clearTable() 
 	{
@@ -255,7 +310,7 @@ public class ControlPanelView implements KeyListener
 		Object[][] data = new Object[][] {};
 		setDataVector(jtBytecode, data, saBytecodeColumn, iaColumnWidth);
 	}
-	
+
 	public synchronized void addTableEntry(int a, int code)
 	{
 		addTableEntry( getAddressFormatting(a), getCodeFormatting(code) );
@@ -265,7 +320,7 @@ public class ControlPanelView implements KeyListener
 	
 	private void addTableEntry(String addr, String bytecode)
 	{
-		tableDataSet.add( new Object[] {"", addr, bytecode} );
+		tableDataSet.add( new Object[] {iiEmpty, addr, bytecode} );
 		Object[][] data = tableDataSet.toArray(new Object[][] {});
 		setDataVector(jtBytecode, data, saBytecodeColumn, iaColumnWidth);
 	}

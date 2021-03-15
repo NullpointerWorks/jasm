@@ -7,7 +7,7 @@ An assembly-like execution environment running under Java.
 * exports com.nullpointerworks.jasm.asm.error
 * exports com.nullpointerworks.jasm.asm.parser
 	
-* exports com.nullpointerworks.jasm.vm;
+* exports com.nullpointerworks.jasm.vm
 * exports com.nullpointerworks.jasm.vm.instruction.arithmetic
 * exports com.nullpointerworks.jasm.vm.instruction.controlflow
 * exports com.nullpointerworks.jasm.vm.instruction.dataflow

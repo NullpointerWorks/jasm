@@ -20,7 +20,7 @@ import javax.swing.text.StyledDocument;
 public class HighlightingJTextPane extends JTextPane
 {
 	private static final long serialVersionUID = 6407970407357102776L;
-
+	
 	private String TAB_SIZE;
 	private List<HighlightValidator> highlights;
 	private AttributeSet aset;
@@ -42,6 +42,8 @@ public class HighlightingJTextPane extends JTextPane
 			public void keyReleased(KeyEvent e) {parseKeyReleased(e);}
 		};
 		addKeyListener(keyListener);
+		
+		
 	}
 	
 	/**
@@ -94,7 +96,7 @@ public class HighlightingJTextPane extends JTextPane
 	 */
 	public void appendLine(String str)
 	{
-		append(str+"\r\n");
+		append(str+"\n");
 	}
 	
 	/**
@@ -104,6 +106,7 @@ public class HighlightingJTextPane extends JTextPane
 	{
 		String text = getText();
 		text = text.replace("\r\n", " ");
+		text = text.replace("\n", " ");
 		
 		int leng = text.length();
 		String token = "";
@@ -159,7 +162,7 @@ public class HighlightingJTextPane extends JTextPane
 				if (chr.equals("\s")) count++;
 				else break;
 			}
-			String whitespace = "\r\n";
+			String whitespace = "\n";
 			for (; count>0; count--) whitespace+=" ";
 			
 			append(whitespace);

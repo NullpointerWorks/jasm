@@ -4,21 +4,26 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
 import com.nullpointerworks.test.controlpanel.awt.AbsoluteLayout;
+import com.nullpointerworks.test.controlpanel.swing.CodeJScrollPane;
+import com.nullpointerworks.test.controlpanel.swing.JTextAreaScrollPane;
 import com.nullpointerworks.test.controlpanel.swing.highlight.*;
 
 public class AssemblerView 
 {
 	private JFrame jfWindow;
 	private JPanel jpInterface;
+	private JTabbedPane jtpSourceTabs;
+	private JTabbedPane jtpBottomTabs;
 	
 	private HighlightingJTextPane jtaCode;
 	
-	private JButton jbLoadMain;
+	private JButton jbNewFile;
+	private JButton jbOpenFile;
+	
 	private JTextArea jtaConsoleOut;
 	
 	
@@ -27,7 +32,17 @@ public class AssemblerView
 	public AssemblerView()
 	{
 		
+		jbNewFile = new JButton();
 		
+		jbOpenFile = new JButton();
+		
+		/*
+		 * construct higher tabbing pane
+		 */
+		CodeJScrollPane cjspCode = new CodeJScrollPane();
+		cjspCode.setSize(500, 300);
+		
+		/*
 		jtaCode = new HighlightingJTextPane();
 		jtaCode.setSize(500, 300);
 		jtaCode.addHighlightValidator( new DeclarationHighlighter() );
@@ -40,31 +55,37 @@ public class AssemblerView
 		jtaCode.appendLine("  load b, 31");
 		jtaCode.appendLine("  add a, b");
 		jtaCode.append("  int OUT_A");
+		//*/
+		
+		
+		jtpSourceTabs = new JTabbedPane();  
+		jtpSourceTabs.setBounds(0,50, 800,400);
+		jtpSourceTabs.add("new.jasm", cjspCode);
 		
 		
 		
+		/*
+		 * construct lower tabbing pane
+		 */
+		JTextAreaScrollPane jtaScrolling = new JTextAreaScrollPane();
+		jtaScrolling.setLocation(0, 400);
+		jtaScrolling.setSize(800, 200); 
+		jtaConsoleOut = jtaScrolling.getJTextArea();
 		
-		jtaConsoleOut = new JTextArea();
-		jtaConsoleOut.setLineWrap(true);
-		jtaConsoleOut.setEditable(false);
-		jtaConsoleOut.setVisible(true);
-	    JScrollPane jcpConsoleOut = new JScrollPane(jtaConsoleOut);
-	    jcpConsoleOut.setLocation(0, 400);
-	    jcpConsoleOut.setSize(800, 200); 
-	    jcpConsoleOut.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-	    jcpConsoleOut.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
-	    
-	    JTabbedPane jtpBottomTabs = new JTabbedPane();  
+	    jtpBottomTabs = new JTabbedPane();  
 	    jtpBottomTabs.setBounds(0,400, 800,200);
-	    jtpBottomTabs.add("Console", jcpConsoleOut);
+	    jtpBottomTabs.add("Console", jtaScrolling);
 		
+	    /*
+	     * construct window
+	     */
 		jpInterface = new JPanel();
 		jpInterface.setLayout( new AbsoluteLayout() );
 		jpInterface.setLocation(0, 0);
 		jpInterface.setSize(800, 600);
+		jpInterface.add(jtpSourceTabs);
 		//jpInterface.add(jtaCode);
-		jpInterface.add(jtpBottomTabs);
+		//jpInterface.add(jtpBottomTabs);
 		
 		jfWindow = new JFrame();
 		jfWindow.setTitle("JASM Assembler");

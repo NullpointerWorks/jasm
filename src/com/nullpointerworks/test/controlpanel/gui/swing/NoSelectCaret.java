@@ -1,4 +1,4 @@
-package com.nullpointerworks.test.controlpanel.swing;
+package com.nullpointerworks.test.controlpanel.gui.swing;
 
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.JTextComponent;

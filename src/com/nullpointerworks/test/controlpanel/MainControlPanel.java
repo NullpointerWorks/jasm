@@ -1,5 +1,7 @@
 package com.nullpointerworks.test.controlpanel;
 
+import com.nullpointerworks.test.controlpanel.gui.AssemblerView;
+
 public class MainControlPanel 
 {
 	public static void main(String[] args) 

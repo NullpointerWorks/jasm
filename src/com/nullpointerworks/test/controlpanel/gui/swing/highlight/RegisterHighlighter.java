@@ -1,4 +1,4 @@
-package com.nullpointerworks.test.controlpanel.swing.highlight;
+package com.nullpointerworks.test.controlpanel.gui.swing.highlight;
 
 import java.awt.Color;
 

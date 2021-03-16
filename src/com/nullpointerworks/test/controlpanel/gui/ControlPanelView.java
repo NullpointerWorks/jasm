@@ -1,4 +1,4 @@
-package com.nullpointerworks.test.controlpanel;
+package com.nullpointerworks.test.controlpanel.gui;
 
 import java.awt.Font;
 import java.util.ArrayList;
@@ -18,8 +18,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import com.nullpointerworks.test.controlpanel.awt.AbsoluteLayout;
-import com.nullpointerworks.test.controlpanel.swing.StaticTableModel;
+import com.nullpointerworks.test.controlpanel.Resources;
+import com.nullpointerworks.test.controlpanel.gui.awt.AbsoluteLayout;
+import com.nullpointerworks.test.controlpanel.gui.swing.StaticTableModel;
 
 public class ControlPanelView
 {

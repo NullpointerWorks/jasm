@@ -1,4 +1,4 @@
-package com.nullpointerworks.test.controlpanel.swing;
+package com.nullpointerworks.test.controlpanel.gui.swing;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -9,12 +9,12 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Element;
 
-import com.nullpointerworks.test.controlpanel.swing.highlight.DeclarationHighlighter;
-import com.nullpointerworks.test.controlpanel.swing.highlight.DefaultHighlighter;
-import com.nullpointerworks.test.controlpanel.swing.highlight.HighlightingJTextPane;
-import com.nullpointerworks.test.controlpanel.swing.highlight.InstructionHighlighter;
-import com.nullpointerworks.test.controlpanel.swing.highlight.NumberHighlighter;
-import com.nullpointerworks.test.controlpanel.swing.highlight.RegisterHighlighter;
+import com.nullpointerworks.test.controlpanel.gui.swing.highlight.DeclarationHighlighter;
+import com.nullpointerworks.test.controlpanel.gui.swing.highlight.DefaultHighlighter;
+import com.nullpointerworks.test.controlpanel.gui.swing.highlight.HighlightingJTextPane;
+import com.nullpointerworks.test.controlpanel.gui.swing.highlight.InstructionHighlighter;
+import com.nullpointerworks.test.controlpanel.gui.swing.highlight.NumberHighlighter;
+import com.nullpointerworks.test.controlpanel.gui.swing.highlight.RegisterHighlighter;
 
 public class CodeJScrollPane extends JScrollPane
 {
@@ -79,5 +79,13 @@ public class CodeJScrollPane extends JScrollPane
 		setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 	}
 	
+	public void append(String str) 
+	{
+		jtp.append(str);
+	}
 	
+	public void appendLine(String str) 
+	{
+		jtp.appendLine(str);
+	}
 }

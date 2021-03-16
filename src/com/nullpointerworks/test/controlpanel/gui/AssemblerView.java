@@ -1,5 +1,8 @@
 package com.nullpointerworks.test.controlpanel.gui;
 
+import java.awt.event.KeyEvent;
+
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -7,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
+import com.nullpointerworks.test.controlpanel.Resources;
 import com.nullpointerworks.test.controlpanel.gui.awt.AbsoluteLayout;
 import com.nullpointerworks.test.controlpanel.gui.swing.CodeJScrollPane;
 import com.nullpointerworks.test.controlpanel.gui.swing.JTextAreaScrollPane;
@@ -32,10 +36,14 @@ public class AssemblerView
 	public AssemblerView()
 	{
 		
-		jbNewFile = new JButton();
+		jbNewFile = new JButton("New", Resources.getNewIcon() );
+		jbNewFile.setVerticalTextPosition(AbstractButton.BOTTOM);
+		jbNewFile.setHorizontalTextPosition(AbstractButton.CENTER);
+		jbNewFile.setMnemonic(KeyEvent.VK_N);
+		jbNewFile.setToolTipText("Create a new file.");
+		jbNewFile.setSize(48, 48);
 		
-		
-		jbOpenFile = new JButton();
+		jbOpenFile = new JButton("Open");
 		
 		/*
 		 * construct higher tabbing pane
@@ -77,6 +85,7 @@ public class AssemblerView
 		jpInterface.setSize(800, 600);
 		jpInterface.add(jtpSourceTabs);
 		jpInterface.add(jtpBottomTabs);
+		jpInterface.add(jbNewFile);
 		
 		jfWindow = new JFrame();
 		jfWindow.setTitle("JASM Assembler");

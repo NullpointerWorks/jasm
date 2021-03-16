@@ -14,7 +14,6 @@ import com.nullpointerworks.test.controlpanel.Resources;
 import com.nullpointerworks.test.controlpanel.gui.awt.AbsoluteLayout;
 import com.nullpointerworks.test.controlpanel.gui.swing.CodeJScrollPane;
 import com.nullpointerworks.test.controlpanel.gui.swing.JTextAreaScrollPane;
-import com.nullpointerworks.test.controlpanel.gui.swing.highlight.*;
 
 public class AssemblerView 
 {

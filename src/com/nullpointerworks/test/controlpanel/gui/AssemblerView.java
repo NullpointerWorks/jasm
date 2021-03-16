@@ -1,11 +1,8 @@
 package com.nullpointerworks.test.controlpanel.gui;
 
-import java.awt.event.KeyEvent;
-
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -38,7 +35,9 @@ public class AssemblerView
 	
 	public AssemblerView()
 	{
-		
+		/*
+		 * tool ribbon
+		 */
 		jbNewFile = new JButton("New", Resources.getNewIcon() );
 		jbNewFile.setVerticalTextPosition(AbstractButton.BOTTOM);
 		jbNewFile.setHorizontalTextPosition(AbstractButton.CENTER);
@@ -60,8 +59,20 @@ public class AssemblerView
 		jbSaveFile.setLocation(128, 0);
 		jbSaveFile.setSize(64, 64);
 		
+		jpToolRibbon = new JPanel();
+		jpToolRibbon.setLayout( new AbsoluteLayout() );
+		jpToolRibbon.setLocation(0, 0);
+		jpToolRibbon.setSize(800, 64);
+		jpToolRibbon.add(jbNewFile);
+		jpToolRibbon.add(jbOpenFile);
+		jpToolRibbon.add(jbSaveFile);
 		
 		
+		
+		
+		/*
+		 * construct higher tab pane
+		 */
 		cjspCode = new CodeJScrollPane();
 		cjspCode.setSize(500, 300);
 		cjspCode.appendLine(".def EXIT 0");
@@ -75,35 +86,22 @@ public class AssemblerView
 		cjspCode.appendLine("  jne loop");
 		cjspCode.append("  int EXIT");
 		
-		
-		JTextAreaScrollPane jtaScrolling = new JTextAreaScrollPane();
-		jtaScrolling.setLocation(0, 0);
-		jtaScrolling.setSize(800, 200);
-		jtaConsoleOut = jtaScrolling.getJTextArea();
-		
-		
-		/*
-		 * tool ribbon
-		 */
-		jpToolRibbon = new JPanel();
-		jpToolRibbon.setLayout( new AbsoluteLayout() );
-		jpToolRibbon.setLocation(0, 0);
-		jpToolRibbon.setSize(800, 64);
-		jpToolRibbon.add(jbNewFile);
-		jpToolRibbon.add(jbOpenFile);
-		jpToolRibbon.add(jbSaveFile);
-		
-		/*
-		 * construct higher tab pane
-		 */
 		jtpSourceTabs = new JTabbedPane();  
 		jtpSourceTabs.setSize(800,350);
 		jtpSourceTabs.setPreferredSize(jtpSourceTabs.getSize());
 		jtpSourceTabs.add("main.jasm", cjspCode);
 		
+		
+		
+		
 		/*
 		 * construct lower tab pane
 		 */
+		JTextAreaScrollPane jtaScrolling = new JTextAreaScrollPane();
+		jtaScrolling.setLocation(0, 0);
+		jtaScrolling.setSize(800, 200);
+		jtaConsoleOut = jtaScrolling.getJTextArea();
+		
 	    jtpBottomTabs = new JTabbedPane();
 	    jtpBottomTabs.add("Console", jtaScrolling);
 		

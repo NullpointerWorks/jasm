@@ -16,7 +16,10 @@ public final class Resources
 		"/com/nullpointerworks/test/resources/IPSP.png" ,// IP and SP combination
 		"/com/nullpointerworks/test/resources/btn_NEW.png",
 		"/com/nullpointerworks/test/resources/btn_OPEN.png",
-		"/com/nullpointerworks/test/resources/btn_SAVE.png"
+		"/com/nullpointerworks/test/resources/btn_SAVE.png",
+		"/com/nullpointerworks/test/resources/btn_SAVEALL.png",
+		"/com/nullpointerworks/test/resources/btn_ASM.png",
+		"/com/nullpointerworks/test/resources/btn_RUN.png"
 	};
 	
 	public static ImageIcon getStreamedIcon(String path) 
@@ -52,4 +55,13 @@ public final class Resources
 	
 	public static ImageIcon getSaveIcon()
 	{return getStreamedIcon(iconsURL[5]);}
+	
+	public static ImageIcon getSaveAllIcon()
+	{return getStreamedIcon(iconsURL[6]);}
+	
+	public static ImageIcon getAssembleIcon()
+	{return getStreamedIcon(iconsURL[7]);}
+	
+	public static ImageIcon getRunIcon()
+	{return getStreamedIcon(iconsURL[8]);}
 }

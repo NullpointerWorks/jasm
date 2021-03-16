@@ -14,7 +14,9 @@ public final class Resources
 		"/com/nullpointerworks/test/resources/IP.png", // instruction pointer arrow
 		"/com/nullpointerworks/test/resources/SP.png", // stack pointer arrow
 		"/com/nullpointerworks/test/resources/IPSP.png" ,// IP and SP combination
-		"/com/nullpointerworks/test/resources/btn_New.png"
+		"/com/nullpointerworks/test/resources/btn_NEW.png",
+		"/com/nullpointerworks/test/resources/btn_OPEN.png",
+		"/com/nullpointerworks/test/resources/btn_SAVE.png"
 	};
 	
 	public static ImageIcon getStreamedIcon(String path) 
@@ -44,4 +46,10 @@ public final class Resources
 	
 	public static ImageIcon getNewIcon()
 	{return getStreamedIcon(iconsURL[3]);}
+	
+	public static ImageIcon getOpenIcon()
+	{return getStreamedIcon(iconsURL[4]);}
+	
+	public static ImageIcon getSaveIcon()
+	{return getStreamedIcon(iconsURL[5]);}
 }

@@ -92,6 +92,20 @@ public class HighlightingJTextPane extends JTextPane
 	}
 	
 	/**
+	 * Add a string of text to the textpane at the location specified.
+	 * @param str
+	 */
+	public void insert(int index, String str)
+	{
+		str = str.replace("\t", TAB_SIZE);
+        setCaretPosition(index);
+        setCharacterAttributes(aset, false);
+        replaceSelection(str);
+        setCaretPosition(index + str.length());
+        updateHighlight();
+	}
+	
+	/**
 	 * Add a line of text to the textpane.
 	 */
 	public void appendLine(String str)
@@ -150,8 +164,9 @@ public class HighlightingJTextPane extends JTextPane
 		if (e.getKeyChar() == KeyEvent.VK_ENTER) 
 		{
 			e.consume();
+			int caret = getCaretPosition();
+			String text = getText().substring(0, caret+1);
 			
-			String text = getText();
 			int index = text.lastIndexOf("\n");
 			String segment = text.substring(index+1);
 			
@@ -165,7 +180,7 @@ public class HighlightingJTextPane extends JTextPane
 			String whitespace = "\n";
 			for (; count>0; count--) whitespace+=" ";
 			
-			append(whitespace);
+			insert( caret, whitespace);
 			return;
 		}
 	}

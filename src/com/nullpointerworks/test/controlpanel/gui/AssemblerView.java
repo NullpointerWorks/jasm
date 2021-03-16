@@ -7,8 +7,10 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import com.nullpointerworks.test.controlpanel.Resources;
 import com.nullpointerworks.test.controlpanel.gui.awt.AbsoluteLayout;
@@ -19,6 +21,7 @@ public class AssemblerView
 {
 	private JFrame jfWindow;
 	private JPanel jpInterface;
+	private JPanel jpToolRibbon;
 	private JTabbedPane jtpSourceTabs;
 	private JTabbedPane jtpBottomTabs;
 	
@@ -26,6 +29,7 @@ public class AssemblerView
 	
 	private JButton jbNewFile;
 	private JButton jbOpenFile;
+	private JButton jbSaveFile;
 	
 	private JTextArea jtaConsoleOut;
 	
@@ -38,53 +42,86 @@ public class AssemblerView
 		jbNewFile = new JButton("New", Resources.getNewIcon() );
 		jbNewFile.setVerticalTextPosition(AbstractButton.BOTTOM);
 		jbNewFile.setHorizontalTextPosition(AbstractButton.CENTER);
-		jbNewFile.setMnemonic(KeyEvent.VK_N);
-		jbNewFile.setToolTipText("Create a new file.");
-		jbNewFile.setSize(48, 48);
+		jbNewFile.setToolTipText("Create a new source file.");
+		jbNewFile.setLocation(0, 0);
+		jbNewFile.setSize(64, 64);
 		
-		jbOpenFile = new JButton("Open");
+		jbOpenFile = new JButton("Open", Resources.getOpenIcon() );
+		jbOpenFile.setVerticalTextPosition(AbstractButton.BOTTOM);
+		jbOpenFile.setHorizontalTextPosition(AbstractButton.CENTER);
+		jbOpenFile.setToolTipText("Open an existing source file.");
+		jbOpenFile.setLocation(64, 0);
+		jbOpenFile.setSize(64, 64);
 		
-		/*
-		 * construct higher tabbing pane
-		 */
+		jbSaveFile = new JButton("Save", Resources.getSaveIcon() );
+		jbSaveFile.setVerticalTextPosition(AbstractButton.BOTTOM);
+		jbSaveFile.setHorizontalTextPosition(AbstractButton.CENTER);
+		jbSaveFile.setToolTipText("Save the currently editing file.");
+		jbSaveFile.setLocation(128, 0);
+		jbSaveFile.setSize(64, 64);
+		
+		
+		
 		cjspCode = new CodeJScrollPane();
 		cjspCode.setSize(500, 300);
+		cjspCode.appendLine(".def EXIT 0");
+		cjspCode.appendLine(".def OUT_A 1");
+		cjspCode.appendLine("");
 		cjspCode.appendLine("main:");
-		cjspCode.appendLine("  load a, 12");
-		cjspCode.appendLine("  load b, 31");
-		cjspCode.appendLine("  add a, b");
-		cjspCode.append("  int OUT_A");
-		//*/
+		cjspCode.appendLine("  load a,10");
+		cjspCode.appendLine("loop:");
+		cjspCode.appendLine("  dec a");
+		cjspCode.appendLine("  int OUT_A");
+		cjspCode.appendLine("  jne loop");
+		cjspCode.append("  int EXIT");
 		
 		
-		jtpSourceTabs = new JTabbedPane();  
-		jtpSourceTabs.setBounds(0,50, 800,400);
-		jtpSourceTabs.add("main.jasm", cjspCode);
-		
+		JTextAreaScrollPane jtaScrolling = new JTextAreaScrollPane();
+		jtaScrolling.setLocation(0, 0);
+		jtaScrolling.setSize(800, 200);
+		jtaConsoleOut = jtaScrolling.getJTextArea();
 		
 		
 		/*
-		 * construct lower tabbing pane
+		 * tool ribbon
 		 */
-		JTextAreaScrollPane jtaScrolling = new JTextAreaScrollPane();
-		jtaScrolling.setLocation(0, 400);
-		jtaScrolling.setSize(800, 200); 
-		jtaConsoleOut = jtaScrolling.getJTextArea();
+		jpToolRibbon = new JPanel();
+		jpToolRibbon.setLayout( new AbsoluteLayout() );
+		jpToolRibbon.setLocation(0, 0);
+		jpToolRibbon.setSize(800, 64);
+		jpToolRibbon.add(jbNewFile);
+		jpToolRibbon.add(jbOpenFile);
+		jpToolRibbon.add(jbSaveFile);
 		
-	    jtpBottomTabs = new JTabbedPane();  
-	    jtpBottomTabs.setBounds(0,400, 800,200);
+		/*
+		 * construct higher tab pane
+		 */
+		jtpSourceTabs = new JTabbedPane();  
+		jtpSourceTabs.setSize(800,350);
+		jtpSourceTabs.setPreferredSize(jtpSourceTabs.getSize());
+		jtpSourceTabs.add("main.jasm", cjspCode);
+		
+		/*
+		 * construct lower tab pane
+		 */
+	    jtpBottomTabs = new JTabbedPane();
 	    jtpBottomTabs.add("Console", jtaScrolling);
 		
 	    /*
 	     * construct window
 	     */
+	    JSplitPane jspSplitScreen = new JSplitPane(SwingConstants.HORIZONTAL);
+	    jspSplitScreen.setLocation(0, 64);
+		jspSplitScreen.setSize(800, 536);
+		jspSplitScreen.add(jtpSourceTabs);
+		jspSplitScreen.add(jtpBottomTabs);
+		
 		jpInterface = new JPanel();
 		jpInterface.setLayout( new AbsoluteLayout() );
 		jpInterface.setLocation(0, 0);
 		jpInterface.setSize(800, 600);
-		jpInterface.add(jtpSourceTabs);
-		jpInterface.add(jtpBottomTabs);
-		jpInterface.add(jbNewFile);
+		jpInterface.add(jpToolRibbon);
+		jpInterface.add(jspSplitScreen);
 		
 		jfWindow = new JFrame();
 		jfWindow.setTitle("JASM Assembler");

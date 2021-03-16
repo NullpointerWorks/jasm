@@ -60,7 +60,7 @@ public class AssemblerView
 		
 		jtpSourceTabs = new JTabbedPane();  
 		jtpSourceTabs.setBounds(0,50, 800,400);
-		jtpSourceTabs.add("new.jasm", cjspCode);
+		jtpSourceTabs.add("main.jasm", cjspCode);
 		
 		
 		

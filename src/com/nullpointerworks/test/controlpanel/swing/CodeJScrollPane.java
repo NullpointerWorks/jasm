@@ -27,10 +27,11 @@ public class CodeJScrollPane extends JScrollPane
 	{
 		Font font = new Font("Lucida Console", Font.PLAIN, 12);
 		
-		lines = new JTextArea("1");
+		lines = new JTextArea("1 ");
 		lines.setBackground(Color.LIGHT_GRAY);
 		lines.setEditable(false);
 		lines.setFont(font);
+		lines.setCaret( new NoSelectCaret(lines) );
 		
 		jtp = new HighlightingJTextPane();
 		jtp.setBorder(null); // removes the margin from the pane, else it wont line of with the numbering
@@ -46,10 +47,10 @@ public class CodeJScrollPane extends JScrollPane
 			{
 				int caretPosition = jtp.getDocument().getLength();
 				Element root = jtp.getDocument().getDefaultRootElement();
-				String text = "1" + System.getProperty("line.separator");
+				String text = "1 " + System.getProperty("line.separator");
 				for(int i = 2; i < root.getElementIndex( caretPosition ) + 2; i++)
 				{
-					text += i + System.getProperty("line.separator");
+					text += i + " " + System.getProperty("line.separator");
 				}
 				return text;
 			}
@@ -77,12 +78,6 @@ public class CodeJScrollPane extends JScrollPane
 		setRowHeaderView(lines);
 		setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 	}
-	
-	
-	
-	
-	
-	
 	
 	
 }

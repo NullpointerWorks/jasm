@@ -30,9 +30,9 @@ public class HighlightingJTextPane extends JTextPane
 	{
         highlights = new ArrayList<HighlightValidator>();
 		setFontFamily("Lucida Console", 12);
-		setTabSize(4);
+		setTabSize(2);
 		
-		keyListener = new KeyListener() // i prefer to keep anonymous classes as brief as possible
+		keyListener = new KeyListener() // I prefer to keep anonymous classes as brief as possible
 		{
 			@Override
 			public void keyTyped(KeyEvent e) {}
@@ -167,7 +167,7 @@ public class HighlightingJTextPane extends JTextPane
 		}
 	}
 	
-	public void parseKeyReleased(KeyEvent e) 
+	private void parseKeyReleased(KeyEvent e) 
 	{
 		if (e.getKeyChar() == KeyEvent.VK_ENTER) 
 		{
@@ -177,13 +177,11 @@ public class HighlightingJTextPane extends JTextPane
 	
 	private void highlightToken(int offset, String token) 
 	{
-		// get style document
-		StyledDocument doc = (StyledDocument)getDocument();
-		
-		// get current text style
-		Element element = doc.getCharacterElement(offset);
-	    AttributeSet as = element.getAttributes();
-	    MutableAttributeSet asNew = new SimpleAttributeSet(as.copyAttributes());
+		// get document and current text style
+		StyledDocument doc 			= (StyledDocument)getDocument();
+		Element element 			= doc.getCharacterElement(offset);
+	    AttributeSet as 			= element.getAttributes();
+	    MutableAttributeSet asNew 	= new SimpleAttributeSet(as.copyAttributes());
 	    StyleConstants.setItalic(asNew, false); // reset anything italic
 	    
 	    // style the text according to keyword styles, then commit changes

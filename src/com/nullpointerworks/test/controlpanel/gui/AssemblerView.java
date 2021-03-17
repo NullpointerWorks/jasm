@@ -1,5 +1,7 @@
 package com.nullpointerworks.test.controlpanel.gui;
 
+import java.awt.BorderLayout;
+
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -7,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
 import com.nullpointerworks.test.controlpanel.Resources;
@@ -18,7 +21,7 @@ public class AssemblerView
 {
 	private JFrame jfWindow;
 	private JPanel jpInterface;
-	private JPanel jpToolRibbon;
+	private JToolBar jtbToolRibbon;
 	private JTabbedPane jtpSourceTabs;
 	private JTabbedPane jtpBottomTabs;
 	
@@ -89,16 +92,14 @@ public class AssemblerView
 		jbRunVM.setSize(32, 32);
 		jbRunVM.setPreferredSize(jbRunVM.getSize());
 		
-		jpToolRibbon = new JPanel();
-		jpToolRibbon.setLayout( new AbsoluteLayout() );
-		jpToolRibbon.setLocation(0, 0);
-		jpToolRibbon.setSize(800, 32);
-		jpToolRibbon.add(jbNewFile);
-		jpToolRibbon.add(jbOpenFile);
-		jpToolRibbon.add(jbSaveFile);
-		jpToolRibbon.add(jbSaveAll);
-		jpToolRibbon.add(jbAssemble);
-		jpToolRibbon.add(jbRunVM);
+		jtbToolRibbon = new JToolBar();
+		jtbToolRibbon.add(jbNewFile);
+		jtbToolRibbon.add(jbOpenFile);
+		jtbToolRibbon.add(jbSaveFile);
+		jtbToolRibbon.add(jbSaveAll);
+		jtbToolRibbon.addSeparator();
+		jtbToolRibbon.add(jbAssemble);
+		jtbToolRibbon.add(jbRunVM);
 		
 		
 		
@@ -148,10 +149,10 @@ public class AssemblerView
 		jspSplitScreen.add(jtpBottomTabs);
 		
 		jpInterface = new JPanel();
-		jpInterface.setLayout( new AbsoluteLayout() );
+		jpInterface.setLayout(new BorderLayout());
 		jpInterface.setLocation(0, 0);
 		jpInterface.setSize(800, 600);
-		jpInterface.add(jpToolRibbon);
+		jpInterface.add(jtbToolRibbon, BorderLayout.NORTH);
 		jpInterface.add(jspSplitScreen);
 		
 		jfWindow = new JFrame();

@@ -19,7 +19,8 @@ public final class Resources
 		"/com/nullpointerworks/test/resources/btn_SAVE.png",
 		"/com/nullpointerworks/test/resources/btn_SAVEALL.png",
 		"/com/nullpointerworks/test/resources/btn_ASM.png",
-		"/com/nullpointerworks/test/resources/btn_RUN.png"
+		"/com/nullpointerworks/test/resources/btn_RUN.png",
+		"/com/nullpointerworks/test/resources/btn_DROP.png"
 	};
 	
 	public static ImageIcon getStreamedIcon(String path) 
@@ -64,4 +65,7 @@ public final class Resources
 	
 	public static ImageIcon getRunIcon()
 	{return getStreamedIcon(iconsURL[8]);}
+	
+	public static ImageIcon getDropIcon()
+	{return getStreamedIcon(iconsURL[9]);}
 }

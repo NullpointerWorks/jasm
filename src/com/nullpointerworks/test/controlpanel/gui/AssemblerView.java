@@ -23,7 +23,7 @@ public class AssemblerView
 	private JTabbedPane jtpBottomTabs;
 	
 	private CodeJScrollPane cjspCode;
-	
+
 	private JButton jbNewFile;
 	private JButton jbOpenFile;
 	private JButton jbSaveFile;
@@ -44,9 +44,10 @@ public class AssemblerView
 		jbNewFile = new JButton(Resources.getNewIcon() );
 		jbNewFile.setVerticalTextPosition(AbstractButton.BOTTOM);
 		jbNewFile.setHorizontalTextPosition(AbstractButton.CENTER);
-		jbNewFile.setToolTipText("Create a new source file.");
+		jbNewFile.setToolTipText("Create something new.");
 		jbNewFile.setLocation(0, 0);
 		jbNewFile.setSize(32, 32);
+		jbNewFile.setPreferredSize(jbNewFile.getSize());
 		
 		jbOpenFile = new JButton(Resources.getOpenIcon() );
 		jbOpenFile.setVerticalTextPosition(AbstractButton.BOTTOM);
@@ -54,6 +55,7 @@ public class AssemblerView
 		jbOpenFile.setToolTipText("Open an existing source file.");
 		jbOpenFile.setLocation(32, 0);
 		jbOpenFile.setSize(32, 32);
+		jbOpenFile.setPreferredSize(jbOpenFile.getSize());
 		
 		jbSaveFile = new JButton(Resources.getSaveIcon() );
 		jbSaveFile.setVerticalTextPosition(AbstractButton.BOTTOM);
@@ -61,32 +63,36 @@ public class AssemblerView
 		jbSaveFile.setToolTipText("Save the currently editing file.");
 		jbSaveFile.setLocation(64, 0);
 		jbSaveFile.setSize(32, 32);
+		jbSaveFile.setPreferredSize(jbSaveFile.getSize());
 		
 		jbSaveAll = new JButton(Resources.getSaveAllIcon() );
 		jbSaveAll.setVerticalTextPosition(AbstractButton.BOTTOM);
 		jbSaveAll.setHorizontalTextPosition(AbstractButton.CENTER);
-		jbSaveAll.setToolTipText("Save the currently editing file.");
+		jbSaveAll.setToolTipText("Save all edited files.");
 		jbSaveAll.setLocation(96, 0);
 		jbSaveAll.setSize(32, 32);
+		jbSaveAll.setPreferredSize(jbSaveAll.getSize());
 		
 		jbAssemble = new JButton(Resources.getAssembleIcon() );
 		jbAssemble.setVerticalTextPosition(AbstractButton.BOTTOM);
 		jbAssemble.setHorizontalTextPosition(AbstractButton.CENTER);
-		jbAssemble.setToolTipText("Save the currently editing file.");
+		jbAssemble.setToolTipText("Assemble the current project.");
 		jbAssemble.setLocation(128, 0);
 		jbAssemble.setSize(32, 32);
+		jbAssemble.setPreferredSize(jbAssemble.getSize());
 		
 		jbRunVM = new JButton(Resources.getRunIcon() );
 		jbRunVM.setVerticalTextPosition(AbstractButton.BOTTOM);
 		jbRunVM.setHorizontalTextPosition(AbstractButton.CENTER);
-		jbRunVM.setToolTipText("Save the currently editing file.");
+		jbRunVM.setToolTipText("Run the previous build for this program.");
 		jbRunVM.setLocation(160, 0);
 		jbRunVM.setSize(32, 32);
+		jbRunVM.setPreferredSize(jbRunVM.getSize());
 		
 		jpToolRibbon = new JPanel();
 		jpToolRibbon.setLayout( new AbsoluteLayout() );
 		jpToolRibbon.setLocation(0, 0);
-		jpToolRibbon.setSize(800, 64);
+		jpToolRibbon.setSize(800, 32);
 		jpToolRibbon.add(jbNewFile);
 		jpToolRibbon.add(jbOpenFile);
 		jpToolRibbon.add(jbSaveFile);

@@ -1,4 +1,4 @@
-package com.nullpointerworks.test.console;
+package com.nullpointerworks.test.commandline;
 
 import static com.nullpointerworks.jasm.vm.VMRegister.*;
 

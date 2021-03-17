@@ -12,7 +12,7 @@ import static com.nullpointerworks.jasm.vm.VMInstruction.POP;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nullpointerworks.jasm.asm.BuilderUtil;
+import com.nullpointerworks.jasm.asm.BuilderUtility;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
@@ -92,13 +92,13 @@ class DataFlowDraftBuilder extends AbstractDraftBuilder
 			{
 				if (op2.isAddress())
 				{
-					BuilderUtil.setCode(d, LOAD_RRM, 
+					BuilderUtility.setCode(d, LOAD_RRM, 
 											op1.getRegister(), 
 											op2.getRegister());
 				}
 				else
 				{
-					BuilderUtil.setCode(d, LOAD_RR, 
+					BuilderUtility.setCode(d, LOAD_RR, 
 										op1.getRegister(), 
 										op2.getRegister());
 				}
@@ -109,7 +109,7 @@ class DataFlowDraftBuilder extends AbstractDraftBuilder
 			else
 			if (op2.isAddress())
 			{
-				BuilderUtil.setCode(d, LOAD_RM, 
+				BuilderUtility.setCode(d, LOAD_RM, 
 									op1.getRegister(), 
 									op2.getInteger());
 				draft.add(d);
@@ -118,7 +118,7 @@ class DataFlowDraftBuilder extends AbstractDraftBuilder
 			else
 			if (op2.isInteger())
 			{
-				BuilderUtil.setCode(d, LOAD_RV, 
+				BuilderUtility.setCode(d, LOAD_RV, 
 									op1.getRegister(), 
 									op2.getInteger());
 				draft.add(d);
@@ -130,7 +130,7 @@ class DataFlowDraftBuilder extends AbstractDraftBuilder
 		{
 			if (op2.isRegister())
 			{
-				BuilderUtil.setCode(d, LOAD_MR, op2.getRegister(), op1.getInteger() );
+				BuilderUtility.setCode(d, LOAD_MR, op2.getRegister(), op1.getInteger() );
 				draft.add(d);
 				return;
 			}
@@ -154,14 +154,14 @@ class DataFlowDraftBuilder extends AbstractDraftBuilder
 		
 		if (op.isRegister())
 		{
-			BuilderUtil.setCode(d, PUSH_R, op.getRegister());
+			BuilderUtility.setCode(d, PUSH_R, op.getRegister());
 			draft.add(d);
 			return;
 		}
 		else
 		if (op.isInteger())
 		{
-			BuilderUtil.setCode(d, PUSH_V, op.getInteger() );
+			BuilderUtility.setCode(d, PUSH_V, op.getInteger() );
 			draft.add(d);
 			return;
 		}
@@ -183,7 +183,7 @@ class DataFlowDraftBuilder extends AbstractDraftBuilder
 		
 		if (op.isRegister())
 		{
-			BuilderUtil.setCode(d, POP, op.getRegister());
+			BuilderUtility.setCode(d, POP, op.getRegister());
 			draft.add(d);
 			return;
 		}

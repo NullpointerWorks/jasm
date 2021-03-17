@@ -33,7 +33,7 @@ public class SourceFileParser implements Parser
 	private int origin = 0;
 	
 	private VerboseListener verbose = (s)->{};
-	private int strLeng = 2; // line numbering spacing. 2 characters by default
+	//private int strLeng = 2; // line numbering spacing. 2 characters by default
 	
 	/*
 	 * lexicographic sort
@@ -49,7 +49,7 @@ public class SourceFileParser implements Parser
 	
 	public SourceFileParser() 
 	{
-		strLeng = 2;
+		//strLeng = 2;
 		origin = 0;
 		code = new ArrayList<SourceCode>();
 		includes = new ArrayList<String>();
@@ -99,7 +99,8 @@ public class SourceFileParser implements Parser
 	@Override
 	public void addIncludesPath(String path)
 	{
-		includesPath.add(path);
+		if (!includesPath.contains(path))
+			includesPath.add(path);
 	}
 	
 	@Override
@@ -117,7 +118,8 @@ public class SourceFileParser implements Parser
 		/*
 		 * parse the given text as primary source code
 		 */
-		verbose.onPrint("Main: "+filename);
+		verbose.onPrint("Source Files");
+		verbose.onPrint("  Main:    "+filename);
 		String[] text = loadCode(filename);
 		parseCode(filename, text);
 		
@@ -159,7 +161,7 @@ public class SourceFileParser implements Parser
 					String[] lines = loadCode(includeFilePath);
 					if (lines!=null) 
 					{
-						verbose.onPrint("\nInclude: "+inc+"\n");
+						verbose.onPrint("  Include: "+inc);
 						parseCode(inc, lines);
 					}
 				}
@@ -170,6 +172,7 @@ public class SourceFileParser implements Parser
 			}
 		}
 		while(includesAux.size() > 0);
+		verbose.onPrint("");
 		
 		/*
 		 * print included directories
@@ -179,7 +182,7 @@ public class SourceFileParser implements Parser
 			verbose.onPrint("Linker");
 			for (String inc : includesPath)
 			{
-				verbose.onPrint(" "+inc);
+				verbose.onPrint("  "+inc);
 			}
 			verbose.onPrint("");
 		}
@@ -198,6 +201,12 @@ public class SourceFileParser implements Parser
 			addError(msg);
 		}
 		
+		verbose.onPrint("Information");
+		verbose.onPrint("  Included files: "+includes.size());
+		verbose.onPrint("  Definitions:    "+defs.size());
+		verbose.onPrint("  Lines of code:  "+code.size());
+		verbose.onPrint("  Errors:         "+errors.size());
+		
 		verbose.onPrint("\nParsing End");
 		verbose.onPrint("-------------------------------");
 	}
@@ -214,8 +223,8 @@ public class SourceFileParser implements Parser
 	private void parseCode(String filename, String[] text)
 	{
 		int linenumber = 0;
-		int totalLines = text.length;
-		strLeng = (""+totalLines).length() + 1;
+		//int totalLines = text.length;
+		//strLeng = (""+totalLines).length() + 1;
 		
 		for (String line : text)
 		{
@@ -301,9 +310,7 @@ public class SourceFileParser implements Parser
 	 */
 	private void processLine(SourceCode sc)
 	{
-		int linenumber = sc.getLinenumber();
 		String line = sc.getLine();
-		
 		if (line.equalsIgnoreCase("")) return;
 		
 		/*
@@ -346,12 +353,14 @@ public class SourceFileParser implements Parser
 			
 		}
 		
+		code.add(sc);
+		
 		/*
 		 * if verbose, print parsed line
 		 */
-		String linemarker = fillFromBack(""+linenumber," ",strLeng)+"| "+line;
-		verbose.onPrint(linemarker);
-		code.add(sc);
+		//int linenumber = sc.getLinenumber();
+		//String linemarker = fillFromBack(""+linenumber," ",strLeng)+"| "+line;
+		//verbose.onPrint(linemarker);
 	}
 	
 	private void parseInclude(SourceCode sc) 

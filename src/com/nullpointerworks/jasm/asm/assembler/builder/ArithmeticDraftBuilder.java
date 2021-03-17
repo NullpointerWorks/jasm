@@ -15,7 +15,7 @@ import static com.nullpointerworks.jasm.vm.VMInstruction.SUB_RV;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nullpointerworks.jasm.asm.BuilderUtil;
+import com.nullpointerworks.jasm.asm.BuilderUtility;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 import com.nullpointerworks.jasm.vm.VMInstruction;
@@ -137,7 +137,7 @@ class ArithmeticDraftBuilder extends AbstractDraftBuilder
 		
 		if (op.isRegister())
 		{
-			BuilderUtil.setCode(d, r, op.getRegister());
+			BuilderUtility.setCode(d, r, op.getRegister());
 			draft.add(d);
 			return;
 		}
@@ -170,7 +170,7 @@ class ArithmeticDraftBuilder extends AbstractDraftBuilder
 		{
 			if (op2.isRegister())
 			{
-				BuilderUtil.setCode(d, rr, 
+				BuilderUtility.setCode(d, rr, 
 									op1.getRegister(), 
 									op2.getRegister());
 				draft.add(d);
@@ -179,7 +179,7 @@ class ArithmeticDraftBuilder extends AbstractDraftBuilder
 			else
 			if (op2.isInteger())
 			{
-				BuilderUtil.setCode(d, rv, 
+				BuilderUtility.setCode(d, rv, 
 									op1.getRegister(), 
 									op2.getInteger());
 				draft.add(d);

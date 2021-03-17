@@ -4,7 +4,7 @@ import com.nullpointerworks.jasm.asm.assembler.Draft;
 import com.nullpointerworks.jasm.vm.VMInstruction;
 import com.nullpointerworks.jasm.vm.VMRegister;
 
-public class BuilderUtil 
+public class BuilderUtility 
 {
 	public static void setCodeImmidiate(Draft d, VMInstruction inst, int value)
 	{

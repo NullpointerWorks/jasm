@@ -13,7 +13,7 @@ import static com.nullpointerworks.jasm.vm.VMInstruction.RET;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nullpointerworks.jasm.asm.BuilderUtil;
+import com.nullpointerworks.jasm.asm.BuilderUtility;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 import com.nullpointerworks.jasm.vm.VMInstruction;
@@ -113,7 +113,7 @@ class ControlFlowDraftBuilder extends AbstractDraftBuilder
 		if (!op1.isRegister())
 		if (!op1.isInteger())
 		{
-			BuilderUtil.setCode(d, inst, 0);
+			BuilderUtility.setCode(d, inst, 0);
 			d.setLabel(operands);
 			draft.add(d);
 			return;
@@ -125,7 +125,7 @@ class ControlFlowDraftBuilder extends AbstractDraftBuilder
 	private void buildRET(SourceCode sc, List<Draft> draft) 
 	{
 		Draft d = new Draft(sc);
-		BuilderUtil.setCode(d, RET);
+		BuilderUtility.setCode(d, RET);
 		draft.add(d);
 	}
 }

@@ -3,7 +3,7 @@ package com.nullpointerworks.jasm.asm.assembler.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nullpointerworks.jasm.asm.BuilderUtil;
+import com.nullpointerworks.jasm.asm.BuilderUtility;
 import com.nullpointerworks.jasm.asm.ParserUtility;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
@@ -74,7 +74,7 @@ class SystemDraftBuilder extends AbstractDraftBuilder
 		}
 		
 		Draft d = new Draft(sc);
-		BuilderUtil.setCodeImmidiate(d, inst, value);
+		BuilderUtility.setCodeImmidiate(d, inst, value);
 		draft.add(d);
 	}
 }

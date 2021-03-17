@@ -331,13 +331,29 @@ public class SourceFileParser implements Parser
 		}
 		
 		/*
+		 * if data allocation directive
+		 */
+		if (line.startsWith(".data "))
+		{
+			
+		}
+		
+		/*
+		 * if data reservation directive
+		 */
+		if (line.startsWith(".res "))
+		{
+			
+		}
+		
+		/*
 		 * if verbose, print parsed line
 		 */
 		String linemarker = fillFromBack(""+linenumber," ",strLeng)+"| "+line;
 		verbose.onPrint(linemarker);
 		code.add(sc);
 	}
-
+	
 	private void parseInclude(SourceCode sc) 
 	{
 		String line = sc.getLine();

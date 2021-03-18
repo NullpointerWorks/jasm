@@ -7,7 +7,7 @@ import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
-abstract class AbstractDraftBuilder implements IDraftBuilder
+abstract class AbstractDraftBuilder implements DraftBuilder
 {
 	private BuildError error;
 	

@@ -6,8 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.nullpointerworks.jasm.asm.VerboseListener;
+import com.nullpointerworks.jasm.asm.assembler.builder.SuperDraftBuilder;
 import com.nullpointerworks.jasm.asm.assembler.builder.DraftBuilder;
-import com.nullpointerworks.jasm.asm.assembler.builder.IDraftBuilder;
+import com.nullpointerworks.jasm.asm.assembler.segment.CodeSegmentBuilder;
+import com.nullpointerworks.jasm.asm.assembler.segment.DataSegmentBuilder;
+import com.nullpointerworks.jasm.asm.assembler.segment.Pair;
+import com.nullpointerworks.jasm.asm.assembler.segment.SegmentBuilder;
 import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.parser.Definition;
@@ -15,15 +19,19 @@ import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
 public class SourceCodeAssembler implements Assembler
 {
-	private Map<String, Integer> labels; // keeps track of instruction addresss and attached labels
+	private Map<String, Integer> labels; // keeps track of instruction address and attached labels
 	private List< Pair<Draft, Integer> > labelled; // 
 	
 	private List<BuildError> errors; // contains errors
-	private List<Integer> code; // resulting machine code
+	private List<Integer> result; // resulting machine code
+	private List<Integer> code; // code segment, byte code
 	
-	private int instIndex;
-	private IDraftBuilder builder;
 	private VerboseListener verbose;
+	private int instIndex;
+	
+	private DraftBuilder builder;
+	private SegmentBuilder codeBuilder;
+	private DataSegmentBuilder dataBuilder;
 	
 	public SourceCodeAssembler()
 	{
@@ -31,8 +39,13 @@ public class SourceCodeAssembler implements Assembler
 		labelled = new ArrayList< Pair<Draft, Integer> >();
 		
 		errors = new ArrayList<BuildError>();
+		result = new ArrayList<Integer>();
 		code = new ArrayList<Integer>();
-		builder = new DraftBuilder();
+		
+		codeBuilder = new CodeSegmentBuilder();
+		dataBuilder = new DataSegmentBuilder();
+		
+		
 		instIndex = 0;
 		verbose = (s)->{};
 	}
@@ -58,7 +71,7 @@ public class SourceCodeAssembler implements Assembler
 	@Override
 	public List<Integer> getMachineCode() 
 	{
-		return code;
+		return result;
 	}
 	
 	@Override
@@ -70,15 +83,15 @@ public class SourceCodeAssembler implements Assembler
 		setOrigin(origin);
 		insertDefinition(sourcecode, definitions);
 		processCode(sourcecode);
+		
+		
+		
+		
+		
 		insertLabels(labelled, labels, code);
 		
 		verbose.onPrint("\nAssembler End");
 		verbose.onPrint("-------------------------------");
-	}
-
-	private void addError(SourceCode code, String message)
-	{
-		errors.add( new AssembleError(code, message) );
 	}
 	
 	private void setOrigin(int origin) 
@@ -126,22 +139,52 @@ public class SourceCodeAssembler implements Assembler
 		for (int i=0,l=code.size(); i<l; i++)
 		{
 			SourceCode loc = code.get(i);
-			processLine(loc);
+			String line = loc.getLine();
+			
+			// is a directive
+			if (line.startsWith("."))
+			{
+				//processDirective(loc);
+			}
+			
+			// is line of code
+			else
+			{
+				processLine(loc);
+			}
+			
 			if (hasErrors()) return;
+		}
+	}
+	
+	private void processDirective(SourceCode sc) 
+	{
+		String line = sc.getLine();
+		
+		// the parser has already dealt with defines, includes and origin
+		if (line.startsWith(".def")) return;
+		if (line.startsWith(".inc")) return;
+		if (line.startsWith(".org")) return;
+		
+		if (line.startsWith(".data"))
+		{
+			dataBuilder.processSourceCode(sc);
+		}
+		else
+		if (line.startsWith(".res"))
+		{
+			dataBuilder.processSourceCode(sc);
+		}
+		else
+		{
+			String dir = line.split(" ")[0];
+			addError(sc, "  Unknown directive; "+dir);
 		}
 	}
 
 	private void processLine(SourceCode loc) 
 	{
 		String line = loc.getLine();
-		
-		/*
-		 * is a definition/include, do nothing
-		 */
-		if (line.startsWith("."))
-		{
-			return;
-		}
 		
 		/*
 		 * is a label, store for later reference along with it's instruction address
@@ -209,5 +252,10 @@ public class SourceCodeAssembler implements Assembler
 			code.set(index, addr);
 			verbose.onPrint("  "+label+": 0x"+String.format("%x", addr) );
 		}
+	}
+
+	private void addError(SourceCode code, String message)
+	{
+		errors.add( new AssembleError(code, message) );
 	}
 }

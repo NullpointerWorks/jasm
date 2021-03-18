@@ -10,6 +10,7 @@ import com.nullpointerworks.jasm.asm.assembler.builder.SuperDraftBuilder;
 import com.nullpointerworks.jasm.asm.assembler.builder.DraftBuilder;
 import com.nullpointerworks.jasm.asm.assembler.segment.CodeSegmentBuilder;
 import com.nullpointerworks.jasm.asm.assembler.segment.DataSegmentBuilder;
+import com.nullpointerworks.jasm.asm.assembler.segment.LabelManager;
 import com.nullpointerworks.jasm.asm.assembler.segment.Pair;
 import com.nullpointerworks.jasm.asm.assembler.segment.SegmentBuilder;
 import com.nullpointerworks.jasm.asm.error.AssembleError;
@@ -29,6 +30,7 @@ public class SourceCodeAssembler implements Assembler
 	private VerboseListener verbose;
 	private int instIndex;
 	
+	private LabelManager manager;
 	private DraftBuilder builder;
 	private SegmentBuilder codeBuilder;
 	private DataSegmentBuilder dataBuilder;
@@ -42,9 +44,8 @@ public class SourceCodeAssembler implements Assembler
 		result = new ArrayList<Integer>();
 		code = new ArrayList<Integer>();
 		
-		codeBuilder = new CodeSegmentBuilder();
-		dataBuilder = new DataSegmentBuilder();
-		
+		manager = new LabelManager();
+		codeBuilder = new CodeSegmentBuilder(manager);
 		
 		instIndex = 0;
 		verbose = (s)->{};
@@ -82,11 +83,18 @@ public class SourceCodeAssembler implements Assembler
 		
 		setOrigin(origin);
 		insertDefinition(sourcecode, definitions);
-		processCode(sourcecode);
+		//processCode(sourcecode);
 		
-		
-		
-		
+		for (int i=0,l=sourcecode.size(); i<l; i++)
+		{
+			SourceCode loc = sourcecode.get(i);
+			String line = loc.getLine();
+			
+			
+			
+			
+			if (hasErrors()) break;
+		}
 		
 		insertLabels(labelled, labels, code);
 		

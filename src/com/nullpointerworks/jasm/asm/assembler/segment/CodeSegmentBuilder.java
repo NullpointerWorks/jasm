@@ -15,21 +15,17 @@ import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
 public class CodeSegmentBuilder implements SegmentBuilder
 {
-	private Map<String, Integer> labels; // keeps track of instruction address and attached labels
-	private List< Pair<Draft, Integer> > labelled; // 
+	private LabelManager manager;
 	private DraftBuilder builder;
-	
 	private List<Integer> code; // byte code
 	private VerboseListener verbose;
 	private BuildError error;
 	private int instIndex;
 	
-	public CodeSegmentBuilder()
+	public CodeSegmentBuilder(LabelManager m)
 	{
-		labels = new HashMap<String, Integer>();
-		labelled = new ArrayList< Pair<Draft, Integer> >();
+		manager = m;
 		builder = new SuperDraftBuilder();
-		
 		code = new ArrayList<Integer>();
 		error = null;
 		instIndex = 0;
@@ -61,7 +57,7 @@ public class CodeSegmentBuilder implements SegmentBuilder
 		if (line.contains(":"))
 		{
 			String label = line.substring(0,line.length()-1);
-			labels.put(label.toLowerCase(), instIndex); // labels are not case sensitive
+			manager.addLabelPointer(label.toLowerCase(), instIndex); // labels are not case sensitive
 			return;
 		}
 		
@@ -108,29 +104,6 @@ public class CodeSegmentBuilder implements SegmentBuilder
 		
 		
 		
-	}
-	
-	private void insertLabels(List< Pair<Draft, Integer> > labelled, 
-							  Map<String, Integer> labels,
-							  List<Integer> code) 
-	{
-		verbose.onPrint("Labels");
-		for (Pair<Draft, Integer> p : labelled)
-		{
-			Draft d = p.First;
-			int index = p.Second;
-			
-			String label = d.getLabel();
-			if (!labels.containsKey(label))
-			{
-				setError(d.getSourceCode(), "  Unknown label reference; "+label);
-				return;
-			}
-			
-			int addr = labels.get(label);
-			code.set(index, addr);
-			verbose.onPrint("  "+label+": 0x"+String.format("%x", addr) );
-		}
 	}
 	
 	private void setError(BuildError err) 

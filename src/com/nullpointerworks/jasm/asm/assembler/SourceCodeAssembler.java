@@ -31,7 +31,7 @@ public class SourceCodeAssembler implements Assembler
 	private int instIndex;
 	
 	private LabelManager manager;
-	private DraftBuilder builder;
+	private DraftBuilder draftBuilder;
 	private SegmentBuilder codeBuilder;
 	private DataSegmentBuilder dataBuilder;
 	
@@ -45,6 +45,7 @@ public class SourceCodeAssembler implements Assembler
 		code = new ArrayList<Integer>();
 		
 		manager = new LabelManager();
+		draftBuilder = new SuperDraftBuilder();
 		codeBuilder = new CodeSegmentBuilder(manager);
 		
 		instIndex = 0;
@@ -78,6 +79,7 @@ public class SourceCodeAssembler implements Assembler
 	@Override
 	public void draft(List<SourceCode> sourcecode, List<Definition> definitions, int origin)
 	{
+		codeBuilder.setVerboseListener(verbose);
 		verbose.onPrint("-------------------------------");
 		verbose.onPrint("Assembler Start\n");
 		
@@ -87,11 +89,21 @@ public class SourceCodeAssembler implements Assembler
 		
 		for (int i=0,l=sourcecode.size(); i<l; i++)
 		{
-			SourceCode loc = sourcecode.get(i);
-			String line = loc.getLine();
+			SourceCode sc = sourcecode.get(i);
+			String line = sc.getLine();
 			
-			
-			
+			if (line.startsWith("."))
+			{
+				
+			}
+			else
+			{
+				codeBuilder.addSourceCode(sc);
+				
+				
+				
+				
+			}
 			
 			if (hasErrors()) break;
 		}
@@ -207,10 +219,10 @@ public class SourceCodeAssembler implements Assembler
 		/*
 		 * build a draft from the source code
 		 */
-		List<Draft> draft_inst = builder.buildDraft(loc);
-		if (builder.hasError())
+		List<Draft> draft_inst = draftBuilder.buildDraft(loc);
+		if (draftBuilder.hasError())
 		{
-			errors.add( builder.getError() );
+			errors.add( draftBuilder.getError() );
 			return;
 		}
 		

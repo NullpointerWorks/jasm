@@ -1,9 +1,7 @@
 package com.nullpointerworks.jasm.asm.assembler.segment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
@@ -17,7 +15,7 @@ public class CodeSegmentBuilder implements SegmentBuilder
 {
 	private LabelManager manager;
 	private DraftBuilder builder;
-	private List<Integer> code; // byte code
+	private List<Number> code; // byte code
 	private VerboseListener verbose;
 	private BuildError error;
 	private int instIndex;
@@ -26,7 +24,7 @@ public class CodeSegmentBuilder implements SegmentBuilder
 	{
 		manager = m;
 		builder = new SuperDraftBuilder();
-		code = new ArrayList<Integer>();
+		code = new ArrayList<Number>();
 		error = null;
 		instIndex = 0;
 		verbose = (s)->{};
@@ -83,13 +81,15 @@ public class CodeSegmentBuilder implements SegmentBuilder
 			}
 			
 			List<Integer> c = d.getMachineCode();
-			for (Integer i : c) code.add(i);
+			for (Integer i : c) 
+			{
+				code.add( new Number(i) );
+			}
 			
 			// label insertion is only done with jump instructions
 			if (d.hasLabel())
 			{
-				var p = new Pair<Draft, Integer>(d, instIndex + 1);
-				labelled.add(p);
+				manager.addLabelledDraft(d);
 			}
 			
 			instIndex += c.size();

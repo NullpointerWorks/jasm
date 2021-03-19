@@ -14,7 +14,7 @@ import com.nullpointerworks.jasm.asm.parser.SourceCode;
 public class LabelManager 
 {
 	private Map<String, Integer> labels; // keeps track of instruction address and attached labels
-	private List< Pair<Draft, Integer> > labelled; // stores all drafts that refer to a label
+	private List< Pair<Draft, Number> > labelled; // stores all drafts that refer to a label
 	private VerboseListener verbose;
 	private BuildError error;
 	
@@ -22,7 +22,7 @@ public class LabelManager
 	public LabelManager()
 	{
 		labels = new HashMap<String, Integer>();
-		labelled = new ArrayList< Pair<Draft, Integer> >();
+		labelled = new ArrayList< Pair<Draft, Number> >();
 		error = null;
 		verbose = (s)->{};
 	}
@@ -37,18 +37,26 @@ public class LabelManager
 		labels.put(label, index);
 	}
 	
+	public void addLabelledDraft(Draft d) 
+	{
+		
+		
+		
+		
+	}
 	
 	
 	
-	void insertLabels(List< Pair<Draft, Integer> > labelled, 
+	
+	void insertLabels(List< Pair<Draft, Number> > labelled, 
 							  Map<String, Integer> labels,
 							  List<Integer> code) 
 	{
 		verbose.onPrint("Labels");
-		for (Pair<Draft, Integer> p : labelled)
+		for (Pair<Draft, Number> p : labelled)
 		{
 			Draft d = p.First;
-			int index = p.Second;
+			int index = p.Second.getValue();
 			
 			String label = d.getLabel();
 			if (!labels.containsKey(label))

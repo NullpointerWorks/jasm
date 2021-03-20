@@ -80,15 +80,15 @@ public class CodeSegmentBuilder implements SegmentBuilder
 				return;
 			}
 			
-			List<Integer> c = d.getMachineCode();
-			for (Integer i : c) 
-			{
-				code.add( new Number(i) );
-			}
+			List<Number> c = d.getMachineCode();
+			for (Number i : c) code.add(i);
 			
 			// label insertion is only done with jump instructions
 			if (d.hasLabel())
 			{
+				Number n = d.getMachineCode().get(1);
+				String l = d.getLabel();
+				
 				manager.addLabelledDraft(d);
 			}
 			

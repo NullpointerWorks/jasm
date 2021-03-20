@@ -2,6 +2,7 @@ package com.nullpointerworks.jasm.asm.assembler.builder;
 
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.assembler.segment.Number;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
 import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
@@ -19,7 +20,7 @@ abstract class AbstractDraftBuilder implements DraftBuilder
 	protected void buildNOP(SourceCode sc, List<Draft> draft) 
 	{
 		Draft d = new Draft(sc);
-		d.addMachineCode(0);
+		d.addMachineCode( new Number(0) );
 		draft.add(d);
 	}
 	

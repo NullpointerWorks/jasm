@@ -1,6 +1,6 @@
 package com.nullpointerworks.jasm.asm.assembler.segment;
 
-class Number 
+public class Number 
 {
 	private int value = 0;
 	

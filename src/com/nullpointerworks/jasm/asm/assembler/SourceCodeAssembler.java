@@ -87,7 +87,6 @@ public class SourceCodeAssembler implements Assembler
 			{
 				codeBuilder.addSourceCode(sc);
 				
-				
 			}
 			
 			if (hasErrors()) break;

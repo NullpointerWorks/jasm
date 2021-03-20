@@ -10,5 +10,5 @@ public interface SegmentBuilder
 	boolean hasError();
 	BuildError getError();
 	void addSourceCode(SourceCode sc);
-	void finish(int offset);
+	void setOffset(int offset);
 }

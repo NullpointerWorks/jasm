@@ -32,21 +32,15 @@ public class LabelManager
 		this.verbose = v;
 	}
 	
-	public void addLabelPointer(String label, int index) 
+	public void addLabelPointer(String draft, int index) 
 	{
-		labels.put(label, index);
+		labels.put(draft, index);
 	}
 	
-	public void addLabelledDraft(Draft d) 
+	public void addLabelCandidate(Draft l, Number n) 
 	{
-		
-		
-		
-		
+		labelled.add( new Pair<Draft, Number>(l, n) );
 	}
-	
-	
-	
 	
 	void insertLabels(List< Pair<Draft, Number> > labelled, 
 							  Map<String, Integer> labels,

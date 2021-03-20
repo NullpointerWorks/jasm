@@ -83,26 +83,18 @@ public class CodeSegmentBuilder implements SegmentBuilder
 			List<Number> c = d.getMachineCode();
 			for (Number i : c) code.add(i);
 			
-			// label insertion is only done with jump instructions
 			if (d.hasLabel())
 			{
-				Number n = d.getMachineCode().get(1);
-				String l = d.getLabel();
-				
-				manager.addLabelledDraft(d);
+				Number n = d.getMachineCode().get(1); // get addressing bytecode
+				manager.addLabelCandidate(d,n);
 			}
 			
 			instIndex += c.size();
 		}
 	}
 	
-	public void finish(int offset)
+	public void setOffset(int offset)
 	{
-		
-		
-		
-		
-		
 		
 	}
 	

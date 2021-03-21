@@ -3,25 +3,49 @@ package com.nullpointerworks.jasm.asm.assembler.segment;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nullpointerworks.jasm.asm.assembler.Draft;
+import com.nullpointerworks.jasm.asm.ParserUtility;
+import com.nullpointerworks.jasm.asm.VerboseListener;
+import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
-import com.nullpointerworks.jasm.asm.error.ParseError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
-public class DataSegmentBuilder
+public class DataSegmentBuilder implements SegmentBuilder
 {
-	private List< Pair<Draft, Integer> > labels;
-	private List<Integer> data; // data segment, allocated data
+	private LabelManager manager;
+	private List<Number> adrs; // addresses
+	private List<Number> code; // byte code
+	private VerboseListener verbose;
 	private BuildError error;
 	
-	public DataSegmentBuilder()
+	public DataSegmentBuilder(LabelManager m) 
 	{
-		labels = new ArrayList< Pair<Draft, Integer> >();
-		data = new ArrayList<Integer>();
-		
+		manager = m;
+		adrs = new ArrayList<Number>();
+		code = new ArrayList<Number>();
+		error = null;
+		verbose = (s)->{};
 	}
 	
-	public void processSourceCode(SourceCode sc) 
+	@Override
+	public void setVerboseListener(VerboseListener v) 
+	{
+		verbose = v;
+	}
+	
+	@Override
+	public boolean hasError() 
+	{
+		return error != null;
+	}
+	
+	@Override
+	public BuildError getError() 
+	{
+		return error;
+	}
+	
+	@Override
+	public void addSourceCode(SourceCode sc) 
 	{
 		String line = sc.getLine();
 		
@@ -33,12 +57,6 @@ public class DataSegmentBuilder
 		if (line.startsWith(".data"))
 		{
 			processData(sc);
-			
-			
-			//String label = line.substring(0,line.length()-1);
-			//labels.put(label.toLowerCase(), instIndex); // labels are not case sensitive
-			
-			
 			return;
 		}
 		
@@ -49,17 +67,44 @@ public class DataSegmentBuilder
 		}
 	}
 	
+	@Override
+	public void setOffset(int offset) 
+	{
+		for (Number n : adrs) n.addValue(offset);
+	}
+	
+	@Override
+	public List<Number> getByteCode() 
+	{
+		return code;
+	}
+	
 	private void processData(SourceCode sc) 
 	{
 		String line = sc.getLine();
-		
-		
 		
 	}
 	
 	private void processReserved(SourceCode sc) 
 	{
 		String line = sc.getLine();
+		String[] tokens = line.split(" ");
+		if (tokens.length != 3)
+		{
+			setError(sc, "  Bad memory allocation syntax.");
+			return;
+		}
+		
+		String num = tokens[2];
+		if (!ParserUtility.isInteger(num))
+		{
+			setError(sc, "  Memory allocation should be an integer number.");
+			return;
+		}
+		
+		String label = tokens[1];
+		
+		
 		
 		
 		
@@ -70,6 +115,6 @@ public class DataSegmentBuilder
 	
 	private void setError(SourceCode sc, String message)
 	{
-		error = new ParseError(sc,message);
+		error = new AssembleError(sc,message);
 	}
 }

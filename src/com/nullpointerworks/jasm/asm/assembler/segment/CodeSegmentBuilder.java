@@ -33,7 +33,7 @@ public class CodeSegmentBuilder implements SegmentBuilder
 	
 	public void setVerboseListener(VerboseListener v) 
 	{
-		this.verbose=v;
+		this.verbose = v;
 	}
 	
 	public boolean hasError()

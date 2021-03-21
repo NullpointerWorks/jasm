@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.assembler.segment.CodeSegmentBuilder;
+import com.nullpointerworks.jasm.asm.assembler.segment.DataSegmentBuilder;
 import com.nullpointerworks.jasm.asm.assembler.segment.LabelManager;
 import com.nullpointerworks.jasm.asm.assembler.segment.Number;
 import com.nullpointerworks.jasm.asm.assembler.segment.SegmentBuilder;
@@ -21,6 +22,7 @@ public class SourceCodeAssembler implements Assembler
 	
 	private LabelManager manager;
 	private SegmentBuilder codeBuilder;
+	private SegmentBuilder dataBuilder;
 	
 	public SourceCodeAssembler()
 	{
@@ -29,6 +31,7 @@ public class SourceCodeAssembler implements Assembler
 		
 		manager = new LabelManager();
 		codeBuilder = new CodeSegmentBuilder(manager);
+		dataBuilder = new DataSegmentBuilder(manager);
 		
 		verbose = (s)->{};
 	}
@@ -115,19 +118,18 @@ public class SourceCodeAssembler implements Assembler
 			
 			if (line.startsWith("."))
 			{
-				
+				dataBuilder.addSourceCode(sc);
 			}
 			else
 			{
 				codeBuilder.addSourceCode(sc);
-				
 			}
 			
 			if (hasErrors()) break;
 		}
 		
 		codeBuilder.setOffset(0);
-		
+		dataBuilder.setOffset( codeBuilder.getByteCode().size() );
 		
 		
 		manager.setCommitLabels();

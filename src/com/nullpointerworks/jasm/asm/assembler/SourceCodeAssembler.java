@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nullpointerworks.jasm.asm.VerboseListener;
-import com.nullpointerworks.jasm.asm.assembler.builder.SuperDraftBuilder;
-import com.nullpointerworks.jasm.asm.assembler.builder.DraftBuilder;
 import com.nullpointerworks.jasm.asm.assembler.segment.CodeSegmentBuilder;
-import com.nullpointerworks.jasm.asm.assembler.segment.DataSegmentBuilder;
 import com.nullpointerworks.jasm.asm.assembler.segment.LabelManager;
+import com.nullpointerworks.jasm.asm.assembler.segment.Number;
 import com.nullpointerworks.jasm.asm.assembler.segment.SegmentBuilder;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.parser.Definition;
@@ -18,23 +16,18 @@ public class SourceCodeAssembler implements Assembler
 {
 	private List<BuildError> errors; // contains errors
 	private List<Integer> result; // resulting machine code
-	private List<Integer> code; // code segment, byte code
 	
 	private VerboseListener verbose;
 	
 	private LabelManager manager;
-	private DraftBuilder draftBuilder;
 	private SegmentBuilder codeBuilder;
-	private DataSegmentBuilder dataBuilder;
 	
 	public SourceCodeAssembler()
 	{
 		errors = new ArrayList<BuildError>();
 		result = new ArrayList<Integer>();
-		code = new ArrayList<Integer>();
 		
 		manager = new LabelManager();
-		draftBuilder = new SuperDraftBuilder();
 		codeBuilder = new CodeSegmentBuilder(manager);
 		
 		verbose = (s)->{};
@@ -61,17 +54,24 @@ public class SourceCodeAssembler implements Assembler
 	@Override
 	public List<Integer> getMachineCode() 
 	{
+		result.clear();
+		
+		List<Number> bc = codeBuilder.getByteCode();
+		for (Number n : bc)
+		{
+			result.add( n.getValue() );
+		}
+		
 		return result;
 	}
 	
 	@Override
-	public void draft(List<SourceCode> sourcecode, List<Definition> definitions, int origin)
+	public void draft(List<SourceCode> sourcecode, List<Definition> definitions)
 	{
-		codeBuilder.setVerboseListener(verbose);
 		verbose.onPrint("-------------------------------");
 		verbose.onPrint("Assembler Start\n");
+		codeBuilder.setVerboseListener(verbose);
 		
-		setOrigin(origin);
 		insertDefinition(sourcecode, definitions);
 		
 		for (int i=0,l=sourcecode.size(); i<l; i++)
@@ -87,20 +87,15 @@ public class SourceCodeAssembler implements Assembler
 			{
 				codeBuilder.addSourceCode(sc);
 				
+				
 			}
 			
 			if (hasErrors()) break;
 		}
 		
-		//insertLabels(labelled, labels, code);
-		
+		manager.setLabelAddress();
 		verbose.onPrint("\nAssembler End");
 		verbose.onPrint("-------------------------------");
-	}
-	
-	private void setOrigin(int origin) 
-	{
-		for (int o = origin; o>0; o--) code.add(0);
 	}
 	
 	private void insertDefinition(List<SourceCode> code, List<Definition> defs) 

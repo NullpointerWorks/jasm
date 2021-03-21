@@ -41,26 +41,31 @@ public class LabelManager
 	{
 		labelled.add( new Pair<Draft, Number>(l, n) );
 	}
+
+	public void setLabelAddress() 
+	{
+		insertLabels(labelled, labels);
+	}
 	
-	void insertLabels(List< Pair<Draft, Number> > labelled, 
-							  Map<String, Integer> labels,
-							  List<Integer> code) 
+	private void insertLabels(List< Pair<Draft, Number> > labelled, 
+							  Map<String, Integer> labels) 
 	{
 		verbose.onPrint("Labels");
 		for (Pair<Draft, Number> p : labelled)
 		{
-			Draft d = p.First;
-			int index = p.Second.getValue();
+			Draft draft = p.First;
+			Number index = p.Second;
 			
-			String label = d.getLabel();
+			String label = draft.getLabel();
 			if (!labels.containsKey(label))
 			{
-				setError(d.getSourceCode(), "  Unknown label reference; "+label);
+				setError(draft.getSourceCode(), "  Unknown label reference; "+label);
 				return;
 			}
 			
 			int addr = labels.get(label);
-			code.set(index, addr);
+			index.setValue(addr);
+			
 			verbose.onPrint("  "+label+": 0x"+String.format("%x", addr) );
 		}
 	}

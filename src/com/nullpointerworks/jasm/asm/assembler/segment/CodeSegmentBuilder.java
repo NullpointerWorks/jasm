@@ -93,6 +93,11 @@ public class CodeSegmentBuilder implements SegmentBuilder
 		}
 	}
 	
+	public List<Number> getByteCode()
+	{
+		return code;
+	}
+	
 	public void setOffset(int offset)
 	{
 		

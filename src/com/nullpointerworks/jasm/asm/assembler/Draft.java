@@ -26,6 +26,7 @@ public class Draft
 	public void setError(BuildError err) {error = err;}
 	public BuildError getError() {return error;}
 	
+	public void addMachineCode(int r) { addMachineCode( new Number(r) );}
 	public void addMachineCode(Number r) {values.add(r);}
 	public List<Number> getMachineCode() {return values;}
 	public SourceCode getSourceCode() {return source;}

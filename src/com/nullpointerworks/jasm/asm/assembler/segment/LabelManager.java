@@ -11,17 +11,21 @@ import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
+/*
+ * the label manager couples labels and addresses. Which value 
+ * is contained in the Number objects is managed by the segment 
+ * builders.
+ */
 public class LabelManager 
 {
-	private Map<String, Integer> labels; // keeps track of instruction address and attached labels
+	private Map<String, Number> labels; // keeps track of instruction address and attached labels
 	private List< Pair<Draft, Number> > labelled; // stores all drafts that refer to a label
 	private VerboseListener verbose;
 	private BuildError error;
 	
-	
 	public LabelManager()
 	{
-		labels = new HashMap<String, Integer>();
+		labels = new HashMap<String, Number>();
 		labelled = new ArrayList< Pair<Draft, Number> >();
 		error = null;
 		verbose = (s)->{};
@@ -32,7 +36,17 @@ public class LabelManager
 		this.verbose = v;
 	}
 	
-	public void addLabelPointer(String draft, int index) 
+	public void setLabelAddress() 
+	{
+		insertLabels(labelled, labels);
+	}
+	
+	private void setError(SourceCode sc, String message)
+	{
+		error = new AssembleError(sc,message);
+	}
+	
+	public void addLabelPointer(String draft, Number index) 
 	{
 		labels.put(draft, index);
 	}
@@ -41,14 +55,18 @@ public class LabelManager
 	{
 		labelled.add( new Pair<Draft, Number>(l, n) );
 	}
-
-	public void setLabelAddress() 
+	
+	public boolean hasError()
 	{
-		insertLabels(labelled, labels);
+		return error != null;
 	}
 	
-	private void insertLabels(List< Pair<Draft, Number> > labelled, 
-							  Map<String, Integer> labels) 
+	public BuildError getError()
+	{
+		return error;
+	}
+	
+	private void insertLabels(List< Pair<Draft, Number> > labelled, Map<String, Number> labels) 
 	{
 		verbose.onPrint("Labels");
 		for (Pair<Draft, Number> p : labelled)
@@ -63,15 +81,10 @@ public class LabelManager
 				return;
 			}
 			
-			int addr = labels.get(label);
+			int addr = labels.get(label).getValue();
 			index.setValue(addr);
 			
 			verbose.onPrint("  "+label+": 0x"+String.format("%x", addr) );
 		}
-	}
-	
-	void setError(SourceCode sc, String message)
-	{
-		error = new AssembleError(sc,message);
 	}
 }

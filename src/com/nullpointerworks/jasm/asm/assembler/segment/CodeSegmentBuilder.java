@@ -15,6 +15,7 @@ public class CodeSegmentBuilder implements SegmentBuilder
 {
 	private LabelManager manager;
 	private DraftBuilder builder;
+	private List<Number> adrs; // addresses
 	private List<Number> code; // byte code
 	private VerboseListener verbose;
 	private BuildError error;
@@ -24,6 +25,7 @@ public class CodeSegmentBuilder implements SegmentBuilder
 	{
 		manager = m;
 		builder = new SuperDraftBuilder();
+		adrs = new ArrayList<Number>();
 		code = new ArrayList<Number>();
 		error = null;
 		instIndex = 0;
@@ -54,8 +56,10 @@ public class CodeSegmentBuilder implements SegmentBuilder
 		 */
 		if (line.contains(":"))
 		{
-			String label = line.substring(0,line.length()-1);
-			manager.addLabelPointer(label.toLowerCase(), instIndex); // labels are not case sensitive
+			String l = line.substring(0,line.length()-1);
+			Number a = new Number(instIndex);
+			adrs.add(a);
+			manager.addLabelPointer(l.toLowerCase(), a); // labels are not case sensitive
 			return;
 		}
 		
@@ -100,7 +104,8 @@ public class CodeSegmentBuilder implements SegmentBuilder
 	
 	public void setOffset(int offset)
 	{
-		
+		// shift all addresses by an offset to move references
+		for (Number n : adrs) n.addValue(offset);
 	}
 	
 	private void setError(BuildError err) 

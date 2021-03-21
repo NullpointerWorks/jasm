@@ -65,39 +65,6 @@ public class SourceCodeAssembler implements Assembler
 		return result;
 	}
 	
-	@Override
-	public void draft(List<SourceCode> sourcecode, List<Definition> definitions)
-	{
-		verbose.onPrint("-------------------------------");
-		verbose.onPrint("Assembler Start\n");
-		codeBuilder.setVerboseListener(verbose);
-		
-		insertDefinition(sourcecode, definitions);
-		
-		for (int i=0,l=sourcecode.size(); i<l; i++)
-		{
-			SourceCode sc = sourcecode.get(i);
-			String line = sc.getLine();
-			
-			if (line.startsWith("."))
-			{
-				
-			}
-			else
-			{
-				codeBuilder.addSourceCode(sc);
-				
-				
-			}
-			
-			if (hasErrors()) break;
-		}
-		
-		manager.setLabelAddress();
-		verbose.onPrint("\nAssembler End");
-		verbose.onPrint("-------------------------------");
-	}
-	
 	private void insertDefinition(List<SourceCode> code, List<Definition> defs) 
 	{
 		/*
@@ -130,5 +97,42 @@ public class SourceCodeAssembler implements Assembler
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void draft(List<SourceCode> sourcecode, List<Definition> definitions)
+	{
+		verbose.onPrint("-------------------------------");
+		verbose.onPrint("Assembler Start\n");
+		codeBuilder.setVerboseListener(verbose);
+		
+		insertDefinition(sourcecode, definitions);
+		
+		for (int i=0,l=sourcecode.size(); i<l; i++)
+		{
+			SourceCode sc = sourcecode.get(i);
+			String line = sc.getLine();
+			
+			if (line.startsWith("."))
+			{
+				
+			}
+			else
+			{
+				codeBuilder.addSourceCode(sc);
+				
+			}
+			
+			if (hasErrors()) break;
+		}
+		
+		manager.setLabelAddress();
+		if (manager.hasError())
+		{
+			errors.add( manager.getError() );
+		}
+		
+		verbose.onPrint("\nAssembler End");
+		verbose.onPrint("-------------------------------");
 	}
 }

@@ -126,7 +126,11 @@ public class SourceCodeAssembler implements Assembler
 			if (hasErrors()) break;
 		}
 		
-		manager.setLabelAddress();
+		codeBuilder.setOffset(0);
+		
+		
+		
+		manager.setCommitLabels();
 		if (manager.hasError())
 		{
 			errors.add( manager.getError() );

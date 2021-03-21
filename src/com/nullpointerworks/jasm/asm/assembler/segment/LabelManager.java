@@ -36,7 +36,7 @@ public class LabelManager
 		this.verbose = v;
 	}
 	
-	public void setLabelAddress() 
+	public void setCommitLabels() 
 	{
 		insertLabels(labelled, labels);
 	}

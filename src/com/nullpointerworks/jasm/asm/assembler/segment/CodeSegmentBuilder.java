@@ -7,7 +7,6 @@ import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
 import com.nullpointerworks.jasm.asm.assembler.builder.SuperDraftBuilder;
 import com.nullpointerworks.jasm.asm.assembler.builder.DraftBuilder;
-import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
@@ -111,10 +110,5 @@ public class CodeSegmentBuilder implements SegmentBuilder
 	private void setError(BuildError err) 
 	{
 		error = err;
-	}
-	
-	private void setError(SourceCode sc, String message)
-	{
-		error = new AssembleError(sc,message);
 	}
 }

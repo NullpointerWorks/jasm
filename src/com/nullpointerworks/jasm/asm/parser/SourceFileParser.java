@@ -48,10 +48,12 @@ public class SourceFileParser implements Parser
 	public SourceFileParser() 
 	{
 		code = new ArrayList<SourceCode>();
+		errors = new ArrayList<BuildError>();
+		
 		includes = new ArrayList<String>();
 		includesAux = new ArrayList<String>();
 		includesPath = new ArrayList<String>();
-		errors = new ArrayList<BuildError>();
+		
 		defs = new ArrayList<Definition>();
 		defDups = new ArrayList<Definition>();
 	}

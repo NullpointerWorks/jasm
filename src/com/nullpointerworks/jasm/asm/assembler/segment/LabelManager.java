@@ -51,6 +51,11 @@ public class LabelManager
 		labels.put(label, index);
 	}
 	
+	public void addDefinitionPointer(String label, Number index) 
+	{
+		labels.put(label, index);
+	}
+	
 	public void addLabelCandidate(Draft draft, Number n) 
 	{
 		labelled.add( new Pair<Draft, Number>(draft, n) );

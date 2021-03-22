@@ -28,6 +28,9 @@ public class SourceFileParser implements Parser
 	private List<Definition> defs = null; // contains all definition code
 	private List<Definition> defDups = null; // contains duplicate definitions
 	
+	private List<Definition> allocs = null; // contains all allocations
+	private List<Definition> allocsDups = null;
+	
 	private List<SourceCode> code = null; // contains parsed code
 	private List<BuildError> errors; // contains errors
 	private int origin = 0;
@@ -58,6 +61,8 @@ public class SourceFileParser implements Parser
 		errors = new ArrayList<BuildError>();
 		defs = new ArrayList<Definition>();
 		defDups = new ArrayList<Definition>();
+		allocs = new ArrayList<Definition>();
+		allocsDups = new ArrayList<Definition>();
 	}
 
 	@Override
@@ -82,6 +87,12 @@ public class SourceFileParser implements Parser
 	public List<Definition> getDefinitions()
 	{
 		return defs;
+	}
+	
+	@Override
+	public List<Definition> getAllocations()
+	{
+		return allocs;
 	}
 	
 	@Override
@@ -326,7 +337,7 @@ public class SourceFileParser implements Parser
 		 */
 		if (line.startsWith(".def "))
 		{
-			parseDefinition(sc);
+			parseDefinition(sc, defs, defDups);
 		}
 		
 		/*
@@ -334,7 +345,7 @@ public class SourceFileParser implements Parser
 		 */
 		if (line.startsWith(".org "))
 		{
-			parseOrigin(sc);
+			//parseOrigin(sc);
 		}
 		
 		/*
@@ -342,7 +353,7 @@ public class SourceFileParser implements Parser
 		 */
 		if (line.startsWith(".data "))
 		{
-			
+			parseAllocation(sc);
 		}
 		
 		/*
@@ -350,7 +361,7 @@ public class SourceFileParser implements Parser
 		 */
 		if (line.startsWith(".res "))
 		{
-			
+			parseAllocation(sc);
 		}
 		
 		code.add(sc);
@@ -396,7 +407,7 @@ public class SourceFileParser implements Parser
 		}
 	}
 	
-	private void parseDefinition(SourceCode sc) 
+	private void parseDefinition(SourceCode sc, List<Definition> defs, List<Definition> defDups) 
 	{
 		String line = sc.getLine();
 		String equates = line.substring(5);
@@ -451,7 +462,7 @@ public class SourceFileParser implements Parser
 		/*
 		 * find def duplicates
 		 */
-		var pack3 = findDefine(name,defs);
+		var pack3 = findDefine(name, defs);
 		if (pack3 == null) 
 		{
 			newDefine(name, value, sc, defs); // new definition
@@ -481,6 +492,14 @@ public class SourceFileParser implements Parser
 		{
 			origin = Integer.parseInt(org);
 		}
+	}
+	
+	private void parseAllocation(SourceCode sc) 
+	{
+		
+		
+		
+		
 	}
 	
 	// ==================================================================

@@ -25,6 +25,23 @@ public class ParserUtility
 		return false;
 	}
 	
+	public static int getIntegerValue(String fn)
+	{
+		int val = -1;
+		if (isHexadec(fn))
+		{
+			String opp = fn.replace("0x", "");
+			val = Integer.parseInt(opp, 16);
+		}
+		else
+		if (isInteger(fn))
+		{
+			val = Integer.parseInt(fn);
+		}
+		
+		return val;
+	}
+	
 	public static String fillFromBack(String msg, String chr, int leng) 
 	{
 		String filler = "";

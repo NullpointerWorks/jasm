@@ -11,9 +11,11 @@ import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
 public class DataSegmentBuilder implements SegmentBuilder
 {
+	private final String res_syntax = "\n  .res <name> <integer>";
+	
 	private LabelManager manager;
 	private List<Number> adrs; // addresses
-	private List<Number> code; // byte code
+	private List<Number> data; // byte code
 	private VerboseListener verbose;
 	private BuildError error;
 	
@@ -21,7 +23,7 @@ public class DataSegmentBuilder implements SegmentBuilder
 	{
 		manager = m;
 		adrs = new ArrayList<Number>();
-		code = new ArrayList<Number>();
+		data = new ArrayList<Number>();
 		error = null;
 		verbose = (s)->{};
 	}
@@ -48,11 +50,7 @@ public class DataSegmentBuilder implements SegmentBuilder
 	public void addSourceCode(SourceCode sc) 
 	{
 		String line = sc.getLine();
-		
-		// the parser has already dealt with defines, includes and origin
-		if (line.startsWith(".def")) return;
-		if (line.startsWith(".inc")) return;
-		if (line.startsWith(".org")) return;
+		error = null;
 		
 		if (line.startsWith(".data"))
 		{
@@ -76,7 +74,7 @@ public class DataSegmentBuilder implements SegmentBuilder
 	@Override
 	public List<Number> getByteCode() 
 	{
-		return code;
+		return data;
 	}
 	
 	private void processData(SourceCode sc) 
@@ -91,7 +89,7 @@ public class DataSegmentBuilder implements SegmentBuilder
 		String[] tokens = line.split(" ");
 		if (tokens.length != 3)
 		{
-			setError(sc, "  Bad memory allocation syntax.");
+			setError(sc, "  Bad memory allocation syntax."+res_syntax);
 			return;
 		}
 		
@@ -103,14 +101,14 @@ public class DataSegmentBuilder implements SegmentBuilder
 		}
 		
 		String label = tokens[1];
+		Number number = new Number( data.size() );
 		
+		// add allocation address as label, pad the data segment with the amount to be allocated
+		manager.addLabelPointer(label, number);
+		adrs.add(number);
 		
-		
-		
-		
-		
-		
-		
+		int value = ParserUtility.getIntegerValue(num);
+		for (int i=0,l=value; i<l; i++) data.add( new Number(0) );
 	}
 	
 	private void setError(SourceCode sc, String message)

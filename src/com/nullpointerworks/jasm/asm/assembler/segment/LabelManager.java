@@ -46,14 +46,14 @@ public class LabelManager
 		error = new AssembleError(sc,message);
 	}
 	
-	public void addLabelPointer(String draft, Number index) 
+	public void addLabelPointer(String label, Number index) 
 	{
-		labels.put(draft, index);
+		labels.put(label, index);
 	}
 	
-	public void addLabelCandidate(Draft l, Number n) 
+	public void addLabelCandidate(Draft draft, Number n) 
 	{
-		labelled.add( new Pair<Draft, Number>(l, n) );
+		labelled.add( new Pair<Draft, Number>(draft, n) );
 	}
 	
 	public boolean hasError()

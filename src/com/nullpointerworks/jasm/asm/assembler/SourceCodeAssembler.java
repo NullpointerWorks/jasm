@@ -58,14 +58,40 @@ public class SourceCodeAssembler implements Assembler
 	public List<Integer> getMachineCode() 
 	{
 		result.clear();
+		addToResult(codeBuilder);
+		addToResult(dataBuilder);
+		return result;
+	}
+	
+	@Override
+	public void draft(List<SourceCode> sourcecode, List<Definition> definitions)
+	{
+		manager.setVerboseListener(verbose);
+		codeBuilder.setVerboseListener(verbose);
 		
-		List<Number> bc = codeBuilder.getByteCode();
-		for (Number n : bc)
+		verbose.onPrint("-------------------------------");
+		verbose.onPrint("Assembler Start\n");
+		
+		insertDefinition(sourcecode, definitions);
+		
+		for (int i=0,l=sourcecode.size(); i<l; i++)
 		{
-			result.add( n.getValue() );
+			SourceCode sc = sourcecode.get(i);
+			processCode(sc);
+			if (hasErrors()) return;
 		}
 		
-		return result;
+		codeBuilder.setOffset( 0 );
+		dataBuilder.setOffset( codeBuilder.getByteCode().size() );
+		
+		manager.setCommitLabels();
+		if (manager.hasError())
+		{
+			errors.add( manager.getError() );
+		}
+		
+		verbose.onPrint("\nAssembler End");
+		verbose.onPrint("-------------------------------");
 	}
 	
 	private void insertDefinition(List<SourceCode> code, List<Definition> defs) 
@@ -102,43 +128,39 @@ public class SourceCodeAssembler implements Assembler
 		}
 	}
 	
-	@Override
-	public void draft(List<SourceCode> sourcecode, List<Definition> definitions)
+	private void processCode(SourceCode sc) 
 	{
-		verbose.onPrint("-------------------------------");
-		verbose.onPrint("Assembler Start\n");
-		codeBuilder.setVerboseListener(verbose);
+		String line = sc.getLine();
 		
-		insertDefinition(sourcecode, definitions);
+		// the parser already dealt with defines, includes and origin
+		if (line.startsWith(".def")) return;
+		if (line.startsWith(".inc")) return;
+		if (line.startsWith(".org")) return;
 		
-		for (int i=0,l=sourcecode.size(); i<l; i++)
+		if (line.startsWith(".data"))
 		{
-			SourceCode sc = sourcecode.get(i);
-			String line = sc.getLine();
-			
-			if (line.startsWith("."))
-			{
-				dataBuilder.addSourceCode(sc);
-			}
-			else
-			{
-				codeBuilder.addSourceCode(sc);
-			}
-			
-			if (hasErrors()) break;
+			dataBuilder.addSourceCode(sc);
+			if (dataBuilder.hasError()) errors.add( dataBuilder.getError() );
+			return;
 		}
 		
-		codeBuilder.setOffset(0);
-		dataBuilder.setOffset( codeBuilder.getByteCode().size() );
-		
-		
-		manager.setCommitLabels();
-		if (manager.hasError())
+		if (line.startsWith(".res"))
 		{
-			errors.add( manager.getError() );
+			dataBuilder.addSourceCode(sc);
+			if (dataBuilder.hasError()) errors.add( dataBuilder.getError() );
+			return;
 		}
 		
-		verbose.onPrint("\nAssembler End");
-		verbose.onPrint("-------------------------------");
+		codeBuilder.addSourceCode(sc);
+		if (codeBuilder.hasError()) errors.add( codeBuilder.getError() );
+	}
+	
+	private void addToResult(SegmentBuilder builder) 
+	{
+		List<Number> bc = builder.getByteCode();
+		for (Number n : bc)
+		{
+			result.add( n.getValue() );
+		}
 	}
 }

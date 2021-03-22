@@ -49,6 +49,7 @@ public class CodeSegmentBuilder implements SegmentBuilder
 	public void addSourceCode(SourceCode sc) 
 	{
 		String line = sc.getLine();
+		error = null;
 		
 		/*
 		 * is a label, store for later reference along with it's instruction address

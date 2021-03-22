@@ -48,5 +48,10 @@ public interface Parser
 	/**
 	 * 
 	 */
+	List<Definition> getAllocations();
+	
+	/**
+	 * 
+	 */
 	int getOrigin();
 }

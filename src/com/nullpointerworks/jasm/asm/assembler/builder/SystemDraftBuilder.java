@@ -54,27 +54,32 @@ class SystemDraftBuilder extends AbstractDraftBuilder
 			throwError(sc, "  Syntax error: Interrupt instructions only accept one operand."+int_syntax);
 			return;
 		}
-
-		VMInstruction inst = VMInstruction.INT;
-		int value = 0;
-		if ( ParserUtility.isInteger(operands) )
+		
+		Draft d = new Draft(sc);
+		Operand op = new Operand(operands);
+		
+		
+		if (op.isInteger())
 		{
-			value = Integer.parseInt(operands);
+			if (!op.isAddress())
+			{
+				int value = ParserUtility.getIntegerValue(op.getOperand());
+				BuilderUtility.setCodeImmidiate(d, VMInstruction.INTI, value);
+				draft.add(d);
+				return;
+			}
 		}
 		else
-		if ( ParserUtility.isHexadec(operands) )
+		if (op.isLabel())
 		{
-			String opp = operands.replace("0x", "");
-			value = Integer.parseInt(opp, 16);
-		}
-		else
-		{
-			throwError(sc, "  Syntax error: Interrupts only accept immediate values."+int_syntax);
+			BuilderUtility.setCode(d, VMInstruction.INT, 0);
+			d.setLabel(op.getOperand());
+			draft.add(d);
 			return;
 		}
 		
-		Draft d = new Draft(sc);
-		BuilderUtility.setCodeImmidiate(d, inst, value);
-		draft.add(d);
+		
+		throwError(sc, "  Syntax error: Interrupts only accept immediate values."+int_syntax);
+		return;
 	}
 }

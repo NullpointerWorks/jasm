@@ -10,11 +10,12 @@ class Operand
 	private final boolean isInteger;
 	private final boolean isHexadec;
 	private final boolean isAddress;
+	private final boolean isLabel;
 	private final boolean isRegister;
 	
 	public Operand(String o)
 	{
-		isAddress = checkAddress(o);
+		isAddress = ParserUtility.isAddress(o);
 		if (isAddress) op = o.substring(1);
 		else op = o;
 		
@@ -23,11 +24,13 @@ class Operand
 		
 		r = findRegister(op);
 		isRegister = r != null;
+		isLabel = ParserUtility.isValidLabel(op);
 	}
-	
+
 	public boolean isInteger() {return isInteger || isHexadec;}
 	public boolean isAddress() {return isAddress;}
 	public boolean isRegister() {return isRegister;}
+	public boolean isLabel() {return isLabel;}
 	public String getOperand() {return op;}
 
 	public VMRegister getRegister() {return r;}
@@ -51,12 +54,6 @@ class Operand
 		}
 		
 		return val;
-	}
-	
-	private boolean checkAddress(String o)
-	{
-		if (o.startsWith( "&" )) return true;
-		return false;
 	}
 	
 	private VMRegister findRegister(String name)

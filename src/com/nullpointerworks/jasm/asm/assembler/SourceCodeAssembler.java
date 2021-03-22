@@ -10,7 +10,6 @@ import com.nullpointerworks.jasm.asm.assembler.segment.LabelManager;
 import com.nullpointerworks.jasm.asm.assembler.segment.Number;
 import com.nullpointerworks.jasm.asm.assembler.segment.SegmentBuilder;
 import com.nullpointerworks.jasm.asm.error.BuildError;
-import com.nullpointerworks.jasm.asm.parser.Definition;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
 public class SourceCodeAssembler implements Assembler
@@ -64,15 +63,14 @@ public class SourceCodeAssembler implements Assembler
 	}
 	
 	@Override
-	public void draft(List<SourceCode> sourcecode, List<Definition> definitions)
+	public void draft(List<SourceCode> sourcecode)
 	{
 		manager.setVerboseListener(verbose);
 		codeBuilder.setVerboseListener(verbose);
+		dataBuilder.setVerboseListener(verbose);
 		
 		verbose.onPrint("-------------------------------");
 		verbose.onPrint("Assembler Start\n");
-		
-		insertDefinition(sourcecode, definitions);
 		
 		for (int i=0,l=sourcecode.size(); i<l; i++)
 		{
@@ -89,53 +87,22 @@ public class SourceCodeAssembler implements Assembler
 		{
 			errors.add( manager.getError() );
 		}
+		if (hasErrors()) return;
 		
 		verbose.onPrint("\nAssembler End");
 		verbose.onPrint("-------------------------------");
-	}
-	
-	private void insertDefinition(List<SourceCode> code, List<Definition> defs) 
-	{
-		/*
-		 * print definitions
-		 */
-		verbose.onPrint("Definitions");
-		for (Definition d : defs)
-		{
-			verbose.onPrint( "  "+d.NAME +" = "+d.VALUE );
-		}
-		verbose.onPrint("");
-		
-		/*
-		 * for each source code object, scan if it contains a definition
-		 * if so, replace definition with it's value
-		 */
-		for (int i=0,l=code.size(); i<l; i++)
-		{
-			SourceCode loc = code.get(i);
-			String line = loc.getLine();
-			
-			for (Definition d : defs)
-			{
-				String name = d.NAME;
-				if (line.contains(name))
-				{
-					line = line.replace(name, d.VALUE);
-					loc.setLine(line);
-					break;
-				}
-			}
-		}
 	}
 	
 	private void processCode(SourceCode sc) 
 	{
 		String line = sc.getLine();
 		
-		// the parser already dealt with defines, includes and origin
-		if (line.startsWith(".def")) return;
-		if (line.startsWith(".inc")) return;
-		if (line.startsWith(".org")) return;
+		if (line.startsWith(".def"))
+		{
+			dataBuilder.addSourceCode(sc);
+			if (dataBuilder.hasError()) errors.add( dataBuilder.getError() );
+			return;
+		}
 		
 		if (line.startsWith(".data"))
 		{
@@ -150,6 +117,9 @@ public class SourceCodeAssembler implements Assembler
 			if (dataBuilder.hasError()) errors.add( dataBuilder.getError() );
 			return;
 		}
+		
+		// skip any other declaration
+		if (line.startsWith(".")) return;
 		
 		codeBuilder.addSourceCode(sc);
 		if (codeBuilder.hasError()) errors.add( codeBuilder.getError() );

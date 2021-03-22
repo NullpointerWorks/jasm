@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.error.BuildError;
-import com.nullpointerworks.jasm.asm.parser.Definition;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
 public interface Assembler 
@@ -12,7 +11,7 @@ public interface Assembler
 	/**
 	 * 
 	 */
-	void draft(List<SourceCode> sourcecode, List<Definition> definitions);
+	void draft(List<SourceCode> sourcecode);
 	
 	/**
 	 * 

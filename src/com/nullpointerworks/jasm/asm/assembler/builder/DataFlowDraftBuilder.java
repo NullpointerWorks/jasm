@@ -124,6 +124,17 @@ class DataFlowDraftBuilder extends AbstractDraftBuilder
 				draft.add(d);
 				return;
 			}
+			else
+			// operand is a name/label
+			{
+				BuilderUtility.setCode(d, LOAD_RV, 
+									op1.getRegister(), 
+									0);
+				
+				d.setLabel(op2.getOperand());
+				draft.add(d);
+				return;
+			}
 		}
 		else
 		if (op1.isAddress())

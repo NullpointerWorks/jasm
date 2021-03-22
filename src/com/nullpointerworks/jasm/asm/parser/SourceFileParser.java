@@ -28,15 +28,10 @@ public class SourceFileParser implements Parser
 	private List<Definition> defs = null; // contains all definition code
 	private List<Definition> defDups = null; // contains duplicate definitions
 	
-	private List<Definition> allocs = null; // contains all allocations
-	private List<Definition> allocsDups = null;
-	
 	private List<SourceCode> code = null; // contains parsed code
 	private List<BuildError> errors; // contains errors
-	private int origin = 0;
 	
 	private VerboseListener verbose = (s)->{};
-	//private int strLeng = 2; // line numbering spacing. 2 characters by default
 	
 	/*
 	 * lexicographic sort
@@ -52,8 +47,6 @@ public class SourceFileParser implements Parser
 	
 	public SourceFileParser() 
 	{
-		//strLeng = 2;
-		origin = 0;
 		code = new ArrayList<SourceCode>();
 		includes = new ArrayList<String>();
 		includesAux = new ArrayList<String>();
@@ -61,8 +54,6 @@ public class SourceFileParser implements Parser
 		errors = new ArrayList<BuildError>();
 		defs = new ArrayList<Definition>();
 		defDups = new ArrayList<Definition>();
-		allocs = new ArrayList<Definition>();
-		allocsDups = new ArrayList<Definition>();
 	}
 
 	@Override
@@ -81,24 +72,6 @@ public class SourceFileParser implements Parser
 	public List<SourceCode> getSourceCode()
 	{
 		return code;
-	}
-	
-	@Override
-	public List<Definition> getDefinitions()
-	{
-		return defs;
-	}
-	
-	@Override
-	public List<Definition> getAllocations()
-	{
-		return allocs;
-	}
-	
-	@Override
-	public int getOrigin()
-	{
-		return origin;
 	}
 	
 	@Override
@@ -340,38 +313,7 @@ public class SourceFileParser implements Parser
 			parseDefinition(sc, defs, defDups);
 		}
 		
-		/*
-		 * if origin directive
-		 */
-		if (line.startsWith(".org "))
-		{
-			//parseOrigin(sc);
-		}
-		
-		/*
-		 * if data allocation directive
-		 */
-		if (line.startsWith(".data "))
-		{
-			parseAllocation(sc);
-		}
-		
-		/*
-		 * if data reservation directive
-		 */
-		if (line.startsWith(".res "))
-		{
-			parseAllocation(sc);
-		}
-		
 		code.add(sc);
-		
-		/*
-		 * if verbose, print parsed line
-		 */
-		//int linenumber = sc.getLinenumber();
-		//String linemarker = fillFromBack(""+linenumber," ",strLeng)+"| "+line;
-		//verbose.onPrint(linemarker);
 	}
 	
 	private void parseInclude(SourceCode sc) 
@@ -465,41 +407,14 @@ public class SourceFileParser implements Parser
 		var pack3 = findDefine(name, defs);
 		if (pack3 == null) 
 		{
-			newDefine(name, value, sc, defs); // new definition
+			newDefine(name, value, sc, defs);
 		}
 		else
 		{
 			// also add the first instance of that definition
-			if (findDefine(name,defDups) == null) defDups.add(pack3);
+			if (findDefine(name, defDups) == null) defDups.add(pack3);
 			defDups.add( new Definition(name, "", sc));
 		}
-	}
-	
-	private void parseOrigin(SourceCode sc) 
-	{
-		String line = sc.getLine();
-		String org = line.substring(5).trim();
-		boolean isHexadec = isHexadec(org);
-		boolean isInteger = isInteger(org);
-		
-		if (isHexadec)
-		{
-			org = org.substring(2);
-			origin = Integer.parseInt(org, 16);
-		}
-		else
-		if (isInteger)
-		{
-			origin = Integer.parseInt(org);
-		}
-	}
-	
-	private void parseAllocation(SourceCode sc) 
-	{
-		
-		
-		
-		
 	}
 	
 	// ==================================================================

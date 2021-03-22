@@ -46,6 +46,17 @@ public class CodeSegmentBuilder implements SegmentBuilder
 		return error;
 	}
 	
+	public List<Number> getByteCode()
+	{
+		return code;
+	}
+	
+	public void setOffset(int offset)
+	{
+		// shift all addresses by an offset to move references
+		for (Number n : adrs) n.addValue(offset);
+	}
+	
 	public void addSourceCode(SourceCode sc) 
 	{
 		String line = sc.getLine();
@@ -95,17 +106,6 @@ public class CodeSegmentBuilder implements SegmentBuilder
 			
 			instIndex += c.size();
 		}
-	}
-	
-	public List<Number> getByteCode()
-	{
-		return code;
-	}
-	
-	public void setOffset(int offset)
-	{
-		// shift all addresses by an offset to move references
-		for (Number n : adrs) n.addValue(offset);
 	}
 	
 	private void setError(BuildError err) 

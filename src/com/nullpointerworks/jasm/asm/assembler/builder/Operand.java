@@ -28,6 +28,7 @@ class Operand
 	public boolean isInteger() {return isInteger || isHexadec;}
 	public boolean isAddress() {return isAddress;}
 	public boolean isRegister() {return isRegister;}
+	public String getOperand() {return op;}
 
 	public VMRegister getRegister() {return r;}
 	public int getInteger()

@@ -39,19 +39,4 @@ public interface Parser
 	 * 
 	 */
 	List<SourceCode> getSourceCode();
-	
-	/**
-	 * 
-	 */
-	List<Definition> getDefinitions();
-	
-	/**
-	 * 
-	 */
-	List<Definition> getAllocations();
-	
-	/**
-	 * 
-	 */
-	int getOrigin();
 }

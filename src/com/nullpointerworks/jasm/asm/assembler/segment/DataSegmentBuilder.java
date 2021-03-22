@@ -11,6 +11,7 @@ import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
 public class DataSegmentBuilder implements SegmentBuilder
 {
+	private final String def_syntax = "\n  .def <name> <number|address>";
 	private final String res_syntax = "\n  .res <name> <integer>";
 	
 	private LabelManager manager;
@@ -52,6 +53,12 @@ public class DataSegmentBuilder implements SegmentBuilder
 		String line = sc.getLine();
 		error = null;
 		
+		if (line.startsWith(".def"))
+		{
+			processDefinition(sc);
+			return;
+		}
+		
 		if (line.startsWith(".data"))
 		{
 			processData(sc);
@@ -75,6 +82,29 @@ public class DataSegmentBuilder implements SegmentBuilder
 	public List<Number> getByteCode() 
 	{
 		return data;
+	}
+	
+	private void processDefinition(SourceCode sc) 
+	{
+		String line = sc.getLine();
+		String[] tokens = line.split(" ");
+		if (tokens.length != 3)
+		{
+			setError(sc, "  Bad definition syntax."+def_syntax);
+			return;
+		}
+		
+		String num = tokens[2];
+		if (!ParserUtility.isInteger(num))
+		{
+			setError(sc, "  Definitions may only define a number.");
+			return;
+		}
+		
+		String label = tokens[1];
+		int value = ParserUtility.getIntegerValue(num);
+		Number number = new Number( value );
+		manager.addLabelPointer(label, number);
 	}
 	
 	private void processData(SourceCode sc) 

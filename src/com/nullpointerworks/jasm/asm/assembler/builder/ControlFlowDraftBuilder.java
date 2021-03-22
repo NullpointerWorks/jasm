@@ -109,7 +109,7 @@ class ControlFlowDraftBuilder extends AbstractDraftBuilder
 		Draft d = new Draft(sc);
 		Operand op1 = new Operand(operands);
 		
-		// if the operand is not a number or register, it has to be a label
+		// if the operand is not a number(including an address) or register, it has to be a label
 		if (!op1.isRegister())
 		if (!op1.isInteger())
 		{

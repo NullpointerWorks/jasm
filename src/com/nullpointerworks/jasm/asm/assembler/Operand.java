@@ -1,9 +1,9 @@
-package com.nullpointerworks.jasm.asm.assembler.builder;
+package com.nullpointerworks.jasm.asm.assembler;
 
 import com.nullpointerworks.jasm.asm.ParserUtility;
 import com.nullpointerworks.jasm.vm.VMRegister;
 
-class Operand 
+public class Operand 
 {
 	private final String op;
 	private final VMRegister r;

@@ -78,15 +78,10 @@ public class SourceCodeAssembler implements Assembler
 			if (hasErrors()) return;
 		}
 		
-		codeBuilder.setOffset( 0 );
 		
 		
-		labelManager.setCommitLabels();
-		if (labelManager.hasError())
-		{
-			errors.add( labelManager.getError() );
-		}
-		if (hasErrors()) return;
+		
+		
 		
 		result.clear();
 		addToResult(codeBuilder);

@@ -1,0 +1,5 @@
+.def EXIT 0
+
+main:
+	int EXIT
+	

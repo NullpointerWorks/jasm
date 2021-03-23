@@ -1,8 +1,10 @@
 package com.nullpointerworks.jasm.asm.assembler.segment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.nullpointerworks.jasm.asm.VerboseListener;
+import com.nullpointerworks.jasm.asm.assembler.Translation;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
@@ -10,14 +12,13 @@ public class CodeSegmentBuilder implements SegmentBuilder
 {
 	private VerboseListener verbose;
 	private BuildError error;
+	private List<Translation> translation;
 	
 	public CodeSegmentBuilder()
 	{
 		verbose = (str)->{};
 		error = null;
-		
-		
-		
+		translation = new ArrayList<Translation>();
 	}
 	
 	@Override

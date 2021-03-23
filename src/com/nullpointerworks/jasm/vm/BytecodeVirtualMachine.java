@@ -127,7 +127,7 @@ public class BytecodeVirtualMachine implements VirtualMachine
 				return;
 			}
 		}
-		System.out.println(""+regIP.getValue());
+		//System.out.println(""+regIP.getValue());
 		throwException( VMException.VMEX_NO_EXECUTION );
 		regIP.addValue(1);
 	}

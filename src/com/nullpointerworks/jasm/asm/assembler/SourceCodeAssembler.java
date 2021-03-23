@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.assembler.segment.CodeSegmentBuilder;
-import com.nullpointerworks.jasm.asm.assembler.segment.DataSegmentBuilder;
 import com.nullpointerworks.jasm.asm.assembler.segment.LabelManager;
 import com.nullpointerworks.jasm.asm.assembler.segment.Number;
 import com.nullpointerworks.jasm.asm.assembler.segment.SegmentBuilder;
@@ -18,19 +17,23 @@ public class SourceCodeAssembler implements Assembler
 	private List<Integer> result; // resulting machine code
 	
 	private VerboseListener verbose;
+
+	private LabelManager labelManager;
+	private LabelManager defineManager;
+	private LabelManager referenceManager;
 	
-	private LabelManager manager;
 	private SegmentBuilder codeBuilder;
-	private SegmentBuilder dataBuilder;
 	
 	public SourceCodeAssembler()
 	{
 		errors = new ArrayList<BuildError>();
 		result = new ArrayList<Integer>();
+
+		labelManager = new LabelManager();
+		defineManager = new LabelManager();
+		referenceManager = new LabelManager();
 		
-		manager = new LabelManager();
-		codeBuilder = new CodeSegmentBuilder(manager);
-		dataBuilder = new DataSegmentBuilder(manager);
+		codeBuilder = new CodeSegmentBuilder();
 		
 		verbose = (s)->{};
 	}
@@ -56,18 +59,14 @@ public class SourceCodeAssembler implements Assembler
 	@Override
 	public List<Integer> getMachineCode() 
 	{
-		result.clear();
-		addToResult(codeBuilder);
-		addToResult(dataBuilder);
 		return result;
 	}
 	
 	@Override
 	public void draft(List<SourceCode> sourcecode)
 	{
-		manager.setVerboseListener(verbose);
+		labelManager.setVerboseListener(verbose);
 		codeBuilder.setVerboseListener(verbose);
-		dataBuilder.setVerboseListener(verbose);
 		
 		verbose.onPrint("-------------------------------");
 		verbose.onPrint("Assembler Start\n");
@@ -80,14 +79,17 @@ public class SourceCodeAssembler implements Assembler
 		}
 		
 		codeBuilder.setOffset( 0 );
-		dataBuilder.setOffset( codeBuilder.getByteCode().size() );
 		
-		manager.setCommitLabels();
-		if (manager.hasError())
+		
+		labelManager.setCommitLabels();
+		if (labelManager.hasError())
 		{
-			errors.add( manager.getError() );
+			errors.add( labelManager.getError() );
 		}
 		if (hasErrors()) return;
+		
+		result.clear();
+		addToResult(codeBuilder);
 		
 		verbose.onPrint("\nAssembler End");
 		verbose.onPrint("-------------------------------");
@@ -99,26 +101,8 @@ public class SourceCodeAssembler implements Assembler
 		
 		if (line.startsWith(".def"))
 		{
-			dataBuilder.addSourceCode(sc);
-			if (dataBuilder.hasError()) errors.add( dataBuilder.getError() );
 			return;
 		}
-		
-		if (line.startsWith(".data"))
-		{
-			dataBuilder.addSourceCode(sc);
-			if (dataBuilder.hasError()) errors.add( dataBuilder.getError() );
-			return;
-		}
-		
-		if (line.startsWith(".res"))
-		{
-			dataBuilder.addSourceCode(sc);
-			if (dataBuilder.hasError()) errors.add( dataBuilder.getError() );
-			return;
-		}
-		
-		// skip any other declaration
 		if (line.startsWith(".")) return;
 		
 		codeBuilder.addSourceCode(sc);

@@ -1,6 +1,6 @@
 package com.nullpointerworks.jasm.asm.assembler.segment;
 
-public class Pair<S,I>
+class Pair<S,I>
 {
 	public final S First;
 	public final I Second;

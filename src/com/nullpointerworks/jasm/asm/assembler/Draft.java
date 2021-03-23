@@ -10,6 +10,29 @@ import com.nullpointerworks.jasm.asm.parser.SourceCode;
 public class Draft
 {
 	private SourceCode source;
+	private BuildError error;
+	
+	public Draft(SourceCode sc) 
+	{
+		source = sc;
+	}
+	
+	public void setError(BuildError err) {error = err;}
+	public boolean hasError() {return error != null;}
+	public BuildError getError() {return error;}
+	public SourceCode getSourceCode() {return source;}
+	
+	
+	
+	
+	
+	
+}
+
+/*
+public class Draft
+{
+	private SourceCode source;
 	private String label;
 	private BuildError error;
 	private List<Number> values;
@@ -35,3 +58,4 @@ public class Draft
 	public void setLabel(String l) {label = l;}
 	public String getLabel() {return label;}
 }
+//*/

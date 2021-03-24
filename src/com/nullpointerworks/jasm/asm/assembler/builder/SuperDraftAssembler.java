@@ -3,6 +3,7 @@ package com.nullpointerworks.jasm.asm.assembler.builder;
 import java.util.List;
 
 import com.nullpointerworks.jasm.asm.assembler.Draft;
+import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.translator.Allocation;
 import com.nullpointerworks.jasm.asm.translator.Definition;
@@ -59,10 +60,7 @@ public class SuperDraftAssembler implements DraftAssembler
 			return d;
 		}
 		
-		
-		
-		
-		
+		error = new AssembleError(tr.getSourceCode(), ""); // TODO
 		return null;
 	}
 

@@ -46,14 +46,39 @@ public class SystemAssembler implements DraftAssembler
 						List<Label> lbls)
 	{
 		error = null;
-		Draft d = new Draft();
+		Draft d = new Draft( translation );
+		Instruction inst = translation.getInstruction();
 		
+		if (inst == Instruction.NOP)
+		{
+			buildNOP(translation, defs, allocs, lbls, d);
+		}
 		
-		
-		
-		
+		if (inst == Instruction.INT)
+		{
+			buildINT(translation, defs, allocs, lbls, d);
+		}
 		
 		return d;
+	}
+
+	private void buildNOP(	Translation tr, 
+							List<Definition> defs, 
+							List<Allocation> allocs,
+							List<Label> lbls, 
+							Draft d) 
+	{
+		d.addValue( 0 );
+	}
+
+	private void buildINT(	Translation tr, 
+							List<Definition> defs, 
+							List<Allocation> allocs,
+							List<Label> lbls, 
+							Draft d) 
+	{
+		d.addValue( 0x01000000 );
+		
 	}
 	
 }

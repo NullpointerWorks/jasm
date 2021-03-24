@@ -72,11 +72,6 @@ public class MainAssemblerTest implements VerboseListener
 		List<Label> labels 				= translator.getLabels();
 		List<Translation> translation 	= translator.getTranslation();
 		
-		printDefinitions(definitions);
-		printAllocations(allocations);
-		printLabels(labels);
-		printTranslation(translation);
-		
 		/*
 		 * the assembler turns the translation objects into bytecode
 		 */
@@ -94,8 +89,46 @@ public class MainAssemblerTest implements VerboseListener
 		}
 		List<Integer> code = assembler.getMachineCode();
 		
+		printDefinitions(definitions);
+		printAllocations(allocations);
+		printLabels(labels);
+		printTranslation(translation);
+		printMachineCode(0, code, this);
+	}
+	
+	private void printMachineCode(int offset, List<Integer> code, VerboseListener verbose) 
+	{
+		verbose.onPrint("-------------------------------");
+		verbose.onPrint("Byte Code Start\n");
 		
+		int it = 0;
+		int leng = ( code.size()+"" ).length();
+		String padding = "";
+		for (int k=0; k<leng; k++) padding += " ";
+		String paddingFormat = "%0"+leng+"x";
 		
+		for (int j = offset, l = code.size(); j<l; j++)
+		{
+			Integer i = code.get(j);
+			
+			int b1 = (i>>24)&0xff;
+			int b2 = (i>>16)&0xff;
+			int b3 = (i>>8)&0xff;
+			int b4 = (i)&0xff;
+			
+			String s1 = String.format("%02x ", b1);
+			String s2 = String.format("%02x ", b2);
+			String s3 = String.format("%02x ", b3);
+			String s4 = String.format("%02x", b4);
+			
+			String addr = padding + String.format(paddingFormat, it);
+			addr = "[ "+addr.substring(leng)+" ] ";
+			verbose.onPrint(addr+s1+s2+s3+s4);
+			it++;
+		}
+		
+		verbose.onPrint("\nByte Code End");
+		verbose.onPrint("-------------------------------");
 	}
 	
 	private void printDefinitions(List<Definition> definitions) 
@@ -126,7 +159,7 @@ public class MainAssemblerTest implements VerboseListener
 		System.out.println("Labels:");
 		for (Label label : labels)
 		{
-			System.out.println( "  "+label.getName());
+			System.out.println( "  "+label.getName()+" : "+label.getNumber().getValue());
 		}
 		System.out.println("");
 	}

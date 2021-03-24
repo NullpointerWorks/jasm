@@ -10,5 +10,9 @@
 
 main:
 	nop
+	nop
+	nop
+	nop
+stop:
 	int EXIT
 	

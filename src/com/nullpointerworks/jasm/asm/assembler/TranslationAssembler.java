@@ -3,9 +3,11 @@ package com.nullpointerworks.jasm.asm.assembler;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.TranslatorUtility;
 import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.assembler.builder.DraftAssembler;
 import com.nullpointerworks.jasm.asm.assembler.builder.SuperDraftAssembler;
+import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.translator.Allocation;
 import com.nullpointerworks.jasm.asm.translator.Definition;
@@ -72,8 +74,8 @@ public class TranslationAssembler implements Assembler
 			Instruction inst = tr.getInstruction();
 			if (!drafter.hasOperation(inst))
 			{
-				//error
-				return;
+				errors.add( new AssembleError(tr.getSourceCode(), "") );
+				continue;
 			}
 			
 			Draft d = drafter.draft(tr, definitions, allocations, labels);
@@ -83,16 +85,30 @@ public class TranslationAssembler implements Assembler
 				continue;
 			}
 			
+			if (tr.hasLabel())
+			{
+				String name = tr.getLabel();
+				Label label = TranslatorUtility.findLabel(labels, name);
+				if (label == null)
+				{
+					errors.add( new AssembleError(tr.getSourceCode(), "") );
+					continue;
+				}
+				
+				label.getNumber().setValue( temporary.size() ); // label address is the current bytecode index
+			}
 			
-			
-			
+			List<Number> numbers = d.getValues();
+			for (Number num : numbers)
+			{
+				temporary.add(num); // copying references is important
+			}
 		}
 		
+		for (Number num : temporary)
+		{
+			bytecode.add( num.getValue() );
+		}
 	}
-	
-	
-	
-	
-	
 	
 }

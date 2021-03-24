@@ -9,6 +9,9 @@ import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.parser.Parser;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 import com.nullpointerworks.jasm.asm.parser.SourceFileParser;
+import com.nullpointerworks.jasm.asm.translator.SourceCodeTranslator;
+import com.nullpointerworks.jasm.asm.translator.Translation;
+import com.nullpointerworks.jasm.asm.translator.Translator;
 
 public class MainAssemblerTest implements VerboseListener
 {
@@ -26,11 +29,11 @@ public class MainAssemblerTest implements VerboseListener
 	public MainAssemblerTest()
 	{
 		/*
-		 * the parser formats the source code writing
+		 * the parser formats the source code to make it consistent
 		 */
 		Parser parser = new SourceFileParser();
 		parser.setVerboseListener(this);
-		parser.parse("main.jasm");
+		parser.parse("src/com/nullpointerworks/jasm/test/main.jasm");
 		if(parser.hasErrors())
 		{
 			List<BuildError> errors = parser.getErrors();
@@ -43,8 +46,25 @@ public class MainAssemblerTest implements VerboseListener
 		List<SourceCode> sourcecode = parser.getSourceCode();
 		
 		/*
-		 * the assembler turns source code objects into machine code
+		 * turns the source code into an object which is easier to assemble
 		 */
+		Translator translator = new SourceCodeTranslator();
+		translator.setVerboseListener(this);
+		translator.translate(sourcecode);
+		if(translator.hasErrors())
+		{
+			List<BuildError> errors = translator.getErrors();
+			for (BuildError be : errors)
+			{
+				System.out.println( be.getDescription() );
+			}
+			return;
+		}
+		List<Translation> translation = translator.getTranslation();
+		
+		/*
+		 * the assembler turns the translation objects into bytecode
+		 *
 		Assembler assemble = new SourceCodeAssembler();
 		assemble.setVerboseListener(this);
 		assemble.draft(sourcecode);
@@ -58,7 +78,7 @@ public class MainAssemblerTest implements VerboseListener
 			return;
 		}
 		List<Integer> code = assemble.getMachineCode();
-		
+		//*/
 		
 	}
 }

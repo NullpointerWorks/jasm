@@ -9,8 +9,8 @@ import java.util.List;
 
 import com.nullpointerworks.jasm.asm.BuilderUtility;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
-import com.nullpointerworks.jasm.asm.assembler.Operand;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
+import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.vm.VMInstruction;
 
 class LogicDraftBuilder extends AbstractDraftBuilder

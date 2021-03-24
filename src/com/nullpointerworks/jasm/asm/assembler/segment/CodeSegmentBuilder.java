@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nullpointerworks.jasm.asm.VerboseListener;
-import com.nullpointerworks.jasm.asm.assembler.Translation;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
+import com.nullpointerworks.jasm.asm.translator.Translation;
 
 public class CodeSegmentBuilder implements SegmentBuilder 
 {

@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.asm.assembler.builder;
+package com.nullpointerworks.jasm.asm.translator;
 
 public enum Instruction 
 {

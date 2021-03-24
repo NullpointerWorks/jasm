@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.asm.assembler;
+package com.nullpointerworks.jasm.asm.translator;
 
 import com.nullpointerworks.jasm.asm.ParserUtility;
 import com.nullpointerworks.jasm.vm.VMRegister;

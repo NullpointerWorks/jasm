@@ -1,9 +1,8 @@
-package com.nullpointerworks.jasm.asm.assembler;
+package com.nullpointerworks.jasm.asm.translator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nullpointerworks.jasm.asm.assembler.builder.Instruction;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
 public class Translation 
@@ -16,10 +15,15 @@ public class Translation
 	{
 		source = sc;
 		operands = new ArrayList<Operand>();
-		
-		
-		
 	}
 	
+	public Instruction getInstruction()
+	{
+		return inst;
+	}
 	
+	public Operand getOperand(int i)
+	{
+		return operands.get(i);
+	}
 }

@@ -54,8 +54,7 @@ public enum VMInstruction
 	 * (0x) system
 	 */
 	NOP(0x00),
-	INTI(0x01),
-	INT(0x02);
+	INT(0x01);
 
 	private int code = 0x00;
 	private VMInstruction(int c) {code = c;}

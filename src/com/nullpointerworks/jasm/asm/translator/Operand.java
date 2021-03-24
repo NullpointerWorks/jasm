@@ -22,12 +22,22 @@ public class Operand
 		isInteger = ParserUtility.isInteger(op);
 		isHexadec = ParserUtility.isHexadec(op);
 		
-		r = findRegister(op);
-		isRegister = r != null;
-		isLabel = ParserUtility.isValidLabel(op);
+		if (!isNumber())
+		{
+			r = findRegister(op);
+			isRegister = r != null;
+			if (isRegister) isLabel = false;
+			else isLabel = ParserUtility.isValidLabel(op);
+		}
+		else
+		{
+			r = null;
+			isRegister = false;
+			isLabel = false;
+		}
 	}
-
-	public boolean isInteger() {return isInteger || isHexadec;}
+	
+	public boolean isNumber() {return isInteger || isHexadec;}
 	public boolean isAddress() {return isAddress;}
 	public boolean isRegister() {return isRegister;}
 	public boolean isLabel() {return isLabel;}

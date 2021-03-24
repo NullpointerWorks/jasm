@@ -112,7 +112,7 @@ class ControlFlowDraftBuilder extends AbstractDraftBuilder
 		
 		// if the operand is not a number(including an address) or register, it has to be a label
 		if (!op1.isRegister())
-		if (!op1.isInteger())
+		if (!op1.isNumber())
 		{
 			BuilderUtility.setCode(d, inst, 0);
 			d.setLabel(operands);

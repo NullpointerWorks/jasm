@@ -117,7 +117,7 @@ class DataFlowDraftBuilder extends AbstractDraftBuilder
 				return;
 			}
 			else
-			if (op2.isInteger())
+			if (op2.isNumber())
 			{
 				BuilderUtility.setCode(d, LOAD_RV, 
 									op1.getRegister(), 
@@ -171,7 +171,7 @@ class DataFlowDraftBuilder extends AbstractDraftBuilder
 			return;
 		}
 		else
-		if (op.isInteger())
+		if (op.isNumber())
 		{
 			BuilderUtility.setCode(d, PUSH_V, op.getInteger() );
 			draft.add(d);

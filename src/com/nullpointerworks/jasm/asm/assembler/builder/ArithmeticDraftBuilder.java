@@ -178,7 +178,7 @@ class ArithmeticDraftBuilder extends AbstractDraftBuilder
 				return;
 			}
 			else
-			if (op2.isInteger())
+			if (op2.isNumber())
 			{
 				BuilderUtility.setCode(d, rv, 
 									op1.getRegister(), 

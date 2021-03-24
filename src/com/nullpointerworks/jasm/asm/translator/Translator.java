@@ -27,6 +27,11 @@ public interface Translator
 	/**
 	 * 
 	 */
+	List<Definition> getDefinitions();
+	
+	/**
+	 * 
+	 */
 	List<Translation> getTranslation();
 	
 	/**

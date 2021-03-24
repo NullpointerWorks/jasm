@@ -9,6 +9,8 @@ import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.parser.Parser;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 import com.nullpointerworks.jasm.asm.parser.SourceFileParser;
+import com.nullpointerworks.jasm.asm.translator.Definition;
+import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.asm.translator.SourceCodeTranslator;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 import com.nullpointerworks.jasm.asm.translator.Translator;
@@ -60,7 +62,29 @@ public class MainAssemblerTest implements VerboseListener
 			}
 			return;
 		}
+		List<Definition> definitions = translator.getDefinitions();
 		List<Translation> translation = translator.getTranslation();
+		
+		for (Definition def : definitions)
+		{
+			System.out.println( def.getDirective()+" "+
+								def.getName()+" "+
+								def.getNumber().getValue() );
+		}
+		
+		for (Translation tr : translation)
+		{
+			System.out.print( tr.getInstruction() );
+			for (Operand op : tr.getOperands())
+			{
+				System.out.print( " "+op.getOperand() );
+			}
+			
+			System.out.println();
+		}
+		
+		
+		
 		
 		/*
 		 * the assembler turns the translation objects into bytecode

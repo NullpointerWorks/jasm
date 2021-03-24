@@ -60,7 +60,7 @@ class SystemDraftBuilder extends AbstractDraftBuilder
 		Operand op = new Operand(operands);
 		
 		
-		if (op.isInteger())
+		if (op.isNumber())
 		{
 			if (!op.isAddress())
 			{

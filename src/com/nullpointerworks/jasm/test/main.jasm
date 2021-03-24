@@ -1,7 +1,7 @@
 .def EXIT 0
 .res MEMORY 16
-.data ARRAY 1,2,3,4,5
-.data MESSAGE 'hello world!',0
+;.data ARRAY 1,2,3,4,5
+;.data MESSAGE 'hello world!',0
 
 main:
 	int EXIT

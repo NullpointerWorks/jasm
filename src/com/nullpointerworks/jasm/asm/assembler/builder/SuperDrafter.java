@@ -60,7 +60,7 @@ public class SuperDrafter implements Drafter
 			return d;
 		}
 		
-		error = new AssembleError(tr.getSourceCode(), ""); // TODO
+		error = new AssembleError(tr.getSourceCode(), "  Internal assembler error trying to draft translation.");
 		return null;
 	}
 

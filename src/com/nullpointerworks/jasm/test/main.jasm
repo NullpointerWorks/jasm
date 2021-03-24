@@ -11,8 +11,7 @@
 main:
 	nop
 	nop
-	nop
-	nop
 stop:
+	int 26
 	int EXIT
 	

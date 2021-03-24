@@ -20,8 +20,6 @@ public class SystemDrafter implements Drafter
 	
 	public SystemDrafter() 
 	{
-		
-
 		error = null;
 	}
 
@@ -81,8 +79,7 @@ public class SystemDrafter implements Drafter
 		if (op.isNumber())
 		{
 			int num = op.getInteger();
-			num = 0x01000000 | (num & 0x00ffffff);
-			d.addValue( num );
+			d.addValue( insert(num) );
 		}
 		else
 		if (op.isLabel())
@@ -92,8 +89,7 @@ public class SystemDrafter implements Drafter
 			if (def!=null)
 			{
 				int num = def.getNumber().getValue();
-				num = 0x01000000 | (num & 0x00ffffff);
-				d.addValue( num );
+				d.addValue( insert(num) );
 			}
 			else
 			{
@@ -102,4 +98,8 @@ public class SystemDrafter implements Drafter
 		}
 	}
 	
+	private int insert(int num) 
+	{
+		return num = 0x01000000 | (num & 0x00ffffff);
+	}
 }

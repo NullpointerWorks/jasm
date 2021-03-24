@@ -121,13 +121,13 @@ public class SourceCodeTranslator implements Translator
 		
 		if (list == null)
 		{
-			errors.add( new TranslationError(sc, "") ); // TODO
+			errors.add( new TranslationError(sc, "  Uncaught translation exception in the code translator.") );
 			return null;
 		}
 		
 		if (list.size() == 0)
 		{
-			errors.add( new TranslationError(sc, "") ); // TODO
+			errors.add( new TranslationError(sc, "  No translation has been applied. Review the instruction documentation version.") );
 			return null;
 		}
 		

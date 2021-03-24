@@ -2,19 +2,23 @@ package com.nullpointerworks.jasm.asm.assembler.builder;
 
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.TranslatorUtility;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
+import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.translator.Allocation;
 import com.nullpointerworks.jasm.asm.translator.Definition;
 import com.nullpointerworks.jasm.asm.translator.Instruction;
 import com.nullpointerworks.jasm.asm.translator.Label;
+import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.asm.translator.Translation;
+import com.nullpointerworks.jasm.asm.translator.Number;
 
-public class SystemAssembler implements DraftAssembler
+public class SystemDrafter implements Drafter
 {
 	private BuildError error;
 	
-	public SystemAssembler() 
+	public SystemDrafter() 
 	{
 		
 
@@ -46,12 +50,12 @@ public class SystemAssembler implements DraftAssembler
 						List<Label> lbls)
 	{
 		error = null;
-		Draft d = new Draft( translation );
+		Draft d = new Draft();
 		Instruction inst = translation.getInstruction();
 		
 		if (inst == Instruction.NOP)
 		{
-			buildNOP(translation, defs, allocs, lbls, d);
+			buildNOP(d);
 		}
 		
 		if (inst == Instruction.INT)
@@ -62,11 +66,7 @@ public class SystemAssembler implements DraftAssembler
 		return d;
 	}
 
-	private void buildNOP(	Translation tr, 
-							List<Definition> defs, 
-							List<Allocation> allocs,
-							List<Label> lbls, 
-							Draft d) 
+	private void buildNOP(	Draft d) 
 	{
 		d.addValue( 0 );
 	}
@@ -77,8 +77,29 @@ public class SystemAssembler implements DraftAssembler
 							List<Label> lbls, 
 							Draft d) 
 	{
-		d.addValue( 0x01000000 );
-		
+		Operand op = tr.getOperand(0);
+		if (op.isNumber())
+		{
+			int num = op.getInteger();
+			num = 0x01000000 | (num & 0x00ffffff);
+			d.addValue( num );
+		}
+		else
+		if (op.isLabel())
+		{
+			String name = op.getOperand();
+			Definition def = TranslatorUtility.findDefinition(defs, name);
+			if (def!=null)
+			{
+				int num = def.getNumber().getValue();
+				num = 0x01000000 | (num & 0x00ffffff);
+				d.addValue( num );
+			}
+			else
+			{
+				error = new AssembleError(tr.getSourceCode(), "  Definition \""+name+"\" cannot be found.");
+			}
+		}
 	}
 	
 }

@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.nullpointerworks.jasm.asm.TranslatorUtility;
 import com.nullpointerworks.jasm.asm.VerboseListener;
-import com.nullpointerworks.jasm.asm.assembler.builder.DraftAssembler;
-import com.nullpointerworks.jasm.asm.assembler.builder.SuperDraftAssembler;
+import com.nullpointerworks.jasm.asm.assembler.builder.Drafter;
+import com.nullpointerworks.jasm.asm.assembler.builder.SuperDrafter;
 import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.translator.Allocation;
@@ -22,7 +22,7 @@ public class TranslationAssembler implements Assembler
 	private List<Integer> bytecode;
 	private List<BuildError> errors;
 	private VerboseListener verbose;
-	private DraftAssembler drafter;
+	private Drafter drafter;
 	
 	public TranslationAssembler()
 	{
@@ -30,7 +30,7 @@ public class TranslationAssembler implements Assembler
 		bytecode = new ArrayList<Integer>();
 		errors = new ArrayList<BuildError>();
 		verbose = (str)->{};
-		drafter = new SuperDraftAssembler();
+		drafter = new SuperDrafter();
 	}
 	
 	@Override
@@ -66,6 +66,9 @@ public class TranslationAssembler implements Assembler
 		temporary.clear();
 		bytecode.clear();
 		errors.clear();
+		
+		verbose.onPrint("-------------------------------");
+		verbose.onPrint("Translation Start\n");
 		
 		for (Translation tr : translation)
 		{
@@ -109,6 +112,9 @@ public class TranslationAssembler implements Assembler
 		{
 			bytecode.add( num.getValue() );
 		}
+		
+		verbose.onPrint("\nTranslation End");
+		verbose.onPrint("-------------------------------");
 	}
 	
 }

@@ -11,14 +11,14 @@ import com.nullpointerworks.jasm.asm.translator.Instruction;
 import com.nullpointerworks.jasm.asm.translator.Label;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 
-public class SuperDraftAssembler implements DraftAssembler
+public class SuperDrafter implements Drafter
 {
 	private BuildError error;
-	private DraftAssembler sysDrafter;
+	private Drafter sysDrafter;
 	
-	public SuperDraftAssembler()
+	public SuperDrafter()
 	{
-		sysDrafter = new SystemAssembler();
+		sysDrafter = new SystemDrafter();
 		error = null;
 	}
 

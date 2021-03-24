@@ -10,7 +10,7 @@ import com.nullpointerworks.jasm.asm.translator.Instruction;
 import com.nullpointerworks.jasm.asm.translator.Label;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 
-public interface DraftAssembler 
+public interface Drafter 
 {
 	boolean hasError();
 	

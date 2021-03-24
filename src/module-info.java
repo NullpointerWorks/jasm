@@ -2,8 +2,6 @@ module libnpw.jasm
 {
 	exports com.nullpointerworks.jasm.asm;
 	exports com.nullpointerworks.jasm.asm.assembler;
-	exports com.nullpointerworks.jasm.asm.assembler.builder;
-	exports com.nullpointerworks.jasm.asm.assembler.segment;
 	exports com.nullpointerworks.jasm.asm.error;
 	exports com.nullpointerworks.jasm.asm.parser;
 	exports com.nullpointerworks.jasm.asm.translator;

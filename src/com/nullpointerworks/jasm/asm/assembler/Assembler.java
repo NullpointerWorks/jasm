@@ -6,6 +6,7 @@ import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.translator.Allocation;
 import com.nullpointerworks.jasm.asm.translator.Definition;
+import com.nullpointerworks.jasm.asm.translator.Label;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 
 public interface Assembler 
@@ -35,5 +36,6 @@ public interface Assembler
 	 */
 	void assemble(	List<Translation> translation, 
 					List<Definition> definitions, 
-					List<Allocation> allocations);
+					List<Allocation> allocations,
+					List<Label> labels);
 }

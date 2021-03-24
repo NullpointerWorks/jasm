@@ -7,6 +7,7 @@ import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.translator.Allocation;
 import com.nullpointerworks.jasm.asm.translator.Definition;
+import com.nullpointerworks.jasm.asm.translator.Label;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 
 public class TranslationAssembler implements Assembler 
@@ -41,15 +42,35 @@ public class TranslationAssembler implements Assembler
 		return bytecode;
 	}
 	
-	
 	@Override
 	public void assemble(	List<Translation> translation, 
 							List<Definition> definitions, 
-							List<Allocation> allocations)
+							List<Allocation> allocations,
+							List<Label> labels)
 	{
 		
 		
 		
 		
+		
+		
+		
+		
+		
+		
 	}
+	
+	private Definition findDefinition(List<Definition> definitions, String name)
+	{
+		for (Definition d : definitions)
+		{
+			if (d.getName().equalsIgnoreCase(name))
+			{
+				return d;
+			}
+		}
+		return null;
+	}
+	
+	
 }

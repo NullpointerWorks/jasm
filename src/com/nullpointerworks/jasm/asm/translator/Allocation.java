@@ -11,6 +11,7 @@ public class Allocation
 	private Directive type = Directive.NULL;
 	
 	private String name;
+	private Number address;
 	private List<Integer> number;
 	
 	private void init(Directive t, SourceCode sc, String n) 
@@ -18,6 +19,7 @@ public class Allocation
 		type = t;
 		source = sc;
 		name = n;
+		address = new Number(0);
 		number = new ArrayList<Integer>();
 	}
 	
@@ -46,6 +48,11 @@ public class Allocation
 	public String getName()
 	{
 		return name;
+	}
+	
+	public Number getAddress()
+	{
+		return address;
 	}
 	
 	public List<Integer> getIntegers()

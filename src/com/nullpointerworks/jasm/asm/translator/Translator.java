@@ -36,6 +36,11 @@ public interface Translator
 	/**
 	 * 
 	 */
+	List<Label> getLabels();
+	
+	/**
+	 * 
+	 */
 	List<Translation> getTranslation();
 	
 	/**

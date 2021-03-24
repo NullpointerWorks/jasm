@@ -1,4 +1,9 @@
 .def EXIT 0
+.def PRINT_A 1
+.def PRINT_B 2
+.def PRINT_C 3
+.def PRINT_D 4
+
 .res MEMORY 16
 ;.data ARRAY 1,2,3,4,5
 ;.data MESSAGE 'hello world!',0

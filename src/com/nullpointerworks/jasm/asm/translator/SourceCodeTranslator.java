@@ -15,7 +15,9 @@ public class SourceCodeTranslator implements Translator
 {
 	private List<Definition> definitions;
 	private List<Allocation> allocations;
+	private List<Label> labels;
 	private List<Translation> translation;
+	
 	private List<BuildError> errors;
 	private VerboseListener verbose;
 	private CodeTranslator translator;
@@ -24,6 +26,7 @@ public class SourceCodeTranslator implements Translator
 	{
 		definitions = new ArrayList<Definition>();
 		allocations = new ArrayList<Allocation>();
+		labels = new ArrayList<Label>();
 		translation = new ArrayList<Translation>();
 		errors = new ArrayList<BuildError>();
 		verbose = (str)->{};
@@ -61,6 +64,12 @@ public class SourceCodeTranslator implements Translator
 	}
 	
 	@Override
+	public List<Label> getLabels()
+	{
+		return labels;
+	}
+	
+	@Override
 	public List<Translation> getTranslation() 
 	{
 		return translation;
@@ -71,6 +80,7 @@ public class SourceCodeTranslator implements Translator
 	{
 		definitions.clear();
 		allocations.clear();
+		labels.clear();
 		translation.clear();
 		errors.clear();
 		
@@ -140,6 +150,7 @@ public class SourceCodeTranslator implements Translator
 		List<Translation> t = processCode(next);
 		if (hasErrors()) return;
 		t.get(0).setLabel(l);
+		labels.add( new Label(sc, l));
 	}
 
 	private void processDirective(SourceCode sc) 
@@ -163,7 +174,7 @@ public class SourceCodeTranslator implements Translator
 			}
 			
 			Operand op2 = new Operand(tokens[2]);
-			if (!op2.isNumber())
+			if (!op2.isNumber() || op2.isAddress())
 			{
 				errors.add( new TranslationError(sc, "") ); // TODO
 				return;
@@ -191,7 +202,7 @@ public class SourceCodeTranslator implements Translator
 			}
 			
 			Operand op2 = new Operand(tokens[2]);
-			if (!op2.isNumber())
+			if (!op2.isNumber() || op2.isAddress())
 			{
 				errors.add( new TranslationError(sc, "") ); // TODO
 				return;

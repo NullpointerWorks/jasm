@@ -32,6 +32,11 @@ public interface Translator
 	/**
 	 * 
 	 */
+	List<Allocation> getAllocations();
+	
+	/**
+	 * 
+	 */
 	List<Translation> getTranslation();
 	
 	/**

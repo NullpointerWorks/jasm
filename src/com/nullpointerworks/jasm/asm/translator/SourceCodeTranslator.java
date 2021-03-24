@@ -11,6 +11,7 @@ import com.nullpointerworks.jasm.asm.parser.SourceCode;
 public class SourceCodeTranslator implements Translator 
 {
 	private List<Definition> definitions;
+	private List<Allocation> allocations;
 	private List<Translation> translation;
 	private List<BuildError> errors;
 	private VerboseListener verbose;
@@ -18,6 +19,7 @@ public class SourceCodeTranslator implements Translator
 	public SourceCodeTranslator()
 	{
 		definitions = new ArrayList<Definition>();
+		allocations = new ArrayList<Allocation>();
 		translation = new ArrayList<Translation>();
 		errors = new ArrayList<BuildError>();
 		verbose = (str)->{};
@@ -48,6 +50,12 @@ public class SourceCodeTranslator implements Translator
 	}
 	
 	@Override
+	public List<Allocation> getAllocations()
+	{
+		return allocations;
+	}
+	
+	@Override
 	public List<Translation> getTranslation() 
 	{
 		return translation;
@@ -57,6 +65,7 @@ public class SourceCodeTranslator implements Translator
 	public void translate(List<SourceCode> source) 
 	{
 		definitions.clear();
+		allocations.clear();
 		translation.clear();
 		errors.clear();
 		
@@ -87,15 +96,15 @@ public class SourceCodeTranslator implements Translator
 	
 	private Translation processCode(SourceCode sc) 
 	{
-		String line = sc.getLine();
+		String[] parts = sc.getLine().split(" ");
+		String instruct = parts[0].toLowerCase();
+		String operands = "";
+		if (parts.length > 1) operands = parts[1].toLowerCase();
+		Translation t = new Translation(sc);
 		
 		
-		
-		
-		
-		
-		
-		return null;
+		translation.add(t);
+		return t;
 	}
 	
 	private void processLabel(SourceCode sc, SourceCode next) 
@@ -163,13 +172,10 @@ public class SourceCodeTranslator implements Translator
 				return;
 			}
 			
-			Definition d = new Definition(Directive.RES, sc, op1.getOperand(), 0);
-			definitions.add(d);
+			Allocation d = new Allocation(Directive.RES, sc, op1.getOperand(), op2.getInteger());
+			allocations.add(d);
 		}
 		
-		/*
-		 * TODO
-		 */
 		if (line.startsWith(".data"))
 		{
 			//System.out.println(">> "+line);
@@ -186,6 +192,9 @@ public class SourceCodeTranslator implements Translator
 				errors.add( new TranslationError(sc, "") ); // TODO
 				return;
 			}
+			
+			
+			// TODO
 			
 		}
 	}

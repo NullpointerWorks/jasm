@@ -48,4 +48,9 @@ public class Translation
 	{
 		label = l;
 	}
+	
+	public String getLabel() 
+	{
+		return label;
+	}
 }

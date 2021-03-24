@@ -9,6 +9,7 @@ import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.parser.Parser;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 import com.nullpointerworks.jasm.asm.parser.SourceFileParser;
+import com.nullpointerworks.jasm.asm.translator.Allocation;
 import com.nullpointerworks.jasm.asm.translator.Definition;
 import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.asm.translator.SourceCodeTranslator;
@@ -19,7 +20,7 @@ public class MainAssemblerTest implements VerboseListener
 {
 	public static void main(String[] args) 
 	{
-		new MainAssemblerTest();
+		new MainAssemblerTest("src/com/nullpointerworks/jasm/test/main.jasm");
 	}
 	
 	@Override
@@ -28,14 +29,14 @@ public class MainAssemblerTest implements VerboseListener
 		System.out.println(msg);
 	}
 	
-	public MainAssemblerTest()
+	public MainAssemblerTest(String file)
 	{
 		/*
 		 * the parser formats the source code to make it consistent
 		 */
 		Parser parser = new SourceFileParser();
 		parser.setVerboseListener(this);
-		parser.parse("src/com/nullpointerworks/jasm/test/main.jasm");
+		parser.parse(file);
 		if(parser.hasErrors())
 		{
 			List<BuildError> errors = parser.getErrors();
@@ -63,17 +64,34 @@ public class MainAssemblerTest implements VerboseListener
 			return;
 		}
 		List<Definition> definitions = translator.getDefinitions();
+		List<Allocation> allocations = translator.getAllocations();
 		List<Translation> translation = translator.getTranslation();
 		
+		/*
 		for (Definition def : definitions)
 		{
 			System.out.println( def.getDirective()+" "+
 								def.getName()+" "+
 								def.getNumber().getValue() );
 		}
+		//*/
+		
+		/*
+		for (Allocation alloc : allocations)
+		{
+			System.out.println( alloc.getDirective()+" "+
+								alloc.getName());
+		}
+		//*/
+		
 		
 		for (Translation tr : translation)
 		{
+			if (tr.hasLabel())
+			{
+				System.out.print( tr.getLabel()+": " );
+			}
+			
 			System.out.print( tr.getInstruction() );
 			for (Operand op : tr.getOperands())
 			{

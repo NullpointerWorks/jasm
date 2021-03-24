@@ -3,10 +3,13 @@ package com.nullpointerworks.jasm.asm.translator;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.ParserUtility;
 import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.error.TranslationError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
+import com.nullpointerworks.jasm.asm.translator.builder.CodeTranslator;
+import com.nullpointerworks.jasm.asm.translator.builder.SuperTranslator;
 
 public class SourceCodeTranslator implements Translator 
 {
@@ -15,6 +18,7 @@ public class SourceCodeTranslator implements Translator
 	private List<Translation> translation;
 	private List<BuildError> errors;
 	private VerboseListener verbose;
+	private CodeTranslator translator;
 	
 	public SourceCodeTranslator()
 	{
@@ -23,6 +27,7 @@ public class SourceCodeTranslator implements Translator
 		translation = new ArrayList<Translation>();
 		errors = new ArrayList<BuildError>();
 		verbose = (str)->{};
+		translator = new SuperTranslator();
 	}
 	
 	@Override
@@ -32,7 +37,7 @@ public class SourceCodeTranslator implements Translator
 	}
 
 	@Override
-	public boolean hasErrors() 
+	public boolean hasErrors()
 	{
 		return errors.size() > 0;
 	}
@@ -71,9 +76,9 @@ public class SourceCodeTranslator implements Translator
 		
 		for (int i=0, l=source.size(); i<l; i++)
 		{
-			SourceCode sc = source.get(i);
-			
 			if (hasErrors()) return;
+			
+			SourceCode sc = source.get(i);
 			String line = sc.getLine();
 			
 			if (line.startsWith("."))
@@ -94,17 +99,30 @@ public class SourceCodeTranslator implements Translator
 		}
 	}
 	
-	private Translation processCode(SourceCode sc) 
+	private List<Translation> processCode(SourceCode sc) 
 	{
-		String[] parts = sc.getLine().split(" ");
-		String instruct = parts[0].toLowerCase();
-		String operands = "";
-		if (parts.length > 1) operands = parts[1].toLowerCase();
-		Translation t = new Translation(sc);
+		List<Translation> list = translator.getTranslation(sc);
 		
+		if (translator.hasErrors())
+		{
+			errors.add( translator.getError() );
+			return null;
+		}
 		
-		translation.add(t);
-		return t;
+		if (list == null)
+		{
+			errors.add( new TranslationError(sc, "") ); // TODO
+			return null;
+		}
+		
+		if (list.size() == 0)
+		{
+			errors.add( new TranslationError(sc, "") ); // TODO
+			return null;
+		}
+		
+		for (Translation tr : list) translation.add(tr);
+		return list;
 	}
 	
 	private void processLabel(SourceCode sc, SourceCode next) 
@@ -112,9 +130,17 @@ public class SourceCodeTranslator implements Translator
 		String line = sc.getLine();
 		String name = line.substring(0,line.length()-1);
 		
+		if (!ParserUtility.isValidLabel(name))
+		{
+			errors.add( new TranslationError(sc, "") ); // TODO
+			return;
+		}
+		
 		String l = name.toLowerCase();
-		Translation t = processCode(next);
-		t.setLabel(l);
+		List<Translation> t = processCode(next);
+		if (hasErrors()) return;
+		
+		t.get(0).setLabel(l);
 	}
 
 	private void processDirective(SourceCode sc) 

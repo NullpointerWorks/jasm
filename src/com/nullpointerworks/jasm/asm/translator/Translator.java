@@ -8,7 +8,6 @@ import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
 public interface Translator 
 {
-	
 	/**
 	 * 
 	 */

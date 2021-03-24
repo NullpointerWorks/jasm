@@ -5,16 +5,17 @@ import java.util.List;
 
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
-public class Translation 
+public class Translation
 {
 	private SourceCode source;
-	private Instruction inst = Instruction.NULL;
+	private Instruction inst;
 	private List<Operand> operands;
 	private String label;
 	
 	public Translation(SourceCode sc) 
 	{
 		source = sc;
+		inst = Instruction.NULL;
 		operands = new ArrayList<Operand>();
 		label = null;
 	}
@@ -24,9 +25,23 @@ public class Translation
 		return source;
 	}
 	
+	// ==========================================================
+	
+	public void setInstruction(Instruction i)
+	{
+		inst = i;
+	}
+	
 	public Instruction getInstruction()
 	{
 		return inst;
+	}
+	
+	// ==========================================================
+	
+	public void setOperand(Operand op)
+	{
+		operands.add(op);
 	}
 	
 	public Operand getOperand(int i)
@@ -38,6 +53,8 @@ public class Translation
 	{
 		return operands;
 	}
+	
+	// ==========================================================
 	
 	public boolean hasLabel()
 	{

@@ -4,5 +4,6 @@
 ;.data MESSAGE 'hello world!',0
 
 main:
+	nop
 	int EXIT
 	

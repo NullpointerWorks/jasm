@@ -139,7 +139,6 @@ public class SourceCodeTranslator implements Translator
 		String l = name.toLowerCase();
 		List<Translation> t = processCode(next);
 		if (hasErrors()) return;
-		
 		t.get(0).setLabel(l);
 	}
 

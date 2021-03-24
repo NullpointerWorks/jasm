@@ -142,13 +142,14 @@ public class SourceCodeTranslator implements Translator
 		
 		if (!ParserUtility.isValidLabel(name))
 		{
-			errors.add( new TranslationError(sc, "") ); // TODO
+			errors.add( new TranslationError(sc, "  Invalid label characters used.") );
 			return;
 		}
 		
 		String l = name.toLowerCase();
 		List<Translation> t = processCode(next);
 		if (hasErrors()) return;
+		
 		t.get(0).setLabel(l);
 		labels.add( new Label(sc, l));
 	}

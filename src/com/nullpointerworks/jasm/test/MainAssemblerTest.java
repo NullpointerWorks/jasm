@@ -96,9 +96,8 @@ public class MainAssemblerTest implements VerboseListener
 		
 		
 		
-		
 	}
-
+	
 	private void printDefinitions(List<Definition> definitions) 
 	{
 		System.out.println("Definitions:");

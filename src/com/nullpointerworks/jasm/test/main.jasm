@@ -15,8 +15,8 @@ main:
 	;load a,b
 	;load a,&b
 	
-	;load &5,b
-	;load &a,b
+	load &5,b
+	load &a,b
 	
 	
 	

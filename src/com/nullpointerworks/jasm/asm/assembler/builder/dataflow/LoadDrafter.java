@@ -7,6 +7,7 @@ import static com.nullpointerworks.jasm.asm.AssemblerUtility.setCode;
 import com.nullpointerworks.jasm.asm.ASMInstruction;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
 import com.nullpointerworks.jasm.asm.assembler.builder.Drafter;
+import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.translator.Allocation;
 import com.nullpointerworks.jasm.asm.translator.Definition;
@@ -56,12 +57,14 @@ public class LoadDrafter implements Drafter
 			if (op1.isNumber())
 			{
 				setCode(d, VMInstruction.LOAD_MR, op2.getRegister(), op1.getInteger());
+				return d;
 			}
 			if (op1.isRegister())
 			{
 				if (op2.isRegister())
 				{
 					setCode(d, VMInstruction.LOAD_RMR, op1.getRegister(), op2.getRegister());
+					return d;
 				}
 			}
 		}
@@ -72,10 +75,12 @@ public class LoadDrafter implements Drafter
 				if (op2.isRegister())
 				{
 					setCode(d, VMInstruction.LOAD_RR, op1.getRegister(), op2.getRegister());
+					return d;
 				}
 				if (op2.isNumber()) 
 				{
 					setCode(d, VMInstruction.LOAD_RV, op1.getRegister(), op2.getInteger());
+					return d;
 				}
 			}
 			if (op1.isNumber())
@@ -83,10 +88,12 @@ public class LoadDrafter implements Drafter
 				if (op2.isRegister())
 				{
 					setCode(d, VMInstruction.LOAD_MR, op2.getRegister(), op1.getInteger());
+					return d;
 				}
 			}
 		}
 		
+		error = new AssembleError(tr.getSourceCode(), "  Assemble failure: Uncaught argument combination.");
 		return d;
 	}
 }

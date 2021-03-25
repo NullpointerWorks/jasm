@@ -80,27 +80,6 @@ public class LoadTranslator implements CodeTranslator
 		Operand op1 = new Operand(tokens[0]);
 		Operand op2 = new Operand(tokens[1]);
 		
-		if (op1.isRegister())
-		{
-			if (op2.isRegister())
-			{
-				allow(sc, op1, op2, translation);
-				return;
-			}
-			
-			if (op2.isNumber()) 
-			{
-				allow(sc, op1, op2, translation);
-				return;
-			}
-			
-			if (op2.isLabel())  // allow only definitions and data references
-			{
-				allow(sc, op1, op2, translation);
-				return;
-			}
-		}
-		
 		if (op1.isAddress())
 		{
 			if (op1.isNumber())
@@ -112,8 +91,31 @@ public class LoadTranslator implements CodeTranslator
 				}
 			}
 		}
+		else
+		{
+			if (op1.isRegister())
+			{
+				if (op2.isRegister())
+				{
+					allow(sc, op1, op2, translation);
+					return;
+				}
+				
+				if (op2.isNumber()) 
+				{
+					allow(sc, op1, op2, translation);
+					return;
+				}
+				
+				if (op2.isLabel())  // allow only definitions and data references
+				{
+					allow(sc, op1, op2, translation);
+					return;
+				}
+			}
+		}
 		
-		error = new TranslationError(sc, "  Syntax error: Invalid load instruction arguments."+syntax);
+		error = new TranslationError(sc, "  Syntax error: Invalid instruction arguments."+syntax);
 	}
 	
 	private void allow(SourceCode sc, Operand op1, Operand op2, List<Translation> translation) 

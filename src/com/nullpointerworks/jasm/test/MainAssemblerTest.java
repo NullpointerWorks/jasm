@@ -71,6 +71,11 @@ public class MainAssemblerTest implements VerboseListener
 		List<Allocation> allocations 	= translator.getAllocations();
 		List<Label> labels 				= translator.getLabels();
 		List<Translation> translation 	= translator.getTranslation();
+
+		printDefinitions(definitions);
+		printAllocations(allocations);
+		printLabels(labels);
+		printTranslation(translation);
 		
 		/*
 		 * the assembler turns the translation objects into bytecode
@@ -89,10 +94,6 @@ public class MainAssemblerTest implements VerboseListener
 		}
 		List<Integer> code = assembler.getMachineCode();
 		
-		printDefinitions(definitions);
-		printAllocations(allocations);
-		printLabels(labels);
-		printTranslation(translation);
 		printMachineCode(0, code, this);
 	}
 	
@@ -148,8 +149,7 @@ public class MainAssemblerTest implements VerboseListener
 		System.out.println("Allocations:");
 		for (Allocation alloc : allocations)
 		{
-			System.out.println( "  "+alloc.getDirective()+" "+
-									alloc.getName());
+			System.out.println( "  "+alloc.getDirective()+" "+alloc.getName());
 		}
 		System.out.println("");
 	}
@@ -159,7 +159,8 @@ public class MainAssemblerTest implements VerboseListener
 		System.out.println("Labels:");
 		for (Label label : labels)
 		{
-			System.out.println( "  "+label.getName()+" : "+label.getNumber().getValue());
+			System.out.println( "  "+label.getName());
+			//System.out.println( " : "+label.getNumber().getValue());
 		}
 		System.out.println("");
 	}

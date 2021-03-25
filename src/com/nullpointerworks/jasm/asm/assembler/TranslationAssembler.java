@@ -68,7 +68,7 @@ public class TranslationAssembler implements Assembler
 		errors.clear();
 		
 		verbose.onPrint("-------------------------------");
-		verbose.onPrint("Translation Start\n");
+		verbose.onPrint("Assembling Start\n");
 		
 		for (Translation tr : translation)
 		{
@@ -113,7 +113,7 @@ public class TranslationAssembler implements Assembler
 			bytecode.add( num.getValue() );
 		}
 		
-		verbose.onPrint("\nTranslation End");
+		verbose.onPrint("\nAssembling End");
 		verbose.onPrint("-------------------------------");
 	}
 	

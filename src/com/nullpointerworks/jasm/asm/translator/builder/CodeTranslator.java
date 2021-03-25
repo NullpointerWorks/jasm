@@ -10,6 +10,6 @@ public interface CodeTranslator
 {
 	boolean hasErrors();
 	BuildError getError();
-	boolean hasOperation(String i);
-	List<Translation> getTranslation(SourceCode sc);
+	boolean isInstruction(String instruct);
+	void translate(SourceCode sc, String operand, List<Translation> translation);
 }

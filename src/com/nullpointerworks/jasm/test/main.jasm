@@ -13,5 +13,6 @@ main:
 	nop
 stop:
 	int 26
+	jmp main
 	int EXIT
 	

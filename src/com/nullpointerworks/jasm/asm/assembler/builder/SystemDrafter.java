@@ -64,7 +64,7 @@ public class SystemDrafter implements Drafter
 		return d;
 	}
 
-	private void buildNOP(	Draft d) 
+	private void buildNOP(Draft d) 
 	{
 		d.addValue( 0 );
 	}

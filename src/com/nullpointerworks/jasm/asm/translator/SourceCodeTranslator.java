@@ -8,7 +8,6 @@ import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.error.TranslationError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
-import com.nullpointerworks.jasm.asm.translator.builder.CodeTranslator;
 import com.nullpointerworks.jasm.asm.translator.builder.SuperTranslator;
 
 public class SourceCodeTranslator implements Translator 
@@ -20,7 +19,7 @@ public class SourceCodeTranslator implements Translator
 	
 	private List<BuildError> errors;
 	private VerboseListener verbose;
-	private CodeTranslator translator;
+	private SuperTranslator translator;
 	
 	public SourceCodeTranslator()
 	{
@@ -84,6 +83,9 @@ public class SourceCodeTranslator implements Translator
 		translation.clear();
 		errors.clear();
 		
+		verbose.onPrint("-------------------------------");
+		verbose.onPrint("Translation Start\n");
+		
 		for (int i=0, l=source.size(); i<l; i++)
 		{
 			if (hasErrors()) return;
@@ -107,6 +109,9 @@ public class SourceCodeTranslator implements Translator
 			
 			processCode(sc);
 		}
+		
+		verbose.onPrint("\nTranslation End");
+		verbose.onPrint("-------------------------------");
 	}
 	
 	private List<Translation> processCode(SourceCode sc) 

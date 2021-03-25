@@ -14,11 +14,11 @@ import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 import com.nullpointerworks.jasm.asm.translator.Number;
 
-public class SystemDrafter implements Drafter
+public class IntDrafter implements Drafter
 {
 	private BuildError error;
 	
-	public SystemDrafter() 
+	public IntDrafter() 
 	{
 		error = null;
 	}
@@ -35,11 +35,9 @@ public class SystemDrafter implements Drafter
 		return error;
 	}
 	
-	public boolean hasOperation(Instruction instruct)
+	public boolean isInstruction(Instruction instruct)
 	{
-		if (instruct == Instruction.NOP) return true;
-		if (instruct == Instruction.INT) return true;
-		return false;
+		return instruct == Instruction.INT;
 	}
 	
 	public Draft draft(	Translation translation, 
@@ -49,26 +47,10 @@ public class SystemDrafter implements Drafter
 	{
 		error = null;
 		Draft d = new Draft();
-		Instruction inst = translation.getInstruction();
-		
-		if (inst == Instruction.NOP)
-		{
-			buildNOP(d);
-		}
-		
-		if (inst == Instruction.INT)
-		{
-			buildINT(translation, defs, allocs, lbls, d);
-		}
-		
+		buildINT(translation, defs, allocs, lbls, d);
 		return d;
 	}
-
-	private void buildNOP(Draft d) 
-	{
-		d.addValue( 0 );
-	}
-
+	
 	private void buildINT(	Translation tr, 
 							List<Definition> defs, 
 							List<Allocation> allocs,

@@ -16,7 +16,7 @@ public interface Drafter
 	
 	BuildError getError();
 	
-	boolean hasOperation(Instruction instruct);
+	boolean isInstruction(Instruction instruct);
 	
 	Draft draft(Translation translation, 
 				List<Definition> defs, 

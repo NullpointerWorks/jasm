@@ -75,7 +75,7 @@ public class TranslationAssembler implements Assembler
 			if (hasErrors()) return;
 			
 			Instruction inst = tr.getInstruction();
-			if (!drafter.hasOperation(inst))
+			if (!drafter.isInstruction(inst))
 			{
 				errors.add( new AssembleError(tr.getSourceCode(), "") );
 				continue;

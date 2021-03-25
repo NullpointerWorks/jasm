@@ -51,19 +51,22 @@ public class SuperTranslator
 			return null;
 		}
 		
-		String operands = "";
-		if (tokens.length > 1) operands = tokens[1].toLowerCase();
-		
 		List<Translation> translation = new ArrayList<Translation>();
 		for (CodeTranslator translator : translators)
 		{
 			if (translator.isInstruction(instruct))
 			{
-				translator.translate(sc, operands, translation);
+				List<Translation> trlist = translator.getTranslation(sc);
 				if (translator.hasErrors())
 				{
 					error = translator.getError();
 				}
+				
+				for (Translation tr : trlist)
+				{
+					translation.add(tr);
+				}
+				
 				break;
 			}
 		}

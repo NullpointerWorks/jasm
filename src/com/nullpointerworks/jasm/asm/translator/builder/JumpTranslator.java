@@ -1,5 +1,6 @@
 package com.nullpointerworks.jasm.asm.translator.builder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.nullpointerworks.jasm.asm.error.BuildError;
@@ -38,7 +39,29 @@ public class JumpTranslator implements CodeTranslator
 	}
 	
 	@Override
-	public void translate(SourceCode sc, String operand, List<Translation> translation) 
+	public List<Translation> getTranslation(SourceCode sc)
+	{
+		error = null;
+		String line = sc.getLine();
+		String[] tokens = line.split(" ");
+		String operands = "";
+		if (tokens.length > 1) operands = tokens[1].toLowerCase();
+		List<Translation> translation = new ArrayList<Translation>();
+		
+		if (tokens.length == 2)
+		{
+			operands = tokens[1].toLowerCase();
+			translate(sc,operands,translation);
+		}
+		else
+		{
+			error = new TranslationError(sc, "  Syntax error: Jumps take only one argument."+syntax);
+		}
+		
+		return translation;
+	}
+	
+	private void translate(SourceCode sc, String operand, List<Translation> translation) 
 	{
 		error = null;
 		

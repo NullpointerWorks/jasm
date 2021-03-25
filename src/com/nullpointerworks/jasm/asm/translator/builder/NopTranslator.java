@@ -1,5 +1,6 @@
 package com.nullpointerworks.jasm.asm.translator.builder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.nullpointerworks.jasm.asm.error.BuildError;
@@ -34,9 +35,17 @@ public class NopTranslator implements CodeTranslator
 	{
 		return instruct.equals("nop");
 	}
-	
+
 	@Override
-	public void translate(SourceCode sc, String operand, List<Translation> translation) 
+	public List<Translation> getTranslation(SourceCode sc)
+	{
+		error = null;
+		List<Translation> translation = new ArrayList<Translation>();
+		translate(sc,translation);
+		return translation;
+	}
+	
+	private void translate(SourceCode sc, List<Translation> translation) 
 	{
 		Translation t = new Translation(sc);
 		t.setInstruction(Instruction.NOP);

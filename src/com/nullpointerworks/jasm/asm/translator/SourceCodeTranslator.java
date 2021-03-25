@@ -99,7 +99,7 @@ public class SourceCodeTranslator implements Translator
 				continue;
 			}
 			
-			if (line.contains(":")) // TODO causes an error when labeled multiple times in a row
+			if (line.contains(":")) // TODO probably causes an error when labeled multiple times in a row
 			{
 				SourceCode scn = source.get(i+1);
 				processLabel(sc,scn);

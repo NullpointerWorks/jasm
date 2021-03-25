@@ -8,6 +8,7 @@ import com.nullpointerworks.jasm.asm.error.TranslationError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 import com.nullpointerworks.jasm.asm.translator.builder.ctrlflow.*;
+import com.nullpointerworks.jasm.asm.translator.builder.dataflow.*;
 import com.nullpointerworks.jasm.asm.translator.builder.sys.*;
 
 public class SuperTranslator implements CodeTranslator
@@ -33,6 +34,7 @@ public class SuperTranslator implements CodeTranslator
 		translators.add( new JumpGreaterTranslator() );
 		translators.add( new JumpGreaterEqualTranslator() );
 		
+		translators.add( new LoadTranslator() );
 		
 		
 	}

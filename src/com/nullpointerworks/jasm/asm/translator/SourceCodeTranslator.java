@@ -236,9 +236,52 @@ public class SourceCodeTranslator implements Translator
 				return;
 			}
 			
+			// TODO add text handling
 			
-			// TODO
+			int[] values = {0};
+			if (tokens.length == 3)
+			{
+				values = getValues(sc, tokens[2]);
+			}
+			else
+			{
+				errors.add( new TranslationError(sc, "") ); // TODO
+			}
+			if (hasErrors()) return;
 			
+			Allocation d = new Allocation(Directive.DATA, sc, op1.getOperand(), values);
+			allocations.add(d);
 		}
+	}
+
+	private int[] getValues(SourceCode sc, String string) 
+	{
+		String[] tokens = string.split(",");
+		int[] values = new int[tokens.length];
+		
+		for (int i=0, l=tokens.length; i<l; i++)
+		{
+			String t = tokens[i];
+			//System.out.println(">> "+t);
+			if (ParserUtility.isValidNumber(t))
+			{
+				values[i] = ParserUtility.getIntegerValue(t);
+			}
+			else
+			{
+				errors.add( new TranslationError(sc, "") ); // TODO
+			}
+		}
+		return values;
+	}
+
+	private String combine(String[] tokens, int start) 
+	{
+		String res = "";
+		for (int i=start, l=tokens.length; i<l; i++)
+		{
+			res += (","+tokens[i]);
+		}
+		return res.substring(1);
 	}
 }

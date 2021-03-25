@@ -3,10 +3,10 @@ package com.nullpointerworks.jasm.asm.translator.builder.ctrlflow;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.ASMInstruction;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.error.TranslationError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
-import com.nullpointerworks.jasm.asm.translator.Instruction;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 import com.nullpointerworks.jasm.asm.translator.builder.CodeTranslator;
 
@@ -61,7 +61,7 @@ public class RetTranslator implements CodeTranslator
 	private void translate(SourceCode sc, List<Translation> translation) 
 	{
 		Translation t = new Translation(sc);
-		t.setInstruction(Instruction.RET);
+		t.setInstruction(ASMInstruction.RET);
 		translation.add(t);
 	}
 }

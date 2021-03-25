@@ -3,19 +3,20 @@ package com.nullpointerworks.jasm.asm.translator;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.ASMInstruction;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 
 public class Translation
 {
 	private SourceCode source;
-	private Instruction inst;
+	private ASMInstruction inst;
 	private List<Operand> operands;
 	private String label;
 	
 	public Translation(SourceCode sc) 
 	{
 		source = sc;
-		inst = Instruction.NULL;
+		inst = ASMInstruction.NULL;
 		operands = new ArrayList<Operand>();
 		label = null;
 	}
@@ -27,12 +28,12 @@ public class Translation
 	
 	// ==========================================================
 	
-	public void setInstruction(Instruction i)
+	public void setInstruction(ASMInstruction i)
 	{
 		inst = i;
 	}
 	
-	public Instruction getInstruction()
+	public ASMInstruction getInstruction()
 	{
 		return inst;
 	}

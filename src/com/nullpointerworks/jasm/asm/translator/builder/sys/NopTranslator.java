@@ -3,9 +3,9 @@ package com.nullpointerworks.jasm.asm.translator.builder.sys;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.ASMInstruction;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
-import com.nullpointerworks.jasm.asm.translator.Instruction;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 import com.nullpointerworks.jasm.asm.translator.builder.CodeTranslator;
 
@@ -49,7 +49,7 @@ public class NopTranslator implements CodeTranslator
 	private void translate(SourceCode sc, List<Translation> translation) 
 	{
 		Translation t = new Translation(sc);
-		t.setInstruction(Instruction.NOP);
+		t.setInstruction(ASMInstruction.NOP);
 		translation.add(t);
 	}
 }

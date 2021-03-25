@@ -1,6 +1,6 @@
 package com.nullpointerworks.jasm.asm.translator.builder.ctrlflow;
 
-import com.nullpointerworks.jasm.asm.translator.Instruction;
+import com.nullpointerworks.jasm.asm.ASMInstruction;
 
 public class JumpGreaterTranslator extends GenericJumpTranslator
 {
@@ -8,6 +8,6 @@ public class JumpGreaterTranslator extends GenericJumpTranslator
 	
 	public JumpGreaterTranslator()
 	{
-		initTranslator(syntax, "jg", Instruction.JG);
+		initTranslator(syntax, "jg", ASMInstruction.JG);
 	}
 }

@@ -3,10 +3,10 @@ package com.nullpointerworks.jasm.asm.translator.builder.ctrlflow;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.ASMInstruction;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.error.TranslationError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
-import com.nullpointerworks.jasm.asm.translator.Instruction;
 import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 import com.nullpointerworks.jasm.asm.translator.builder.CodeTranslator;
@@ -15,7 +15,7 @@ abstract class GenericJumpTranslator implements CodeTranslator
 {
 	private String syntax = "\n  jmp <label>";
 	private String trigger;
-	private Instruction inst;
+	private ASMInstruction inst;
 	private BuildError error;
 	
 	public GenericJumpTranslator()
@@ -23,7 +23,7 @@ abstract class GenericJumpTranslator implements CodeTranslator
 		error = null;
 	}
 	
-	protected final void initTranslator(String syntax, String trigger, Instruction inst)
+	protected final void initTranslator(String syntax, String trigger, ASMInstruction inst)
 	{
 		this.syntax = syntax;
 		this.trigger = trigger;

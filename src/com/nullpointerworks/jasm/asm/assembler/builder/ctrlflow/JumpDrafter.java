@@ -2,6 +2,7 @@ package com.nullpointerworks.jasm.asm.assembler.builder.ctrlflow;
 
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.ASMInstruction;
 import com.nullpointerworks.jasm.asm.TranslatorUtility;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
 import com.nullpointerworks.jasm.asm.assembler.builder.Drafter;
@@ -9,7 +10,6 @@ import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.translator.Allocation;
 import com.nullpointerworks.jasm.asm.translator.Definition;
-import com.nullpointerworks.jasm.asm.translator.Instruction;
 import com.nullpointerworks.jasm.asm.translator.Label;
 import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.asm.translator.Translation;
@@ -35,9 +35,9 @@ public class JumpDrafter implements Drafter
 		return error;
 	}
 	
-	public boolean isInstruction(Instruction instruct)
+	public boolean isInstruction(ASMInstruction instruct)
 	{
-		return instruct == Instruction.JMP;
+		return instruct == ASMInstruction.JMP;
 	}
 	
 	public Draft draft(	Translation translation, 

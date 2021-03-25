@@ -4,16 +4,22 @@
 .def PRINT_C 3
 .def PRINT_D 4
 
-.res MEMORY 4
-;.data ARRAY 1,2,3,4,5
+;.res MEMORY 4
+.data ARRAY 1,2,3,4,5
 ;.data MESSAGE 'hello world!',0
 
 main:
-	nop
-	nop
-jump:
-	int 1
-	jmp jump
-stop:
+	;load a,10
+	;load a,&10
+	
+	;load a,b
+	;load a,&b
+	
+	;load &5,b
+	;load &a,b
+	
+	
+	
+	
 	int EXIT
 	

@@ -3,15 +3,15 @@ package com.nullpointerworks.jasm.asm.assembler.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.ASMInstruction;
 import com.nullpointerworks.jasm.asm.assembler.Draft;
-import com.nullpointerworks.jasm.asm.assembler.builder.ctrlflow.JumpDrafter;
-import com.nullpointerworks.jasm.asm.assembler.builder.sys.IntDrafter;
-import com.nullpointerworks.jasm.asm.assembler.builder.sys.NopDrafter;
+import com.nullpointerworks.jasm.asm.assembler.builder.ctrlflow.*;
+import com.nullpointerworks.jasm.asm.assembler.builder.dataflow.*;
+import com.nullpointerworks.jasm.asm.assembler.builder.sys.*;
 import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.translator.Allocation;
 import com.nullpointerworks.jasm.asm.translator.Definition;
-import com.nullpointerworks.jasm.asm.translator.Instruction;
 import com.nullpointerworks.jasm.asm.translator.Label;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 
@@ -25,7 +25,13 @@ public class SuperDrafter implements Drafter
 		drafters = new ArrayList<Drafter>();
 		drafters.add( new NopDrafter() );
 		drafters.add( new IntDrafter() );
+		
 		drafters.add( new JumpDrafter() );
+		
+		drafters.add( new LoadDrafter() );
+		
+		
+		
 		
 	}
 
@@ -42,7 +48,7 @@ public class SuperDrafter implements Drafter
 	}
 	
 	@Override
-	public boolean isInstruction(Instruction instruct) 
+	public boolean isInstruction(ASMInstruction instruct) 
 	{
 		for (Drafter dr : drafters)
 		{
@@ -58,7 +64,7 @@ public class SuperDrafter implements Drafter
 						List<Label> lbls) 
 	{
 		error = null;
-		Instruction inst = tr.getInstruction();
+		ASMInstruction inst = tr.getInstruction();
 		
 		if (!isInstruction(inst))
 		{

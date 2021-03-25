@@ -165,7 +165,7 @@ public class MainAssemblerTest implements VerboseListener
 			text += "  "+tr.getInstruction();
 			for (Operand op : tr.getOperands())
 			{
-				text += " "+op.getOperand();
+				text += " "+(op.isAddress()?"&":"")+op.getOperand();
 			}
 			
 			if (tr.hasLabel())

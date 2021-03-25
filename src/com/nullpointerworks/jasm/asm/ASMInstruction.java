@@ -1,6 +1,6 @@
-package com.nullpointerworks.jasm.asm.translator;
+package com.nullpointerworks.jasm.asm;
 
-public enum Instruction 
+public enum ASMInstruction 
 {
 	NULL,
 	

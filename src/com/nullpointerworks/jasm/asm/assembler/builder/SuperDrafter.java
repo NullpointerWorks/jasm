@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.nullpointerworks.jasm.asm.assembler.Draft;
+import com.nullpointerworks.jasm.asm.assembler.builder.ctrlflow.JumpDrafter;
+import com.nullpointerworks.jasm.asm.assembler.builder.sys.IntDrafter;
+import com.nullpointerworks.jasm.asm.assembler.builder.sys.NopDrafter;
 import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.translator.Allocation;

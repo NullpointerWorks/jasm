@@ -100,26 +100,25 @@ public class TranslationAssembler implements Assembler
 			}
 		}
 		
+		for (Allocation alloc : allocations)
+		{
+			int lastIndex = temporary.size();
+			Number address = alloc.getAddress();
+			address.setValue(lastIndex);
+			
+			List<Number> ints = alloc.getNumbers();
+			for (Number i : ints) 
+			{
+				temporary.add(i);
+			}
+		}
+		
 		for (Number num : temporary)
 		{
 			bytecode.add( num.getValue() );
 		}
 		
-		for (Allocation alloc : allocations)
-		{
-			int lastIndex = bytecode.size();
-			
-			
-			Number address = alloc.getAddress();
-			List<Integer> ints = alloc.getIntegers();
-			
-			
-			
-			// TODO
-		}
-		
 		verbose.onPrint("\nAssembling End");
 		verbose.onPrint("-------------------------------");
 	}
-	
 }

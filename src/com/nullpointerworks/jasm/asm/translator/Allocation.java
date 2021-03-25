@@ -12,7 +12,7 @@ public class Allocation
 	
 	private String name;
 	private Number address;
-	private List<Integer> number;
+	private List<Number> number;
 	
 	private void init(Directive t, SourceCode sc, String n) 
 	{
@@ -20,19 +20,24 @@ public class Allocation
 		source = sc;
 		name = n;
 		address = new Number(0);
-		number = new ArrayList<Integer>();
+		number = new ArrayList<Number>();
+	}
+	
+	private void add(int i)
+	{
+		number.add( new Number(i) );
 	}
 	
 	public Allocation(Directive t, SourceCode sc, String n, int[] v) 
 	{
 		init(t,sc,n);
-		for (int i : v) number.add(i);
+		for (int i : v) add(i);
 	}
 	
 	public Allocation(Directive t, SourceCode sc, String n, int v) 
 	{
 		init(t,sc,n);
-		for (; v>0; v--) number.add(0);
+		for (; v>0; v--) add(0);
 	}
 	
 	public SourceCode getSourceCode()
@@ -55,7 +60,7 @@ public class Allocation
 		return address;
 	}
 	
-	public List<Integer> getIntegers()
+	public List<Number> getNumbers()
 	{
 		return number;
 	}

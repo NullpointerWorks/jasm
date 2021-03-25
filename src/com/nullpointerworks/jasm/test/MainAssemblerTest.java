@@ -139,7 +139,7 @@ public class MainAssemblerTest implements VerboseListener
 		verbose.onPrint("Allocations:");
 		for (Allocation alloc : allocations)
 		{
-			verbose.onPrint( "  "+alloc.getDirective()+" "+alloc.getName());
+			verbose.onPrint( "  "+alloc.getDirective()+" "+alloc.getName()+" : "+alloc.getAddress().getValue());
 		}
 		verbose.onPrint("");
 	}

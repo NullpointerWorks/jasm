@@ -1,4 +1,4 @@
-package com.nullpointerworks.jasm.asm.translator.builder;
+package com.nullpointerworks.jasm.asm.translator.builder.sys;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 import com.nullpointerworks.jasm.asm.translator.Instruction;
 import com.nullpointerworks.jasm.asm.translator.Translation;
+import com.nullpointerworks.jasm.asm.translator.builder.CodeTranslator;
 
 public class NopTranslator implements CodeTranslator
 {

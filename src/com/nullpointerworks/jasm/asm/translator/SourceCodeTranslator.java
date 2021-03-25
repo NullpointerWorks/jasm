@@ -8,6 +8,7 @@ import com.nullpointerworks.jasm.asm.VerboseListener;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.error.TranslationError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
+import com.nullpointerworks.jasm.asm.translator.builder.CodeTranslator;
 import com.nullpointerworks.jasm.asm.translator.builder.SuperTranslator;
 
 public class SourceCodeTranslator implements Translator 
@@ -19,7 +20,7 @@ public class SourceCodeTranslator implements Translator
 	
 	private List<BuildError> errors;
 	private VerboseListener verbose;
-	private SuperTranslator translator;
+	private CodeTranslator translator;
 	
 	public SourceCodeTranslator()
 	{
@@ -168,10 +169,10 @@ public class SourceCodeTranslator implements Translator
 			String[] tokens = line.split(" ");
 			if (tokens.length != 3)
 			{
-				errors.add( new TranslationError(sc, "") ); // TODO
+				errors.add( new TranslationError(sc, "  Syntax error: definitions take two arguments.") );
 				return;
 			}
-
+			
 			Operand op1 = new Operand(tokens[1]);
 			if (!op1.isLabel())
 			{

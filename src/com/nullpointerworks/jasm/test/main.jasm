@@ -11,8 +11,9 @@
 main:
 	nop
 	nop
+jump:
+	int 1
+	jmp jump
 stop:
-	int 26
-	jmp main
 	int EXIT
 	

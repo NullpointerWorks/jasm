@@ -12,13 +12,12 @@ import com.nullpointerworks.jasm.asm.translator.Instruction;
 import com.nullpointerworks.jasm.asm.translator.Label;
 import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.asm.translator.Translation;
-import com.nullpointerworks.jasm.asm.translator.Number;
 
-public class IntDrafter implements Drafter
+public class JumpDrafter implements Drafter
 {
 	private BuildError error;
 	
-	public IntDrafter() 
+	public JumpDrafter() 
 	{
 		error = null;
 	}
@@ -37,7 +36,7 @@ public class IntDrafter implements Drafter
 	
 	public boolean isInstruction(Instruction instruct)
 	{
-		return instruct == Instruction.INT;
+		return instruct == Instruction.JMP;
 	}
 	
 	public Draft draft(	Translation translation, 
@@ -47,39 +46,30 @@ public class IntDrafter implements Drafter
 	{
 		error = null;
 		Draft d = new Draft();
-		buildINT(translation, defs, d);
+		build(translation, defs, allocs, lbls, d);
 		return d;
 	}
 	
-	private void buildINT(	Translation tr, 
-							List<Definition> defs,
-							Draft d) 
+	private void build(	Translation tr, 
+						List<Definition> defs, 
+						List<Allocation> allocs,
+						List<Label> lbls, 
+						Draft d) 
 	{
 		Operand op = tr.getOperand(0);
-		if (op.isNumber())
-		{
-			int num = op.getInteger();
-			d.addValue( insert(num) );
-		}
-		else
 		if (op.isLabel())
 		{
 			String name = op.getOperand();
-			Definition def = TranslatorUtility.findDefinition(defs, name);
-			if (def!=null)
+			Label lbl = TranslatorUtility.findLabel(lbls, name);
+			if (lbl!=null)
 			{
-				int num = def.getNumber().getValue();
-				d.addValue( insert(num) );
+				d.addValue( 0x20 << 24 );
+				d.addValue( lbl.getNumber() );
 			}
 			else
 			{
-				error = new AssembleError(tr.getSourceCode(), "  Definition \""+name+"\" cannot be found.");
+				error = new AssembleError(tr.getSourceCode(), "  Label \""+name+"\" cannot be found.");
 			}
 		}
-	}
-	
-	private int insert(int num) 
-	{
-		return num = 0x01000000 | (num & 0x00ffffff);
 	}
 }

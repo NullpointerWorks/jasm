@@ -11,7 +11,6 @@ import com.nullpointerworks.jasm.asm.error.AssembleError;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.translator.Allocation;
 import com.nullpointerworks.jasm.asm.translator.Definition;
-import com.nullpointerworks.jasm.asm.translator.Instruction;
 import com.nullpointerworks.jasm.asm.translator.Label;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 import com.nullpointerworks.jasm.asm.translator.Number;
@@ -74,13 +73,6 @@ public class TranslationAssembler implements Assembler
 		{
 			if (hasErrors()) return;
 			
-			Instruction inst = tr.getInstruction();
-			if (!drafter.isInstruction(inst))
-			{
-				errors.add( new AssembleError(tr.getSourceCode(), "") );
-				continue;
-			}
-			
 			Draft d = drafter.draft(tr, definitions, allocations, labels);
 			if (drafter.hasError())
 			{
@@ -94,7 +86,7 @@ public class TranslationAssembler implements Assembler
 				Label label = TranslatorUtility.findLabel(labels, name);
 				if (label == null)
 				{
-					errors.add( new AssembleError(tr.getSourceCode(), "") );
+					errors.add( new AssembleError(tr.getSourceCode(), "  The referenced label has not been defined.") );
 					continue;
 				}
 				
@@ -111,6 +103,19 @@ public class TranslationAssembler implements Assembler
 		for (Number num : temporary)
 		{
 			bytecode.add( num.getValue() );
+		}
+		
+		for (Allocation alloc : allocations)
+		{
+			int lastIndex = bytecode.size();
+			
+			
+			Number address = alloc.getAddress();
+			List<Integer> ints = alloc.getIntegers();
+			
+			
+			
+			// TODO
 		}
 		
 		verbose.onPrint("\nAssembling End");

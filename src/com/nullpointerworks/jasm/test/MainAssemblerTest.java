@@ -27,12 +27,6 @@ public class MainAssemblerTest implements VerboseListener
 		new MainAssemblerTest("src/com/nullpointerworks/jasm/test/main.jasm");
 	}
 	
-	@Override
-	public void onPrint(String msg) 
-	{
-		System.out.println(msg);
-	}
-	
 	public MainAssemblerTest(String file)
 	{
 		/*
@@ -44,10 +38,7 @@ public class MainAssemblerTest implements VerboseListener
 		if(parser.hasErrors())
 		{
 			List<BuildError> errors = parser.getErrors();
-			for (BuildError be : errors)
-			{
-				System.out.println( be.getDescription() );
-			}
+			for (BuildError be : errors) onPrint( be.getDescription() );
 			return;
 		}
 		List<SourceCode> sourcecode = parser.getSourceCode();
@@ -61,21 +52,13 @@ public class MainAssemblerTest implements VerboseListener
 		if(translator.hasErrors())
 		{
 			List<BuildError> errors = translator.getErrors();
-			for (BuildError be : errors)
-			{
-				System.out.println( be.getDescription() );
-			}
+			for (BuildError be : errors) onPrint( be.getDescription() );
 			return;
 		}
 		List<Definition> definitions 	= translator.getDefinitions();
 		List<Allocation> allocations 	= translator.getAllocations();
 		List<Label> labels 				= translator.getLabels();
 		List<Translation> translation 	= translator.getTranslation();
-
-		printDefinitions(definitions);
-		printAllocations(allocations);
-		printLabels(labels);
-		printTranslation(translation);
 		
 		/*
 		 * the assembler turns the translation objects into bytecode
@@ -86,15 +69,22 @@ public class MainAssemblerTest implements VerboseListener
 		if(assembler.hasErrors())
 		{
 			List<BuildError> errors = assembler.getErrors();
-			for (BuildError be : errors)
-			{
-				System.out.println( be.getDescription() );
-			}
+			for (BuildError be : errors) onPrint( be.getDescription() );
 			return;
 		}
 		List<Integer> code = assembler.getMachineCode();
 		
+		printDefinitions(definitions, this);
+		printAllocations(allocations, this);
+		printLabels(labels, this);
+		printTranslation(translation, this);
 		printMachineCode(0, code, this);
+	}
+	
+	@Override
+	public void onPrint(String msg) 
+	{
+		System.out.println(msg);
 	}
 	
 	private void printMachineCode(int offset, List<Integer> code, VerboseListener verbose) 
@@ -132,57 +122,59 @@ public class MainAssemblerTest implements VerboseListener
 		verbose.onPrint("-------------------------------");
 	}
 	
-	private void printDefinitions(List<Definition> definitions) 
+	private void printDefinitions(List<Definition> definitions, VerboseListener verbose) 
 	{
-		System.out.println("Definitions:");
+		verbose.onPrint("Definitions:");
 		for (Definition def : definitions)
 		{
-			System.out.println( "  "+def.getDirective()+" "+
+			verbose.onPrint( "  "+def.getDirective()+" "+
 									def.getName()+" "+
 									def.getNumber().getValue() );
 		}
-		System.out.println("");
+		verbose.onPrint("");
 	}
 	
-	private void printAllocations(List<Allocation> allocations) 
+	private void printAllocations(List<Allocation> allocations, VerboseListener verbose) 
 	{
-		System.out.println("Allocations:");
+		verbose.onPrint("Allocations:");
 		for (Allocation alloc : allocations)
 		{
-			System.out.println( "  "+alloc.getDirective()+" "+alloc.getName());
+			verbose.onPrint( "  "+alloc.getDirective()+" "+alloc.getName());
 		}
-		System.out.println("");
+		verbose.onPrint("");
 	}
 	
-	private void printLabels(List<Label> labels) 
+	private void printLabels(List<Label> labels, VerboseListener verbose) 
 	{
-		System.out.println("Labels:");
+		verbose.onPrint("Labels:");
 		for (Label label : labels)
 		{
-			System.out.println( "  "+label.getName());
-			//System.out.println( " : "+label.getNumber().getValue());
+			System.out.print( "  "+label.getName());
+			System.out.println( " : "+label.getNumber().getValue());
 		}
-		System.out.println("");
+		verbose.onPrint("");
 	}
 
-	private void printTranslation(List<Translation> translation) 
+	private void printTranslation(List<Translation> translation, VerboseListener verbose) 
 	{
-		System.out.println("Translation:");
+		verbose.onPrint("Translation:");
 		for (Translation tr : translation)
 		{
-			System.out.print( "  "+tr.getInstruction() );
+			String text = "";
+			
+			text += "  "+tr.getInstruction();
 			for (Operand op : tr.getOperands())
 			{
-				System.out.print( " "+op.getOperand() );
-			}
-
-			if (tr.hasLabel())
-			{
-				System.out.print( " : "+tr.getLabel() );
+				text += " "+op.getOperand();
 			}
 			
-			System.out.println();
+			if (tr.hasLabel())
+			{
+				text += " : "+tr.getLabel();
+			}
+			
+			verbose.onPrint(text);
 		}
-		System.out.println("");
+		verbose.onPrint("");
 	}
 }

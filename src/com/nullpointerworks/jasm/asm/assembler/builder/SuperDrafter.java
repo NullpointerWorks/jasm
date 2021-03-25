@@ -22,6 +22,8 @@ public class SuperDrafter implements Drafter
 		drafters = new ArrayList<Drafter>();
 		drafters.add( new NopDrafter() );
 		drafters.add( new IntDrafter() );
+		drafters.add( new JumpDrafter() );
+		
 	}
 
 	@Override
@@ -54,6 +56,13 @@ public class SuperDrafter implements Drafter
 	{
 		error = null;
 		Instruction inst = tr.getInstruction();
+		
+		if (!isInstruction(inst))
+		{
+			error = new AssembleError(tr.getSourceCode(), "  Failed to find a drafter for this instruction.");
+			return null;
+		}
+		
 		for (Drafter dr : drafters)
 		{
 			if (dr.isInstruction(inst))

@@ -41,6 +41,7 @@ public class NopDrafter implements Drafter
 						List<Allocation> allocs,
 						List<Label> lbls)
 	{
+		error = null;
 		Draft d = new Draft();
 		d.addValue( 0 );
 		return d;

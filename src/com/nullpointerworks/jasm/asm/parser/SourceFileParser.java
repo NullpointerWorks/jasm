@@ -191,7 +191,7 @@ public class SourceFileParser implements Parser
 		verbose.onPrint("  Included files: "+includes.size());
 		verbose.onPrint("  Definitions:    "+defs.size());
 		verbose.onPrint("  Lines of code:  "+code.size());
-		verbose.onPrint("  Errors:         "+errors.size());
+		//verbose.onPrint("  Errors:         "+errors.size());
 		
 		verbose.onPrint("\nParsing End");
 		verbose.onPrint("-------------------------------");

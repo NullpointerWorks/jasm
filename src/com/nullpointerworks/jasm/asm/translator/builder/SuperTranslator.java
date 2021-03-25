@@ -8,34 +8,51 @@ import com.nullpointerworks.jasm.asm.error.TranslationError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 
-public class SuperTranslator
+public class SuperTranslator implements CodeTranslator
 {
 	private BuildError error;
-	
 	private List<CodeTranslator> translators;
 	
 	public SuperTranslator()
 	{
 		error = null;
 		translators = new ArrayList<CodeTranslator>();
+		
 		translators.add( new NopTranslator() );
 		translators.add( new IntTranslator() );
+		
 		translators.add( new JumpTranslator() );
+		translators.add( new CallTranslator() );
 		
 	}
 	
+	@Override
 	public boolean hasErrors()
 	{
 		return error != null;
 	}
-	
+		
+	@Override
 	public BuildError getError() 
 	{
 		return error;
 	}
 	
+	@Override
+	public boolean isInstruction(String instruct) 
+	{
+		for (CodeTranslator translator : translators)
+		{
+			if (translator.isInstruction(instruct)) return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public List<Translation> getTranslation(SourceCode sc)
 	{
+		error = null;
+		
 		String line = sc.getLine();
 		String[] tokens = line.split(" ");
 		if (tokens.length < 1)
@@ -48,6 +65,12 @@ public class SuperTranslator
 		if (instruct.length() < 1)
 		{
 			error = new TranslationError(sc, ""); // TODO
+			return null;
+		}
+		
+		if (!isInstruction(instruct))
+		{
+			error = new TranslationError(sc, "  Failed to find a translator for this instruction.");
 			return null;
 		}
 		

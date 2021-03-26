@@ -19,7 +19,8 @@ public class LoadTranslator implements CodeTranslator
 					"\n  load <reg>, <val>" + 
 					"\n  load <reg>, &<val>" + 
 					"\n  load &<val>, <reg>" + 
-					"\n  load &<reg>, <reg>";
+					"\n  load &<reg>, <reg>" + 
+					"\n  load <reg>, <label>";
 	
 	private BuildError error;
 	
@@ -82,40 +83,87 @@ public class LoadTranslator implements CodeTranslator
 		
 		if (op1.isAddress())
 		{
-			if (op1.isNumber())
+			if (!op2.isAddress())
 			{
-				if (op2.isRegister())
-				{
-					allow(sc, op1, op2, translation);
-					return;
-				}
+				firstAddress(sc,op1,op2,translation);
+				return;
 			}
 		}
 		else
 		{
-			if (op1.isRegister())
+			if (op2.isAddress())
 			{
-				if (op2.isRegister())
-				{
-					allow(sc, op1, op2, translation);
-					return;
-				}
-				
-				if (op2.isNumber()) 
-				{
-					allow(sc, op1, op2, translation);
-					return;
-				}
-				
-				if (op2.isLabel())  // allow only definitions and data references
-				{
-					allow(sc, op1, op2, translation);
-					return;
-				}
+				secondAddress(sc,op1,op2,translation);
+				return;
+			}
+			else
+			{
+				noAddress(sc,op1,op2,translation);
+				return;
 			}
 		}
 		
-		error = new TranslationError(sc, "  Syntax error: Invalid instruction arguments."+syntax);
+		setInvalidArguments(sc);
+	}
+	
+	private void noAddress(SourceCode sc, Operand op1, Operand op2, List<Translation> translation)
+	{
+		if (op1.isRegister())
+		{
+			if (op2.isNumber())
+			{
+				allow(sc, op1, op2, translation);
+				return;
+			}
+			if (op2.isRegister())
+			{
+				allow(sc, op1, op2, translation);
+				return;
+			}
+			if (op2.isLabel()) // allowed to be a definition or an allocation
+			{
+				allow(sc, op1, op2, translation);
+				return;
+			}
+		}
+		setInvalidArguments(sc);
+	}
+	
+	private void firstAddress(SourceCode sc, Operand op1, Operand op2, List<Translation> translation)
+	{
+		if (op2.isRegister())
+		{
+			if (op1.isNumber())
+			{
+				allow(sc, op1, op2, translation);
+				return;
+			}
+			if (op1.isRegister())
+			{
+				allow(sc, op1, op2, translation);
+				return;
+			}
+		}
+		
+		setInvalidArguments(sc);
+	}
+
+	private void secondAddress(SourceCode sc, Operand op1, Operand op2, List<Translation> translation)
+	{
+		if (op1.isRegister())
+		{
+			if (op2.isNumber())
+			{
+				allow(sc, op1, op2, translation);
+				return;
+			}
+			if (op2.isRegister())
+			{
+				allow(sc, op1, op2, translation);
+				return;
+			}
+		}
+		setInvalidArguments(sc);
 	}
 	
 	private void allow(SourceCode sc, Operand op1, Operand op2, List<Translation> translation) 
@@ -125,5 +173,10 @@ public class LoadTranslator implements CodeTranslator
 		t.setOperand(op1);
 		t.setOperand(op2);
 		translation.add(t);
+	}
+	
+	private void setInvalidArguments(SourceCode sc) 
+	{
+		error = new TranslationError(sc, "  Syntax error: Invalid instruction arguments."+syntax);
 	}
 }

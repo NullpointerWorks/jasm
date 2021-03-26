@@ -30,9 +30,6 @@ public class SuperDrafter implements Drafter
 		
 		drafters.add( new LoadDrafter() );
 		
-		
-		
-		
 	}
 
 	@Override

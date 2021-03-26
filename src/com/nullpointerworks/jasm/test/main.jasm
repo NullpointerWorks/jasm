@@ -4,22 +4,25 @@
 .def PRINT_C 3
 .def PRINT_D 4
 
-;.res MEMORY 4
+.res MEMORY 4
 .data ARRAY 1,2,3,4,5
 ;.data MESSAGE 'hello world!',0
 
 main:
-	;load a,10
-	;load a,&10
 	
-	;load a,b
-	;load a,&b
-	
-	load &5,b
-	load &a,b
-	
-	
+	load a,ARRAY
+	load b,&a
+	int PRINT_B
 	
 	
 	int EXIT
+	
+load_test:
+	load a,10
+	load a,b
+	load a,&10
+	load a,&b
+	load &5,b
+	load &a,b
+	load a,MEMORY
 	

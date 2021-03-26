@@ -1,5 +1,10 @@
 package com.nullpointerworks.jasm.test;
 
+import static com.nullpointerworks.jasm.vm.VMRegister.REG_A;
+import static com.nullpointerworks.jasm.vm.VMRegister.REG_B;
+import static com.nullpointerworks.jasm.vm.VMRegister.REG_C;
+import static com.nullpointerworks.jasm.vm.VMRegister.REG_D;
+
 import java.util.List;
 
 import com.nullpointerworks.jasm.asm.VerboseListener;
@@ -16,11 +21,15 @@ import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.asm.translator.SourceCodeTranslator;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 import com.nullpointerworks.jasm.asm.translator.Translator;
-
+import com.nullpointerworks.jasm.vm.BytecodeVirtualMachine;
+import com.nullpointerworks.jasm.vm.InterruptListener;
+import com.nullpointerworks.jasm.vm.Register;
+import com.nullpointerworks.jasm.vm.VMProcessException;
+import com.nullpointerworks.jasm.vm.VirtualMachine;
 import com.nullpointerworks.jasm.asm.assembler.Assembler;
 import com.nullpointerworks.jasm.asm.assembler.TranslationAssembler;
 
-public class MainAssemblerTest implements VerboseListener
+public class MainAssemblerTest implements VerboseListener, InterruptListener
 {
 	public static void main(String[] args) 
 	{
@@ -77,8 +86,73 @@ public class MainAssemblerTest implements VerboseListener
 		printDefinitions(definitions, this);
 		printAllocations(allocations, this);
 		printLabels(labels, this);
-		printTranslation(translation, this);
-		printMachineCode(0, code, this);
+		//printTranslation(translation, this);
+		//printMachineCode(0, code, this);
+		
+		/*
+		 * test the assembled bytecode
+		 */
+		VirtualMachine vm = new BytecodeVirtualMachine();
+		vm.setInterruptListener(this);
+		vm.setMemorySize(2024);
+		vm.setOrigin(0);
+		vm.setMemory(0,code);
+		
+		onPrint("-------------------------------");
+		onPrint("Virtual Machine Start\n");
+		
+		while (!vm.hasException())
+		{
+			vm.nextInstruction();
+		}
+		while (vm.hasException())
+		{
+			VMProcessException ex = vm.getException();
+			System.err.println( ex.getMemoryTrace() );
+		}
+		
+		onPrint("\nVirtual Machine End");
+		onPrint("-------------------------------");
+	}
+
+	@Override
+	public void onInterrupt(VirtualMachine vm, int code) 
+	{
+		if (code == 0)
+		{
+			onPrint("\nVirtual Machine End");
+			onPrint("-------------------------------");
+			System.exit(0);
+			return;
+		}
+		
+		if (code == 1)
+		{
+			Register reg = vm.getRegister( REG_A );
+			System.out.println( "A: "+reg.getValue() );
+			return;
+		}
+		
+		if (code == 2)
+		{
+			Register reg = vm.getRegister( REG_B );
+			System.out.println( "B: "+reg.getValue() );
+			return;
+		}
+		
+		if (code == 3)
+		{
+			Register reg = vm.getRegister( REG_C );
+			System.out.println( "C: "+reg.getValue() );
+			return;
+		}
+		
+		if (code == 4)
+		{
+			Register reg = vm.getRegister( REG_D );
+			System.out.println( "D: "+reg.getValue() );
+			return;
+		}
 	}
 	
 	@Override
@@ -139,7 +213,15 @@ public class MainAssemblerTest implements VerboseListener
 		verbose.onPrint("Allocations:");
 		for (Allocation alloc : allocations)
 		{
-			verbose.onPrint( "  "+alloc.getDirective()+" "+alloc.getName()+" : "+alloc.getAddress().getValue());
+			int v = alloc.getAddress().getValue();
+			String s1 = String.format("0x%x", v);
+			
+			verbose.onPrint("  "+
+							alloc.getDirective()+
+							" "+
+							alloc.getName()+
+							" : "+
+							s1);
 		}
 		verbose.onPrint("");
 	}

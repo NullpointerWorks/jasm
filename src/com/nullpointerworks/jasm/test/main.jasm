@@ -5,50 +5,21 @@
 .def PRINT_D 4
 
 .res MEMORY 4
-.data ARRAY 1,2,3,4,5
+
+.data ARR 1,2,3,4,5
+.def ARR_LEN 5
 ;.data MESSAGE 'hello world!',0
 
 main:
 	
-	load b,ARRAY
-	load c,5
+	load b,ARR
+	load c,ARR_LEN
 loop:
 	load a,&b
 	int PRINT_A
-	add b,1
-	sub c,1
+	inc b
+	dec c
 	jne loop
-	
 	
 	int EXIT
 	
-; ====================================================
-; testing all variations of the ADD instruction
-; ====================================================
-add_test:
-	add a,b
-	add a,10
-	add a,PRINT_D
-	ret
-	
-; ====================================================
-; testing all variations of the LOAD instruction
-; ====================================================
-load_test:
-	load a,10
-	load a,b
-	load a,&10
-	load a,&b
-	load &5,b
-	load &a,b
-	load a,EXIT
-	load a,MEMORY
-	ret
-	
-; ====================================================
-; testing all variations of the INT instruction
-; ====================================================
-interrupt_test:
-	int PRINT_A
-	int 2
-	ret

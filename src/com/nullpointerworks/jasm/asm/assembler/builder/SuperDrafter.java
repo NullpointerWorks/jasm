@@ -51,6 +51,12 @@ public class SuperDrafter implements Drafter
 		
 		drafters.add( new AddDrafter() );
 		drafters.add( new SubDrafter() );
+		drafters.add( new CmpDrafter() );
+		drafters.add( new IncDrafter() );
+		drafters.add( new DecDrafter() );
+		drafters.add( new NegDrafter() );
+		drafters.add( new ShlDrafter() );
+		drafters.add( new ShrDrafter() );
 		
 		
 		

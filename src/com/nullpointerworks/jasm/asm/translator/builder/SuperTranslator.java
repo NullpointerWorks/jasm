@@ -41,8 +41,12 @@ public class SuperTranslator implements CodeTranslator
 		
 		translators.add( new AddTranslator() );
 		translators.add( new SubTranslator() );
-		
-		
+		translators.add( new CmpTranslator() );
+		translators.add( new IncTranslator() );
+		translators.add( new DecTranslator() );
+		translators.add( new NegTranslator() );
+		translators.add( new ShlTranslator() );
+		translators.add( new ShrTranslator() );
 		
 	}
 	
@@ -81,7 +85,7 @@ public class SuperTranslator implements CodeTranslator
 			return null;
 		}
 		
-		String instruct = tokens[0];
+		String instruct = tokens[0].toLowerCase();
 		if (instruct.length() < 1)
 		{
 			error = new TranslationError(sc, ""); // TODO

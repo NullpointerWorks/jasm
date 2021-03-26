@@ -69,44 +69,44 @@ public class BytecodeVirtualMachine implements VirtualMachine
 		exceptions = new ArrayList<VMProcessException>();
 		instructions = new ArrayList<Instruction>();
 		
-		instructions.add( new Noop() );
-		instructions.add( new Interrupt() );
+		addInstruction( new Noop() );
+		addInstruction( new Interrupt() );
 		
-		instructions.add( new Load_RR() );
-		instructions.add( new Load_RRM() );
-		instructions.add( new Load_RMR() );
-		instructions.add( new Load_RV() );
-		instructions.add( new Load_RM() );
-		instructions.add( new Load_MR() );
-		instructions.add( new Push_R() );
-		instructions.add( new Push_V() );
-		instructions.add( new Pop() );
+		addInstruction( new Load_RR() );
+		addInstruction( new Load_RRM() );
+		addInstruction( new Load_RMR() );
+		addInstruction( new Load_RV() );
+		addInstruction( new Load_RM() );
+		addInstruction( new Load_MR() );
+		addInstruction( new Push_R() );
+		addInstruction( new Push_V() );
+		addInstruction( new Pop() );
 		
-		instructions.add( new Add_RR() );
-		instructions.add( new Add_RV() );
-		instructions.add( new Sub_RR() );
-		instructions.add( new Sub_RV() );
-		instructions.add( new Cmp_RR() );
-		instructions.add( new Cmp_RV() );
-		instructions.add( new Shl() );
-		instructions.add( new Shr() );
-		instructions.add( new Neg() );
-		instructions.add( new Inc() );
-		instructions.add( new Dec() );
+		addInstruction( new Add_RR() );
+		addInstruction( new Add_RV() );
+		addInstruction( new Sub_RR() );
+		addInstruction( new Sub_RV() );
+		addInstruction( new Cmp_RR() );
+		addInstruction( new Cmp_RV() );
+		addInstruction( new Shl() );
+		addInstruction( new Shr() );
+		addInstruction( new Neg() );
+		addInstruction( new Inc() );
+		addInstruction( new Dec() );
 		
-		instructions.add( new Jump() );
-		instructions.add( new JumpEqual() );
-		instructions.add( new JumpNotEqual() );
-		instructions.add( new JumpLess() );
-		instructions.add( new JumpLessEqual() );
-		instructions.add( new JumpGreater() );
-		instructions.add( new JumpGreaterEqual() );
-		instructions.add( new Call() );
-		instructions.add( new Ret() );
+		addInstruction( new Jump() );
+		addInstruction( new JumpEqual() );
+		addInstruction( new JumpNotEqual() );
+		addInstruction( new JumpLess() );
+		addInstruction( new JumpLessEqual() );
+		addInstruction( new JumpGreater() );
+		addInstruction( new JumpGreaterEqual() );
+		addInstruction( new Call() );
+		addInstruction( new Ret() );
 		
-		instructions.add( new Or_RR() );
-		instructions.add( new And_RR() );
-		instructions.add( new Xor_RR() );
+		addInstruction( new Or_RR() );
+		addInstruction( new And_RR() );
+		addInstruction( new Xor_RR() );
 	}
 	
 	@Override
@@ -188,7 +188,8 @@ public class BytecodeVirtualMachine implements VirtualMachine
 			memory.add(0);
 		}
 	}
-
+	
+	@Override
 	public void setMemory(int index, int value) 
 	{
 		if (index < 0) 

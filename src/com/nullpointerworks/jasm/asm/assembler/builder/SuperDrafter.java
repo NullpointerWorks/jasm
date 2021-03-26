@@ -50,6 +50,7 @@ public class SuperDrafter implements Drafter
 		drafters.add( new LoadDrafter() );
 		
 		drafters.add( new AddDrafter() );
+		drafters.add( new SubDrafter() );
 		
 		
 		

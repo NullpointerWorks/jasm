@@ -11,12 +11,13 @@
 main:
 	
 	load b,ARRAY
-	
+	load c,5
 loop:
 	load a,&b
 	int PRINT_A
 	add b,1
-	jmp loop
+	sub c,1
+	jne loop
 	
 	
 	int EXIT

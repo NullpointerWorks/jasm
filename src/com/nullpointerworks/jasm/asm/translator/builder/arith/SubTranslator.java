@@ -11,16 +11,16 @@ import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 import com.nullpointerworks.jasm.asm.translator.builder.CodeTranslator;
 
-public class AddTranslator implements CodeTranslator
+public class SubTranslator implements CodeTranslator
 {
 	private final String syntax = 	
-			"\n  add <reg>, <reg>" +
-			"\n  add <reg>, <val>" +
-			"\n  add <reg>, <definition>";
+			"\n  sub <reg>, <reg>" +
+			"\n  sub <reg>, <val>" +
+			"\n  sub <reg>, <definition>";
 	
 	private BuildError error;
 	
-	public AddTranslator()
+	public SubTranslator()
 	{
 		error = null;
 	}
@@ -40,7 +40,7 @@ public class AddTranslator implements CodeTranslator
 	@Override
 	public boolean isInstruction(String instruct)
 	{
-		return instruct.equals("add");
+		return instruct.equals("sub");
 	}
 	
 	@Override
@@ -59,7 +59,7 @@ public class AddTranslator implements CodeTranslator
 		}
 		else
 		{
-			error = new TranslationError(sc, "  Syntax error: ADD instruction is incomplete."+syntax);
+			error = new TranslationError(sc, "  Syntax error: SUB instruction is incomplete."+syntax);
 		}
 		
 		return translation;
@@ -70,7 +70,7 @@ public class AddTranslator implements CodeTranslator
 		String[] tokens = operands.split(",");
 		if (tokens.length != 2) 
 		{
-			error = new TranslationError(sc, "  Syntax error: ADD instructions take two arguments."+syntax);
+			error = new TranslationError(sc, "  Syntax error: SUB instructions take two arguments."+syntax);
 			return;
 		}
 		
@@ -115,7 +115,7 @@ public class AddTranslator implements CodeTranslator
 	private void allow(SourceCode sc, Operand op1, Operand op2, List<Translation> translation) 
 	{
 		Translation t = new Translation(sc);
-		t.setInstruction(ASMInstruction.ADD);
+		t.setInstruction(ASMInstruction.SUB);
 		t.setOperand(op1);
 		t.setOperand(op2);
 		translation.add(t);

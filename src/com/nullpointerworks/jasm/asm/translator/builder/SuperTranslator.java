@@ -40,6 +40,7 @@ public class SuperTranslator implements CodeTranslator
 		
 		
 		translators.add( new AddTranslator() );
+		translators.add( new SubTranslator() );
 		
 		
 		

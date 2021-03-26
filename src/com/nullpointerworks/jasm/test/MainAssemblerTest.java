@@ -83,11 +83,11 @@ public class MainAssemblerTest implements VerboseListener, InterruptListener
 		}
 		List<Integer> code = assembler.getMachineCode();
 		
-		printDefinitions(definitions, this);
-		printAllocations(allocations, this);
-		printLabels(labels, this);
-		printTranslation(translation, this);
-		printMachineCode(0, code, this);
+		//printDefinitions(definitions, this);
+		//printAllocations(allocations, this);
+		//printLabels(labels, this);
+		//printTranslation(translation, this);
+		//printMachineCode(0, code, this);
 		
 		/*
 		 * test the assembled bytecode

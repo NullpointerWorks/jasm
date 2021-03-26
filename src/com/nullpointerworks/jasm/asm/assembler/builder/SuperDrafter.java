@@ -48,6 +48,8 @@ public class SuperDrafter implements Drafter
 		drafters.add( new JumpDrafter(JGE, VMInstruction.JGE) );
 		
 		drafters.add( new LoadDrafter() );
+		drafters.add( new PushDrafter() );
+		drafters.add( new PopDrafter() );
 		
 		drafters.add( new AddDrafter() );
 		drafters.add( new SubDrafter() );

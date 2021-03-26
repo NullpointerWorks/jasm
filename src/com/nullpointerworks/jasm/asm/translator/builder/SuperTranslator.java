@@ -37,7 +37,8 @@ public class SuperTranslator implements CodeTranslator
 		translators.add( new JumpTranslator("jge", ASMInstruction.JGE) );
 		
 		translators.add( new LoadTranslator() );
-		
+		translators.add( new PushTranslator() );
+		translators.add( new PopTranslator() );
 		
 		translators.add( new AddTranslator() );
 		translators.add( new SubTranslator() );

@@ -1,3 +1,7 @@
+/**
+ * @Version 1.0.0
+ * @author Michiel Drost - Nullpointer Works
+ */
 module libnpw.jasm
 {
 	exports com.nullpointerworks.jasm.asm;

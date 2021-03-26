@@ -13,13 +13,25 @@ import com.nullpointerworks.jasm.asm.translator.Definition;
 import com.nullpointerworks.jasm.asm.translator.Label;
 import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.asm.translator.Translation;
+import com.nullpointerworks.jasm.vm.VMInstruction;
 
 public class JumpDrafter implements Drafter
 {
+	private ASMInstruction inst;
+	private int opcode;
 	private BuildError error;
 	
 	public JumpDrafter() 
 	{
+		inst = ASMInstruction.JMP;
+		opcode = VMInstruction.JMP.getCode() << 24;
+		error = null;
+	}
+	
+	public JumpDrafter(ASMInstruction inst, VMInstruction vminst) 
+	{
+		this.inst = inst;
+		opcode = vminst.getCode() << 24;
 		error = null;
 	}
 
@@ -37,7 +49,7 @@ public class JumpDrafter implements Drafter
 	
 	public boolean isInstruction(ASMInstruction instruct)
 	{
-		return instruct == ASMInstruction.JMP;
+		return instruct == inst;
 	}
 	
 	public Draft draft(	Translation translation, 
@@ -64,7 +76,7 @@ public class JumpDrafter implements Drafter
 			Label lbl = TranslatorUtility.findLabel(lbls, name);
 			if (lbl!=null)
 			{
-				d.addValue( 0x20 << 24 );
+				d.addValue( opcode );
 				d.addValue( lbl.getNumber() );
 			}
 			else

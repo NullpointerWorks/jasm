@@ -110,6 +110,13 @@ public class BytecodeVirtualMachine implements VirtualMachine
 	}
 	
 	@Override
+	public void addInstruction(Instruction inst)
+	{
+		if (inst==null) return;
+		instructions.add(inst);
+	}
+	
+	@Override
 	public void nextInstruction()
 	{
 		if (regIP.getValue() >= memory.size())

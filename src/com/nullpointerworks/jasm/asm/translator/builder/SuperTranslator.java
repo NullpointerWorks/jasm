@@ -3,10 +3,12 @@ package com.nullpointerworks.jasm.asm.translator.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nullpointerworks.jasm.asm.ASMInstruction;
 import com.nullpointerworks.jasm.asm.error.BuildError;
 import com.nullpointerworks.jasm.asm.error.TranslationError;
 import com.nullpointerworks.jasm.asm.parser.SourceCode;
 import com.nullpointerworks.jasm.asm.translator.Translation;
+import com.nullpointerworks.jasm.asm.translator.builder.arith.*;
 import com.nullpointerworks.jasm.asm.translator.builder.ctrlflow.*;
 import com.nullpointerworks.jasm.asm.translator.builder.dataflow.*;
 import com.nullpointerworks.jasm.asm.translator.builder.sys.*;
@@ -25,16 +27,20 @@ public class SuperTranslator implements CodeTranslator
 		translators.add( new IntTranslator() );
 		
 		translators.add( new JumpTranslator() );
-		translators.add( new CallTranslator() );
 		translators.add( new RetTranslator() );
-		translators.add( new JumpEqualTranslator() );
-		translators.add( new JumpNotEqualTranslator() );
-		translators.add( new JumpLessTranslator() );
-		translators.add( new JumpLessEqualTranslator() );
-		translators.add( new JumpGreaterTranslator() );
-		translators.add( new JumpGreaterEqualTranslator() );
+		translators.add( new JumpTranslator("call", ASMInstruction.CALL) );
+		translators.add( new JumpTranslator("je", ASMInstruction.JE) );
+		translators.add( new JumpTranslator("jne", ASMInstruction.JNE) );
+		translators.add( new JumpTranslator("jl", ASMInstruction.JL) );
+		translators.add( new JumpTranslator("jle", ASMInstruction.JLE) );
+		translators.add( new JumpTranslator("jg", ASMInstruction.JG) );
+		translators.add( new JumpTranslator("jge", ASMInstruction.JGE) );
 		
 		translators.add( new LoadTranslator() );
+		
+		
+		translators.add( new AddTranslator() );
+		
 		
 		
 	}

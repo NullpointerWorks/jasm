@@ -13,14 +13,16 @@ import com.nullpointerworks.jasm.asm.translator.Definition;
 import com.nullpointerworks.jasm.asm.translator.Label;
 import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.asm.translator.Translation;
-import com.nullpointerworks.jasm.asm.translator.Number;
+import com.nullpointerworks.jasm.vm.VMInstruction;
 
 public class IntDrafter implements Drafter
 {
+	private final int opcode;
 	private BuildError error;
 	
 	public IntDrafter() 
 	{
+		opcode = VMInstruction.INT.getCode() << 24;
 		error = null;
 	}
 
@@ -81,6 +83,6 @@ public class IntDrafter implements Drafter
 	
 	private int insert(int num) 
 	{
-		return num = 0x01000000 | (num & 0x00ffffff);
+		return num = opcode | (num & 0x00ffffff);
 	}
 }

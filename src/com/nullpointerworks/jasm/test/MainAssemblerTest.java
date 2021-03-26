@@ -64,10 +64,10 @@ public class MainAssemblerTest implements VerboseListener, InterruptListener
 			for (BuildError be : errors) onPrint( be.getDescription() );
 			return;
 		}
+		List<Translation> translation 	= translator.getTranslation();
 		List<Definition> definitions 	= translator.getDefinitions();
 		List<Allocation> allocations 	= translator.getAllocations();
 		List<Label> labels 				= translator.getLabels();
-		List<Translation> translation 	= translator.getTranslation();
 		
 		/*
 		 * the assembler turns the translation objects into bytecode
@@ -86,16 +86,15 @@ public class MainAssemblerTest implements VerboseListener, InterruptListener
 		printDefinitions(definitions, this);
 		printAllocations(allocations, this);
 		printLabels(labels, this);
-		//printTranslation(translation, this);
-		//printMachineCode(0, code, this);
+		printTranslation(translation, this);
+		printMachineCode(0, code, this);
 		
 		/*
 		 * test the assembled bytecode
 		 */
 		VirtualMachine vm = new BytecodeVirtualMachine();
 		vm.setInterruptListener(this);
-		vm.setMemorySize(2024);
-		vm.setOrigin(0);
+		vm.setMemorySize(2048);
 		vm.setMemory(0,code);
 		
 		onPrint("-------------------------------");
@@ -161,7 +160,7 @@ public class MainAssemblerTest implements VerboseListener, InterruptListener
 		System.out.println(msg);
 	}
 	
-	private void printMachineCode(int offset, List<Integer> code, VerboseListener verbose) 
+	void printMachineCode(int offset, List<Integer> code, VerboseListener verbose) 
 	{
 		verbose.onPrint("-------------------------------");
 		verbose.onPrint("Byte Code Start\n");
@@ -196,7 +195,7 @@ public class MainAssemblerTest implements VerboseListener, InterruptListener
 		verbose.onPrint("-------------------------------");
 	}
 	
-	private void printDefinitions(List<Definition> definitions, VerboseListener verbose) 
+	void printDefinitions(List<Definition> definitions, VerboseListener verbose) 
 	{
 		verbose.onPrint("Definitions:");
 		for (Definition def : definitions)
@@ -208,7 +207,7 @@ public class MainAssemblerTest implements VerboseListener, InterruptListener
 		verbose.onPrint("");
 	}
 	
-	private void printAllocations(List<Allocation> allocations, VerboseListener verbose) 
+	void printAllocations(List<Allocation> allocations, VerboseListener verbose) 
 	{
 		verbose.onPrint("Allocations:");
 		for (Allocation alloc : allocations)
@@ -226,7 +225,7 @@ public class MainAssemblerTest implements VerboseListener, InterruptListener
 		verbose.onPrint("");
 	}
 	
-	private void printLabels(List<Label> labels, VerboseListener verbose) 
+	void printLabels(List<Label> labels, VerboseListener verbose) 
 	{
 		verbose.onPrint("Labels:");
 		for (Label label : labels)
@@ -237,7 +236,7 @@ public class MainAssemblerTest implements VerboseListener, InterruptListener
 		verbose.onPrint("");
 	}
 
-	private void printTranslation(List<Translation> translation, VerboseListener verbose) 
+	void printTranslation(List<Translation> translation, VerboseListener verbose) 
 	{
 		verbose.onPrint("Translation:");
 		for (Translation tr : translation)

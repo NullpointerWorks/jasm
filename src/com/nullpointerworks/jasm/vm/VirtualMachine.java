@@ -7,6 +7,8 @@ public interface VirtualMachine
 	void nextInstruction();
 	void throwInterrupt(int code);
 	
+	void addInstruction(Instruction inst);
+	
 	void setInterruptListener(InterruptListener il);
 	void setOrigin(int origin);
 	void setMemorySize(int size);

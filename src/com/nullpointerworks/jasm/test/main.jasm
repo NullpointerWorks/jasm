@@ -10,13 +10,29 @@
 
 main:
 	
-	load a,ARRAY
-	load b,&a
-	int PRINT_B
+	load b,ARRAY
+	
+loop:
+	load a,&b
+	int PRINT_A
+	add b,1
+	jmp loop
 	
 	
 	int EXIT
 	
+; ====================================================
+; testing all variations of the ADD instruction
+; ====================================================
+add_test:
+	add a,b
+	add a,10
+	add a,PRINT_D
+	ret
+	
+; ====================================================
+; testing all variations of the LOAD instruction
+; ====================================================
 load_test:
 	load a,10
 	load a,b
@@ -24,5 +40,14 @@ load_test:
 	load a,&b
 	load &5,b
 	load &a,b
+	load a,EXIT
 	load a,MEMORY
+	ret
 	
+; ====================================================
+; testing all variations of the INT instruction
+; ====================================================
+interrupt_test:
+	int PRINT_A
+	int 2
+	ret

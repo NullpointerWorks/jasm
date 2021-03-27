@@ -1,10 +1,8 @@
 package com.nullpointerworks.jasm.test;
 
-import static com.nullpointerworks.jasm.vm.VMRegister.REG_A;
-import static com.nullpointerworks.jasm.vm.VMRegister.REG_B;
-import static com.nullpointerworks.jasm.vm.VMRegister.REG_C;
-import static com.nullpointerworks.jasm.vm.VMRegister.REG_D;
-
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import com.nullpointerworks.jasm.asm.VerboseListener;
@@ -21,29 +19,25 @@ import com.nullpointerworks.jasm.asm.translator.Operand;
 import com.nullpointerworks.jasm.asm.translator.SourceCodeTranslator;
 import com.nullpointerworks.jasm.asm.translator.Translation;
 import com.nullpointerworks.jasm.asm.translator.Translator;
-import com.nullpointerworks.jasm.vm.BytecodeVirtualMachine;
-import com.nullpointerworks.jasm.vm.InterruptListener;
-import com.nullpointerworks.jasm.vm.Register;
-import com.nullpointerworks.jasm.vm.VMProcessException;
-import com.nullpointerworks.jasm.vm.VirtualMachine;
 import com.nullpointerworks.jasm.asm.assembler.Assembler;
 import com.nullpointerworks.jasm.asm.assembler.TranslationAssembler;
 
-public class MainAssemblerTest implements VerboseListener, InterruptListener
+public class MainAssemblerTest implements VerboseListener
 {
 	public static void main(String[] args) 
 	{
-		new MainAssemblerTest("src/com/nullpointerworks/jasm/test/main.jasm");
+		new MainAssemblerTest("src/com/nullpointerworks/jasm/test/main.jasm",
+							  "src/com/nullpointerworks/jasm/test/program.bin");
 	}
 	
-	public MainAssemblerTest(String file)
+	public MainAssemblerTest(String inFile, String outFile)
 	{
 		/*
 		 * the parser formats the source code to make it consistent
 		 */
 		Parser parser = new SourceFileParser();
 		parser.setVerboseListener(this);
-		parser.parse(file);
+		parser.parse(inFile);
 		if(parser.hasErrors())
 		{
 			List<BuildError> errors = parser.getErrors();
@@ -90,67 +84,33 @@ public class MainAssemblerTest implements VerboseListener, InterruptListener
 		//printMachineCode(0, code, this);
 		
 		/*
-		 * test the assembled bytecode
+		 * convert integers to bytes and write data to file
 		 */
-		VirtualMachine vm = new BytecodeVirtualMachine();
-		vm.setInterruptListener(this);
-		vm.setMemorySize(2048);
-		vm.setMemory(0,code);
-		
-		onPrint("-------------------------------");
-		onPrint("Virtual Machine Start\n");
-		
-		while (!vm.hasException())
+		int i = 0;
+		int j = 0;
+		int l = code.size();
+		byte[] binary = new byte[l*4];
+		for (; i<l; i++, j+=4)
 		{
-			vm.nextInstruction();
-		}
-		while (vm.hasException())
-		{
-			VMProcessException ex = vm.getException();
-			System.err.println( ex.getMemoryTrace() );
-		}
-		
-		onPrint("\nVirtual Machine End");
-		onPrint("-------------------------------");
-	}
-
-	@Override
-	public void onInterrupt(VirtualMachine vm, int code) 
-	{
-		if (code == 0)
-		{
-			onPrint("\nVirtual Machine End");
-			onPrint("-------------------------------");
-			System.exit(0);
-			return;
+			Integer bytecode = code.get(i);
+			int b1 = (bytecode>>24)&0xff;
+			int b2 = (bytecode>>16)&0xff;
+			int b3 = (bytecode>>8)&0xff;
+			int b4 = (bytecode)&0xff;
+			binary[j] 	= (byte)b1;
+			binary[j+1] = (byte)b2;
+			binary[j+2] = (byte)b3;
+			binary[j+3] = (byte)b4;
 		}
 		
-		if (code == 1)
+		File outputFile = new File(outFile);
+		try (FileOutputStream outputStream = new FileOutputStream(outputFile)) 
 		{
-			Register reg = vm.getRegister( REG_A );
-			System.out.println( "A: "+reg.getValue() );
-			return;
-		}
-		
-		if (code == 2)
+		    outputStream.write(binary);
+		} 
+		catch (IOException e) 
 		{
-			Register reg = vm.getRegister( REG_B );
-			System.out.println( "B: "+reg.getValue() );
-			return;
-		}
-		
-		if (code == 3)
-		{
-			Register reg = vm.getRegister( REG_C );
-			System.out.println( "C: "+reg.getValue() );
-			return;
-		}
-		
-		if (code == 4)
-		{
-			Register reg = vm.getRegister( REG_D );
-			System.out.println( "D: "+reg.getValue() );
-			return;
+			e.printStackTrace();
 		}
 	}
 	

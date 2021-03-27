@@ -19,6 +19,7 @@ public class LoadTranslator implements CodeTranslator
 					"\n  load <reg>, &<reg>" + 
 					"\n  load <reg>, &<val>" + 
 					"\n  load &<reg>, <reg>" + 
+					"\n  load &<reg>, <val>" + 
 					"\n  load &<val>, <reg>" + 
 					"\n  load <reg>, <definition>" + 
 					"\n  load <reg>, <reference>";
@@ -139,6 +140,14 @@ public class LoadTranslator implements CodeTranslator
 				allow(sc, op1, op2, translation);
 				return;
 			}
+			if (op1.isRegister())
+			{
+				allow(sc, op1, op2, translation);
+				return;
+			}
+		}
+		if (op2.isNumber())
+		{
 			if (op1.isRegister())
 			{
 				allow(sc, op1, op2, translation);

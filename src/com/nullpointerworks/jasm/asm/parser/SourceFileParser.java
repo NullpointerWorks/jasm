@@ -106,8 +106,11 @@ public class SourceFileParser implements Parser
 		 */
 		verbose.onPrint("Source Files");
 		verbose.onPrint("  Main:    "+filename);
+		int c_start = code.size();
 		String[] text = loadCode(filename);
 		parseCode(filename, text);
+		verbose.onPrint("  Lines:   "+(code.size() - c_start));
+		verbose.onPrint("");
 		
 		/*
 		 * scan include paths.
@@ -148,7 +151,11 @@ public class SourceFileParser implements Parser
 					if (lines!=null) 
 					{
 						verbose.onPrint("  Include: "+inc);
+
+						c_start = code.size();
 						parseCode(inc, lines);
+						verbose.onPrint("  Lines:   "+(code.size() - c_start));
+						verbose.onPrint("");
 					}
 				}
 				else
@@ -158,20 +165,22 @@ public class SourceFileParser implements Parser
 			}
 		}
 		while(includesAux.size() > 0);
-		verbose.onPrint("");
 		
 		/*
 		 * print included directories
 		 */
 		if (includesPath.size() > 0)
 		{
-			verbose.onPrint("Linker");
+			verbose.onPrint("Search Paths");
 			for (String inc : includesPath)
 			{
 				verbose.onPrint("  "+inc);
 			}
-			verbose.onPrint("");
+			//verbose.onPrint("");
 		}
+		
+		verbose.onPrint("");
+		verbose.onPrint("  Total lines of code:   "+code.size());
 		
 		/*
 		 * check for duplicate definitions
@@ -182,16 +191,10 @@ public class SourceFileParser implements Parser
 			String msg = "Duplicate definition declaration\n";
 			for (Definition entry : defDups)
 			{
-				msg += " "+entry.NAME + " "+entry.SOURCE.getFilename()+" on line "+entry.SOURCE.getLinenumber() +"\n";
+				msg += " "+entry.NAME + " in file: "+entry.SOURCE.getFilename()+" on line "+entry.SOURCE.getLinenumber() +"\n";
 			}
 			addError(msg);
 		}
-		
-		verbose.onPrint("Information");
-		verbose.onPrint("  Included files: "+includes.size());
-		verbose.onPrint("  Definitions:    "+defs.size());
-		verbose.onPrint("  Lines of code:  "+code.size());
-		//verbose.onPrint("  Errors:         "+errors.size());
 		
 		verbose.onPrint("\nParsing End");
 		verbose.onPrint("-------------------------------");

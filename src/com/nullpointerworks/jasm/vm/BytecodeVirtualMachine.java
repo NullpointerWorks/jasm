@@ -81,6 +81,7 @@ public class BytecodeVirtualMachine implements VirtualMachine
 		addInstruction( new Push_R() );
 		addInstruction( new Push_V() );
 		addInstruction( new Pop() );
+		addInstruction( new Load_RMV() );
 		
 		addInstruction( new Add_RR() );
 		addInstruction( new Add_RV() );
@@ -150,6 +151,11 @@ public class BytecodeVirtualMachine implements VirtualMachine
 	}
 	
 	public void throwException(VMException excode)
+	{
+		throwException(excode, BytecodeVirtualMachine.class);
+	}
+	
+	public void throwException(VMException excode, Class<?> clazz)
 	{
 		VMProcessException vmex = new VMProcessException(excode, this, -1);
 		exceptions.add( vmex );

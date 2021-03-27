@@ -146,6 +146,14 @@ public class LoadDrafter implements Drafter
 				return d;
 			}
 		}
+		if (op2.isNumber())
+		{
+			if (op1.isRegister())
+			{
+				setCode(d, VMInstruction.LOAD_RMV, op1.getRegister(), op2.getInteger());
+				return d;
+			}
+		}
 		
 		setUncaughtArgumentError(tr);
 		return null;

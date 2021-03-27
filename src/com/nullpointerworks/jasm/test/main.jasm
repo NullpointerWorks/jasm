@@ -3,19 +3,9 @@
 .data ARR 1,2,3,4,5
 .def ARR_LEN 5
 
-.res MEMORY 4
-
-;.data MESSAGE 'hello world!',0
+.res MEMORY 4	; static memory allocation
 
 main:
-	
-	load a,ARR
-	load &a,0
-	inc a
-	load &a,1
-	
-	
-	
 	load b,ARR
 	load c,ARR_LEN
 loop:
@@ -26,4 +16,12 @@ loop:
 	jne loop
 	
 	int EXIT
+	
+	
+fibonacci:
+	
+	
+	
+	
+	ret
 	

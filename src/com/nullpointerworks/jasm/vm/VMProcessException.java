@@ -36,6 +36,11 @@ public class VMProcessException
 						"\n    Caused by "+strClass+".";
 		
 		if (vmachine == null) return result;
+		
+		int instructionAddress = vmachine.getRegister(VMRegister.REG_IP).getValue();
+		result += "\n    Instruction Pointer: "+instructionAddress;
+		
+		
 		return result; // String.format("%x", y)
 	}
 }

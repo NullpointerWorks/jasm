@@ -20,7 +20,6 @@ public interface VirtualMachine
 	int getMemory(int index);
 	int getMemoryAt(Register reg);
 	
-	void throwException(VMException excode);
 	void throwException(VMException excode, Class<?> clazz);
 	void throwException(VMProcessException vmex);
 	boolean hasException();

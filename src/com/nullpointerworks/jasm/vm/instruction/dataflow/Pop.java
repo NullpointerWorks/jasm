@@ -39,7 +39,7 @@ public class Pop implements Instruction
 		VMRegister sel1 = VMRegister.findRegister(tar1);
 		if (sel1 == null)
 		{
-			vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
+			vm.throwException( VMException.VMEX_BAD_INSTRUCTION, Pop.class );
 			return;
 		}
 		Register reg1 = vm.getRegister(sel1);

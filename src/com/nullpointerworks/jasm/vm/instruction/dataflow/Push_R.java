@@ -39,7 +39,7 @@ public class Push_R implements Instruction
 		VMRegister sel1 = VMRegister.findRegister(tar1);
 		if (sel1 == null)
 		{
-			vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
+			vm.throwException( VMException.VMEX_BAD_INSTRUCTION, Push_R.class);
 			return;
 		}
 		Register reg1 = vm.getRegister(sel1);

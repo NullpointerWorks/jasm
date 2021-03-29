@@ -42,8 +42,8 @@ public class Load_RR implements Instruction
 		VMRegister sel2 = VMRegister.findRegister(tar2);
 		
 		//if (sel1 == sel2) vm.throwException( ExceptionEnum.VMEX_IDENTICAL_TARGET );
-		if (sel1 == null) vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
-		if (sel2 == null) vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
+		if (sel1 == null) vm.throwException( VMException.VMEX_BAD_INSTRUCTION, Load_RR.class );
+		if (sel2 == null) vm.throwException( VMException.VMEX_BAD_INSTRUCTION, Load_RR.class );
 		if (vm.hasException()) return;
 		
 		Register reg1 = vm.getRegister(sel1);

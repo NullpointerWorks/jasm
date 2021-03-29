@@ -150,14 +150,14 @@ public class BytecodeVirtualMachine implements VirtualMachine
 		listener.onInterrupt(this, code);
 	}
 	
-	public void throwException(VMException excode)
+	private void throwException(VMException excode)
 	{
 		throwException(excode, BytecodeVirtualMachine.class);
 	}
 	
 	public void throwException(VMException excode, Class<?> clazz)
 	{
-		VMProcessException vmex = new VMProcessException(excode, this, -1);
+		VMProcessException vmex = new VMProcessException(excode, this, "", clazz);
 		exceptions.add( vmex );
 	}
 	
@@ -198,14 +198,12 @@ public class BytecodeVirtualMachine implements VirtualMachine
 	@Override
 	public void setMemory(int index, int value) 
 	{
-		if (index < 0) 
+		if (index < 0 || index >= memory.size()) 
 		{
-			throwException( new VMProcessException(VMException.VMEX_MEMORY_OUTOFBOUNDS, this, index) );
-			return;
-		}
-		if (index > memory.size())
-		{
-			throwException( new VMProcessException(VMException.VMEX_MEMORY_OUTOFBOUNDS, this, index) );
+			throwException( new VMProcessException(VMException.VMEX_MEMORY_OUTOFBOUNDS, 
+													this, 
+													"Trying to set a value in memory at address: "+index, 
+													BytecodeVirtualMachine.class) );
 			return;
 		}
 		memory.set(index, value);

@@ -44,7 +44,7 @@ public class Load_MR implements Instruction
 		VMRegister sel = VMRegister.findRegister(tar1);
 		if (sel == null)
 		{
-			vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
+			vm.throwException( VMException.VMEX_BAD_INSTRUCTION, Load_MR.class );
 			return;
 		}
 		

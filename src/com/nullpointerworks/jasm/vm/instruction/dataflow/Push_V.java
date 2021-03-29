@@ -38,7 +38,7 @@ public class Push_V implements Instruction
 		Register regIP 		= vm.getRegister(VMRegister.REG_IP);
 		int value 			= vm.getMemory( regIP.getValue()+1 );
 		
-		Register regSP 	= vm.getRegister(VMRegister.REG_SP);
+		Register regSP 		= vm.getRegister(VMRegister.REG_SP);
 		regSP.addValue(-1);
 		vm.setMemory(regSP.getValue(), value);
 		

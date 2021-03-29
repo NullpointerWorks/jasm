@@ -6,6 +6,17 @@
 .res MEMORY 4	; static memory allocation
 
 main:
+	
+	load a,1
+	load a,&1
+	
+	load a,b
+	load a,&b
+	
+	load &a,1
+	load &a,b
+	
+	
 	load b,ARR
 	load c,ARR_LEN
 loop:

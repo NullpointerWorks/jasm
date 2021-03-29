@@ -41,8 +41,8 @@ public class Load_RMR implements Instruction
 		VMRegister sel1 = VMRegister.findRegister(tar1);
 		VMRegister sel2 = VMRegister.findRegister(tar2);
 		
-		if (sel1 == null) vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
-		if (sel2 == null) vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
+		if (sel1 == null) vm.throwException( VMException.VMEX_BAD_INSTRUCTION, Load_RMR.class );
+		if (sel2 == null) vm.throwException( VMException.VMEX_BAD_INSTRUCTION, Load_RMR.class );
 		if (vm.hasException()) return;
 		
 		Register reg1 = vm.getRegister(sel1);

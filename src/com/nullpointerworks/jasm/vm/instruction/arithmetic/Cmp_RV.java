@@ -45,7 +45,7 @@ public class Cmp_RV implements Instruction
 		VMRegister sel1 = VMRegister.findRegister(tar1);
 		if (sel1 == null)
 		{
-			vm.throwException( VMException.VMEX_BAD_INSTRUCTION );
+			vm.throwException( VMException.VMEX_BAD_INSTRUCTION, Cmp_RV.class );
 			return;
 		}
 		

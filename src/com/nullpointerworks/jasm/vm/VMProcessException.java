@@ -2,22 +2,24 @@ package com.nullpointerworks.jasm.vm;
 
 public class VMProcessException 
 {
-	private VMException vmex;
+	private final VMException vmex;
+	private final Class<?> clazz;
 	private VirtualMachine vmachine;
-	private int index;
+	private String message;
 	
-	public VMProcessException(VMException ex) 
+	public VMProcessException(VMException ex, String msg, Class<?> cl) 
 	{
 		vmex = ex;
-		vmachine = null;
-		index = -1;
+		message = msg;
+		clazz = cl;
 	}
 	
-	public VMProcessException(VMException ex, VirtualMachine vm, int i) 
+	public VMProcessException(VMException ex, VirtualMachine vm, String msg, Class<?> cl) 
 	{
 		vmex = ex;
 		vmachine = vm;
-		index = i;
+		message = msg;
+		clazz = cl;
 	}
 	
 	public VMException getException()
@@ -27,11 +29,13 @@ public class VMProcessException
 	
 	public String getMemoryTrace()
 	{
-		String result = getException().toString();
+		String strException = getException().toString();
+		String strClass = clazz.getName();
+		String result = "Exception "+strException+
+						": "+message+
+						"\n    Caused by "+strClass+".";
+		
 		if (vmachine == null) return result;
-		
-		
-		
 		return result; // String.format("%x", y)
 	}
 }

@@ -6,6 +6,7 @@ import com.nullpointerworks.jasm.vm.VMFlag;
 import com.nullpointerworks.jasm.vm.VMInstruction;
 import com.nullpointerworks.jasm.vm.VMRegister;
 import com.nullpointerworks.jasm.vm.VirtualMachine;
+import com.nullpointerworks.jasm.vm.instruction.VMUtil;
 
 /**
  * <pre>

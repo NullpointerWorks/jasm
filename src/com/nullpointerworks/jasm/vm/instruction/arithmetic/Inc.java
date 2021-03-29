@@ -5,6 +5,7 @@ import com.nullpointerworks.jasm.vm.Register;
 import com.nullpointerworks.jasm.vm.VMInstruction;
 import com.nullpointerworks.jasm.vm.VMRegister;
 import com.nullpointerworks.jasm.vm.VirtualMachine;
+import com.nullpointerworks.jasm.vm.instruction.VMUtil;
 
 /*
  * add <reg>,<reg>
